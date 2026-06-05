@@ -1,5 +1,8 @@
 # Basefile Configs
 
+RTX5060:
+    base_file: "$GPGPUSIM_ROOT/configs/tested-cfgs/SM120_RTX5060/gpgpusim.config"
+
 RTX5070_TI:
     base_file: "$GPGPUSIM_ROOT/configs/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config"
 
