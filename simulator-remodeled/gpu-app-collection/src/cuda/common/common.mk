@@ -21,7 +21,6 @@
 .SUFFIXES : .cu .cu_dbg.o .c_dbg.o .cpp_dbg.o .cu_rel.o .c_rel.o .cpp_rel.o .cubin .ptx
 
 INCLUDES += -I$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/common/inc
-ADDITIONAL_LIBS += -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64
 
 # Add new SM Versions here as devices with new Compute Capability are released
 SM_VERSIONS   := 10 11 12 13 20 21 30 50 60 62 70 72 75 80 86 89 90 120
@@ -30,6 +29,11 @@ CUDA_INSTALL_PATH ?= /home/tgrogers-raid/a/common/cuda-4.2
 
 ifdef cuda-install
 	CUDA_INSTALL_PATH := $(cuda-install)
+endif
+
+CUDA_VERSION_MAJOR ?= $(shell $(CUDA_INSTALL_PATH)/bin/nvcc --version 2>/dev/null | sed -re 's/.*release ([0-9]+)\..*/\1/;t;d')
+ifeq ($(strip $(CUDA_VERSION_MAJOR)),)
+CUDA_VERSION_MAJOR := 4
 endif
 
 # detect OS
@@ -56,7 +60,8 @@ BINDIR     ?= $(ROOTBINDIR)/$(OSLOWER)
 ROOTOBJDIR ?= obj
 LIBDIR     ?= $(ROOTDIR)/../lib
 
-ifeq ($(shell test ${CUDA_VERSION_MAJOR} -lt 5; echo $$?), 0)
+ifeq ($(shell test "$(CUDA_VERSION_MAJOR)" -lt 5; echo $$?), 0)
+  ADDITIONAL_LIBS += -L$(NVIDIA_COMPUTE_SDK_LOCATION)/../4.2/C/lib -lcutil_x86_64
   LIBDIRSDK     := $(NVIDIA_COMPUTE_SDK_LOCATION)/C/lib
   COMMONDIR  := $(NVIDIA_COMPUTE_SDK_LOCATION)/C/common
   SHAREDDIR  := $(NVIDIA_COMPUTE_SDK_LOCATION)/shared
@@ -148,13 +153,30 @@ else
     endif
 endif
 
-# Compiler-specific flags (by default, we always use sm_10, sm_20, and sm_30), unless we use the SMVERSION template
+# Compiler-specific flags. Defaults track CUDA toolkit support so direct app
+# builds do not rely on gpu-app-collection/src/setup_environment to mask
+# deprecated architectures.
+ifeq ($(shell test "$(CUDA_VERSION_MAJOR)" -gt 6; echo $$?), 0)
+GENCODE_SM10 ?=
+GENCODE_SM13 ?=
+else
 GENCODE_SM10 ?= -gencode=arch=compute_10,code=\"sm_10,compute_10\"
 GENCODE_SM13 ?= -gencode=arch=compute_13,code=\"sm_13,compute_13\"
+endif
+ifeq ($(shell test "$(CUDA_VERSION_MAJOR)" -gt 8; echo $$?), 0)
+GENCODE_SM20 ?=
+GENCODE_SM30 ?=
+GENCODE_SM35 ?=
+else
 GENCODE_SM20 ?= -gencode=arch=compute_20,code=\"sm_20,compute_20\"
 GENCODE_SM30 ?= -gencode=arch=compute_30,code=\"sm_30,compute_30\"
 GENCODE_SM35 ?= -gencode=arch=compute_35,code=\"sm_35,compute_35\"
+endif
+ifeq ($(shell test "$(CUDA_VERSION_MAJOR)" -gt 10; echo $$?), 0)
+GENCODE_SM50 ?=
+else
 GENCODE_SM50 ?= -gencode=arch=compute_50,code=\"sm_50,compute_50\"
+endif
 GENCODE_SM60 ?= -gencode=arch=compute_60,code=\"sm_60,compute_60\"
 GENCODE_SM62 ?= -gencode=arch=compute_62,code=\"sm_62,compute_62\"
 GENCODE_SM70 ?= -gencode=arch=compute_70,code=\"sm_70,compute_70\"
@@ -520,4 +542,3 @@ clobber : clean
 	$(VERBOSE)rm -rf $(SHAREDDIR)/lib/*.a
 	$(VERBOSE)rm -rf $(COMMONDIR)/obj
 	$(VERBOSE)rm -rf $(SHAREDDIR)/obj
-

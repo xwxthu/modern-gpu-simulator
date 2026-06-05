@@ -18,7 +18,6 @@ import re
 import datetime
 
 # MOD. Begin. Improved tracer
-import psutil
 traces_root_dir = os.getenv('TRACES_ROOT_DIR')
 if not traces_root_dir:
     traces_root_dir = "../.."
@@ -39,6 +38,9 @@ parser.add_option("-l", "--limit_kernel_number", dest='kernel_number', default=-
                         "number of traced limits")
 parser.add_option("-t", "--terminate_upon_limit", dest='terminate_upon_limit', action="store_true", help="Once the kernel limit is " +\
                         "reached, terminate the tracing process")
+parser.add_option("-A", "--benchmark_args", dest="benchmark_args",
+                 help="Override the selected benchmark's argument string. This is intended for a single suite:app:index selector.",
+                 default=None)
 
 # MOD. Begin. Improved tracer
 parser.add_option("-C", "--compressed", dest="compressed", action="store_true", 
@@ -46,11 +48,22 @@ parser.add_option("-C", "--compressed", dest="compressed", action="store_true",
 # MOD. End. Improved tracer
 
 (options, args) = parser.parse_args()
+compressed_trace = options.compressed is True
+if compressed_trace:
+    try:
+        import psutil
+    except ImportError:
+        sys.exit("The psutil Python package is required for compressed tracing. Install simulator-remodeled/requirements.txt in your active Python environment.")
 
 common.load_defined_yamls()
 
 benchmarks = []
 benchmarks = common.gen_apps_from_suite_list(options.benchmark_list.split(","))
+if options.benchmark_args is not None:
+    if len(benchmarks) != 1:
+        sys.exit("--benchmark_args requires exactly one selected benchmark")
+    edir, ddir, exe, _argslist = benchmarks[0]
+    benchmarks = [(edir, ddir, exe, [options.benchmark_args])]
 
 cuda_version = common.get_cuda_version( this_directory )
 now_time = datetime.datetime.now()
@@ -63,11 +76,14 @@ nvbit_tracer_path = os.path.join(this_directory, "tracer_tool")
 for bench in benchmarks:
     edir, ddir, exe, argslist = bench
     for argpair in argslist:
-        args = argpair["args"]
+        if isinstance(argpair, dict):
+            args = argpair["args"]
+        else:
+            args = argpair
         run_name = os.path.join( exe, common.get_argfoldername( args ) )
 
         # MOD. Begin. Improved tracer
-        if(options.compressed == "0"):
+        if not compressed_trace:
             this_run_dir = os.path.abspath(os.path.expandvars(
                 os.path.join(this_directory, "..", "..", "hw_run","traces","device-" + options.device_num, cuda_version, run_name)))
         else:
@@ -125,7 +141,7 @@ for bench in benchmarks:
 	# then, we delete the intermediate files ((.trace and kernelslist files files)
         
         # MOD. Begin. Improved tracer
-        if(options.compressed == "0"):
+        if not compressed_trace:
             sh_contents += "\nexport CUDA_VERSION=\"" + cuda_version + "\"; export CUDA_VISIBLE_DEVICES=\"" + options.device_num + "\" ; " +\
                 "export TRACES_FOLDER="+ this_trace_folder + "; CUDA_INJECTION64_PATH=" + os.path.join(nvbit_tracer_path, "tracer_tool.so") +\
                 " " + "; LD_PRELOAD=" + os.path.join(nvbit_tracer_path, "tracer_tool.so") + " " +\
