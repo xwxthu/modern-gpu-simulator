@@ -18,7 +18,7 @@ $(TARGET): post-traces-processing.cpp
 	g++ -std=c++11 $(OPTFLAGS) $(TRACES_ENHANCED_OBJ) -o $@ $^
 
 $(COMPRESSED): post-traces-processing-compressed.cpp
-	g++ -std=c++17 -Wall -Werror $(OPTFLAGS) $(TRACES_ENHANCED_OBJ) -o $@ $^ -lz
+	g++ -std=c++17 -Wall -Werror -Wno-error=deprecated-declarations $(OPTFLAGS) $(TRACES_ENHANCED_OBJ) -o $@ $^ -lz
 
 all: $(TARGET) $(COMPRESSED)
 
