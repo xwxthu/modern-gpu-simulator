@@ -2406,7 +2406,8 @@ void gpgpu_sim::gpu_print_stat() {
               "L2_cache_bank[%d]: Access = %llu, Miss = %llu, Miss_rate = "
               "%.3lf, Pending_hits = %llu, Reservation_fails = %llu\n",
               i, l2_css.accesses, l2_css.misses,
-              (double)l2_css.misses / (double)l2_css.accesses,
+              l2_css.accesses ? (double)l2_css.misses / (double)l2_css.accesses
+                              : 0.0,
               l2_css.pending_hits, l2_css.res_fails);
 
       total_l2_css += l2_css;

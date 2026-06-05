@@ -398,13 +398,17 @@ void memory_stats_t::memlatstat_print(unsigned n_mem, unsigned gpu_mem_n_bk) {
       for (j = 0; j < gpu_mem_n_bk; j++) {
         total_row_accesses += row_access[i][j];
         total_num_activates += num_activates[i][j];
-        printf("%9f ", (float)row_access[i][j] / num_activates[i][j]);
+        printf("%9f ", num_activates[i][j]
+                           ? (float)row_access[i][j] / num_activates[i][j]
+                           : 0.0f);
       }
       printf("\n");
     }
     printf("average row locality = %d/%d = %f\n", total_row_accesses,
            total_num_activates,
-           (float)total_row_accesses / total_num_activates);
+           total_num_activates ? (float)total_row_accesses /
+                                     total_num_activates
+                               : 0.0f);
     /*MEMORY ACCESSES*/
     k = 0;
     l = 0;

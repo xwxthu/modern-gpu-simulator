@@ -3156,8 +3156,8 @@ void gpgpu_sim::shader_print_cache_stats(FILE *fout) const {
               "\tL1D_cache_core[%d]: Access = %llu, Miss = %llu, Miss_rate = "
               "%.3lf, Pending_hits = %llu, Reservation_fails = %llu\n",
               i, css.accesses, css.misses,
-              (double)css.misses / (double)css.accesses, css.pending_hits,
-              css.res_fails);
+              css.accesses ? (double)css.misses / (double)css.accesses : 0.0,
+              css.pending_hits, css.res_fails);
 
       total_css += css;
     }

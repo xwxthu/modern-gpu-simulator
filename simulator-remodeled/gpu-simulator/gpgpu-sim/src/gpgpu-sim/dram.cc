@@ -718,14 +718,14 @@ void dram_t::print(FILE *simFile) const {
   fprintf(simFile, "tRRD=%d tCCD=%d, tRCD=%d tRAS=%d tRP=%d tRC=%d\n",
           m_config->tRRD, m_config->tCCD, m_config->tRCD, m_config->tRAS,
           m_config->tRP, m_config->tRC);
-  fprintf(
-      simFile,
-      "n_cmd=%llu n_nop=%llu n_act=%llu n_pre=%llu n_ref_event=%llu n_req=%llu "
-      "n_rd=%llu n_rd_L2_A=%llu n_write=%llu n_wr_bk=%llu bw_util=%.4g\n",
-      n_cmd, n_nop, n_act, n_pre, n_ref, n_req, n_rd, n_rd_L2_A, n_wr, n_wr_WB,
-      (float)bwutil / n_cmd);
+  fprintf(simFile,
+          "n_cmd=%llu n_nop=%llu n_act=%llu n_pre=%llu n_ref_event=%llu "
+          "n_req=%llu n_rd=%llu n_rd_L2_A=%llu n_write=%llu n_wr_bk=%llu "
+          "bw_util=%.4g\n",
+          n_cmd, n_nop, n_act, n_pre, n_ref, n_req, n_rd, n_rd_L2_A, n_wr,
+          n_wr_WB, n_cmd ? (float)bwutil / n_cmd : 0.0f);
   fprintf(simFile, "n_activity=%llu dram_eff=%.4g\n", n_activity,
-          (float)bwutil / n_activity);
+          n_activity ? (float)bwutil / n_activity : 0.0f);
   for (i = 0; i < m_config->nbk; i++) {
     fprintf(simFile, "bk%d: %da %di ", i, bk[i]->n_access, bk[i]->n_idle);
   }
@@ -734,23 +734,32 @@ void dram_t::print(FILE *simFile) const {
           "\n------------------------------------------------------------------"
           "------\n");
 
-  printf("\nRow_Buffer_Locality = %.6f", (float)hits_num / access_num);
-  printf("\nRow_Buffer_Locality_read = %.6f", (float)hits_read_num / read_num);
+  printf("\nRow_Buffer_Locality = %.6f",
+         access_num ? (float)hits_num / access_num : 0.0f);
+  printf("\nRow_Buffer_Locality_read = %.6f",
+         read_num ? (float)hits_read_num / read_num : 0.0f);
   printf("\nRow_Buffer_Locality_write = %.6f",
-         (float)hits_write_num / write_num);
+         write_num ? (float)hits_write_num / write_num : 0.0f);
   printf("\nBank_Level_Parallism = %.6f",
-         (float)banks_1time / banks_acess_total);
+         banks_acess_total ? (float)banks_1time / banks_acess_total : 0.0f);
   printf("\nBank_Level_Parallism_Col = %.6f",
-         (float)banks_time_rw / banks_access_rw_total);
+         banks_access_rw_total ? (float)banks_time_rw / banks_access_rw_total
+                               : 0.0f);
   printf("\nBank_Level_Parallism_Ready = %.6f",
-         (float)banks_time_ready / banks_access_ready_total);
+         banks_access_ready_total ? (float)banks_time_ready /
+                                        banks_access_ready_total
+                                  : 0.0f);
   printf("\nwrite_to_read_ratio_blp_rw_average = %.6f",
-         write_to_read_ratio_blp_rw_average / banks_access_rw_total);
+         banks_access_rw_total
+             ? write_to_read_ratio_blp_rw_average / banks_access_rw_total
+             : 0.0);
   printf("\nGrpLevelPara = %.6f \n",
-         (float)bkgrp_parallsim_rw / banks_access_rw_total);
+         banks_access_rw_total ? (float)bkgrp_parallsim_rw /
+                                      banks_access_rw_total
+                               : 0.0f);
 
   printf("\nBW Util details:\n");
-  printf("bwutil = %.6f \n", (float)bwutil / n_cmd);
+  printf("bwutil = %.6f \n", n_cmd ? (float)bwutil / n_cmd : 0.0f);
   printf("total_CMD = %llu \n", n_cmd);
   printf("util_bw = %llu \n", util_bw);
   printf("Wasted_Col = %llu \n", wasted_bw_col);
@@ -784,12 +793,17 @@ void dram_t::print(FILE *simFile) const {
   printf("\nDual Bus Interface Util: \n");
   printf("issued_total_row = %llu \n", issued_total_row);
   printf("issued_total_col = %llu \n", issued_total_col);
-  printf("Row_Bus_Util =  %.6f \n", (float)issued_total_row / n_cmd);
-  printf("CoL_Bus_Util = %.6f \n", (float)issued_total_col / n_cmd);
-  printf("Either_Row_CoL_Bus_Util = %.6f \n", (float)issued_total / n_cmd);
-  printf("Issued_on_Two_Bus_Simul_Util = %.6f \n", (float)issued_two / n_cmd);
-  printf("issued_two_Eff = %.6f \n", (float)issued_two / issued_total);
-  printf("queue_avg = %.6f \n\n", (float)ave_mrqs / n_cmd);
+  printf("Row_Bus_Util =  %.6f \n",
+         n_cmd ? (float)issued_total_row / n_cmd : 0.0f);
+  printf("CoL_Bus_Util = %.6f \n",
+         n_cmd ? (float)issued_total_col / n_cmd : 0.0f);
+  printf("Either_Row_CoL_Bus_Util = %.6f \n",
+         n_cmd ? (float)issued_total / n_cmd : 0.0f);
+  printf("Issued_on_Two_Bus_Simul_Util = %.6f \n",
+         n_cmd ? (float)issued_two / n_cmd : 0.0f);
+  printf("issued_two_Eff = %.6f \n",
+         issued_total ? (float)issued_two / issued_total : 0.0f);
+  printf("queue_avg = %.6f \n\n", n_cmd ? (float)ave_mrqs / n_cmd : 0.0f);
 
   fprintf(simFile, "\n");
   fprintf(simFile, "dram_util_bins:");
@@ -799,7 +813,7 @@ void dram_t::print(FILE *simFile) const {
   fprintf(simFile, "\n");
   if (m_config->scheduler_type == DRAM_FRFCFS)
     fprintf(simFile, "mrqq: max=%d avg=%g\n", max_mrqs,
-            (float)ave_mrqs / n_cmd);
+            n_cmd ? (float)ave_mrqs / n_cmd : 0.0f);
 }
 
 void dram_t::visualize() const {
@@ -821,9 +835,9 @@ void dram_t::print_stat(FILE *simFile) {
           "DRAM (%u): n_cmd=%llu n_nop=%llu n_act=%llu n_pre=%llu n_ref=%llu "
           "n_req=%llu n_rd=%llu n_write=%llu bw_util=%.4g ",
           id, n_cmd, n_nop, n_act, n_pre, n_ref, n_req, n_rd, n_wr,
-          (float)bwutil / n_cmd);
+          n_cmd ? (float)bwutil / n_cmd : 0.0f);
   fprintf(simFile, "mrqq: %d %.4g mrqsmax=%llu ", max_mrqs,
-          (float)ave_mrqs / n_cmd, max_mrqs_temp);
+          n_cmd ? (float)ave_mrqs / n_cmd : 0.0f, max_mrqs_temp);
   fprintf(simFile, "\n");
   fprintf(simFile, "dram_util_bins:");
   for (unsigned i = 0; i < 10; i++) fprintf(simFile, " %d", dram_util_bins[i]);
