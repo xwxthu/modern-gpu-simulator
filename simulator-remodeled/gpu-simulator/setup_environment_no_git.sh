@@ -26,7 +26,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # MOD. to pick the right compiler
-if [ $IS_SERT = '1' ] ; then
+if [ "${IS_SERT:-}" = '1' ] ; then
     # VERSION=9.3.0
     # DIR=/Soft/gcc/$VERSION
     # export CC=$DIR/bin/gcc
