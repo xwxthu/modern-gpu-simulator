@@ -1,177 +1,255 @@
-# Welcome to repository modern-gpu-simulator-micro-2025
+# Modern GPU Simulator for RTX5060
 
-The structucture of this repository is the following one:
-Simulator files in: `./simulator-remodeled`
-Absolute Percentage Error for all the configurations and applications in: `./APEs`.
+This repository contains a remodeled Accel-Sim/GPGPU-Sim based simulator for
+modern NVIDIA GPUs.  It starts from the MICRO 2025 modern GPU simulator work and
+adds local RTX5060/SM120 support and validation utilities for this server.
 
+The previous README is preserved as `README-original.md`.
 
-> [!IMPORTANT]  
-> Main features of the simulator compared to Accel-sim
+## What This Repository Improves
 
-1. Redesigned SM model, including sub-core pipeline and memory pipeline.
-2. Tracer that parses control bits.
-3. Simulator that interprets control bits.
-4. Configurable dependence handling: scoreboards or control bits.
-5. Enhanced scoreboard detects dependencies in uniform, predicate, and uniform-predicate registers.
-6. Additional scoreboard to protect against WAR hazards.
-7. Correct per-kernel/function instruction addresses to prevent aliasing in memory requests.
-8. Fix for non-contiguous traced instruction fetches causing false-positive I-cache hits.
-9. Corrected fetch and decode stage timing (no longer both in a single cycle).
-10. Fetch and decode now are integrated into the sub-core model properly.
-11. Added L0 instruction cache.
-12. Added stream-buffer instruction prefetcher.
-13. Parallelized simulator with OpenMP.
-14. AccelWattch energy reporting integrated.
-15. Added static instruction metadata extraction, stored into JSON.
-16. Traces stored using Google Protocol Buffers.
+Compared with the original Accel-Sim framework, the remodeled simulator includes
+the main MICRO 2025 architecture changes:
 
-> [!IMPORTANT]
-> This repository contains two major improvements to the Accel-Sim framework.
-> Please cite the following resources appropriately.
+- A redesigned modern SM model, including sub-core pipeline and memory pipeline.
+- SASS trace support with static instruction metadata and control-bit handling.
+- Configurable dependence handling using scoreboards or compiler control bits.
+- Enhanced dependency tracking for uniform, predicate, and uniform-predicate
+  registers.
+- WAR-hazard protection, corrected instruction addresses, improved fetch/decode
+  timing, L0 instruction cache, and instruction prefetching.
+- Parallel simulator execution support and AccelWattch integration.
+- Google Protocol Buffers based dynamic traces and JSON static metadata.
 
-First, an enhanced version of the simulator that models the architecture described in our MICRO 2025 paper. If you use any files related to this architectural model, please cite:
+This `dev-5060` branch additionally adapts the repository to the local RTX5060
+environment:
 
+- Adds a smoke-ready `SM120_RTX5060` configuration.
+- Fixes CUDA 12.8 / GCC 13 build and trace-generation issues.
+- Adds a reproducible RTX5060 native trace smoke script.
+- Repairs the Rodinia/gpu-app trace path for CUDA 12.8.
+- Guards zero-denominator derived stat printing to avoid `nan/-nan` in reports.
+
+The RTX5060 configuration is validated for functional and stability use. It is
+not yet a paper-level performance or power calibration.
+
+## Tested Local Toolchain
+
+Use CUDA 12.8 for this repository.
+
+- GPU: NVIDIA RTX 5060
+- CUDA toolkit: `/usr/local/cuda-12.8`
+- `nvcc`: CUDA 12.8, `V12.8.93`
+- NVBit: 1.7.5
+- Driver: `595.71.05`
+- `nvidia-smi` may report CUDA 13.2 because that is the driver-supported maximum
+  CUDA version. That is not the toolkit used here.
+
+Recommended environment:
+
+```bash
+export CUDA_INSTALL_PATH=/usr/local/cuda-12.8
+export CUDA_HOME=/usr/local/cuda-12.8
+export PATH=$CUDA_INSTALL_PATH/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_INSTALL_PATH/lib64:$LD_LIBRARY_PATH
 ```
-Rodrigo Huerta, Mojtaba Abaie Shoushtary, José-Lorenzo Cruz, Antonio González,
+
+## Repository Layout
+
+- `simulator-remodeled/`: simulator, tracer, apps, and launch utilities.
+- `simulator-remodeled/gpu-simulator/`: GPGPU-Sim/Accel-Sim simulator.
+- `simulator-remodeled/util/tracer_nvbit/`: NVBit tracer and trace helpers.
+- `simulator-remodeled/gpu-app-collection/`: benchmark applications.
+- `simulator-remodeled/util/job_launching/`: simulation launch and stats tools.
+- `APEs/`: error data from the upstream remodeled simulator work.
+- `checkpoint_files/`: simulator checkpoint-related files.
+
+From this point, most commands assume:
+
+```bash
+cd /home/xiewx/accel-0605/modern-gpu-simulator/simulator-remodeled
+```
+
+## Build the Simulator
+
+```bash
+export CUDA_INSTALL_PATH=/usr/local/cuda-12.8
+export PATH=$CUDA_INSTALL_PATH/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_INSTALL_PATH/lib64:$LD_LIBRARY_PATH
+
+source ./gpu-simulator/setup_environment_no_git.sh
+make -j -C ./gpu-simulator
+```
+
+The simulator binary is:
+
+```bash
+./gpu-simulator/bin/release/accel-sim.out
+```
+
+## Build the NVBit Tracer
+
+```bash
+export CUDA_INSTALL_PATH=/usr/local/cuda-12.8
+export PATH=$CUDA_INSTALL_PATH/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_INSTALL_PATH/lib64:$LD_LIBRARY_PATH
+
+./util/tracer_nvbit/install_nvbit.sh
+make -C ./util/tracer_nvbit ARCH=sm_120
+```
+
+## Quick RTX5060 Smoke Test
+
+Run the reusable native trace smoke script from the repository root:
+
+```bash
+cd /home/xiewx/accel-0605/modern-gpu-simulator
+
+WORK_DIR=/tmp/accelsim-sm120-smoke \
+CUDA_INSTALL_PATH=/usr/local/cuda-12.8 \
+ARCH=sm_120 \
+GPGPUSIM_CONFIG=SM120_RTX5060 \
+simulator-remodeled/util/tracer_nvbit/run_sm120_rtx5060_native_smoke.sh
+```
+
+Expected result:
+
+- summary reports `status=PASS`
+- trace metadata contains `Binary Version=120`
+- trace metadata contains `NVBIT Version=1.7.5`
+- simulator uses `SM120_RTX5060`
+- simulation exits successfully
+
+All generated source, binaries, traces, logs, and validation files are written
+under `WORK_DIR`.
+
+## Trace Real Benchmarks
+
+Build and run benchmark traces using the gpu-app collection and NVBit tracer.
+For CUDA 12.8, this branch includes fixes for legacy Rodinia build issues.
+
+```bash
+cd /home/xiewx/accel-0605/modern-gpu-simulator/simulator-remodeled
+
+export CUDA_INSTALL_PATH=/usr/local/cuda-12.8
+export PATH=$CUDA_INSTALL_PATH/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_INSTALL_PATH/lib64:$LD_LIBRARY_PATH
+
+source ./gpu-app-collection/src/setup_environment
+make -j -C ./gpu-app-collection/src rodinia_2.0-ft
+```
+
+Example trace command:
+
+```bash
+./util/tracer_nvbit/run_hw_trace.py \
+  -B rodinia_2.0-ft \
+  -D 0
+```
+
+`run_hw_trace.py` also supports per-benchmark argument overrides via
+`-A/--benchmark_args`, useful for short calibration runs.
+
+Generated traces are placed under `./hw_run/traces/`.
+
+## Run Simulation
+
+Use the RTX5060 configuration:
+
+```bash
+./gpu-simulator/bin/release/accel-sim.out \
+  -trace <path-to-traces>/dynamic_trace.pb \
+  -config ./gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/gpgpusim.config \
+  -config ./gpu-simulator/configs/tested-cfgs/SM120_RTX5060/trace.config
+```
+
+Or use the launch manager:
+
+```bash
+./util/job_launching/run_simulations.py \
+  -B rodinia_2.0-ft \
+  -C SM120_RTX5060 \
+  -T ./hw_run/traces/device-0/12.8/ \
+  -N rtx5060_eval
+
+./util/job_launching/get_stats.py -N rtx5060_eval | tee stats.csv
+```
+
+## Validated RTX5060 Workloads
+
+This branch has been validated on the local RTX5060 for:
+
+- Native SM120 trace collection with NVBit 1.7.5.
+- Existing Blackwell trace smoke tests.
+- Real Rodinia native/trace/simulation closure for:
+  - `backprop16`
+  - `lud16`
+  - `hotspot16`
+  - `bfs8`
+  - `srad16`
+  - `nw128`
+  - `pathfinder1000`
+- Targeted SASS coverage workloads for:
+  - texture-like reads
+  - atomics and reductions
+  - FP64, 64-bit integer, and special math
+  - warp vote/shuffle and divergence
+  - vector shared/global memory accesses
+
+These tests validate functionality and stability. They do not establish
+performance accuracy.
+
+## Performance Evaluation Notes
+
+For performance work, use CUDA 12.8 and `SM120_RTX5060`.
+
+Collect hardware counters with Nsight Compute when possible. This server has
+been checked with Nsight Compute CLI 2026.1.1.0 and profiling permission was
+available during validation.
+
+Do not directly compare the following as a single accuracy ratio:
+
+- Nsight Compute instruction counters
+- NVBit trace instruction counts
+- simulator `gpu_tot_sim_insn`
+
+They have different semantics. Similarly, L2 sectors, DRAM bytes, simulator
+cache/DRAM stats, and timing/cycle fields need a unit bridge and controlled
+clock methodology before calibration claims can be made.
+
+The current RTX5060 config is a functional/stability draft. Follow-on calibration
+work should focus on:
+
+- memory partition and address mapping
+- L2/cache unit mapping
+- DRAM timing and bandwidth
+- locked or recorded clocks
+- remaining SASS/runtime gaps such as surface ops, tensor/MMA, `cp.async`,
+  copy-engine behavior, LDSM, cooperative groups, and grid/cluster barriers
+- AccelWattch/power calibration
+
+## Citation
+
+If you use the remodeled simulator, cite the MICRO 2025 simulator work:
+
+```text
+Rodrigo Huerta, Mojtaba Abaie Shoushtary, Jose-Lorenzo Cruz, Antonio Gonzalez,
 Dissecting and Modeling the Architecture of Modern GPU Cores,
-in 2025 IEEE/ACM International Symposium on Microarchitecture (MICRO)
+2025 IEEE/ACM International Symposium on Microarchitecture (MICRO)
 ```
 
-Second, this repository includes the implementation for parallelizing the simulator, described in ISPASS 2025 and CAMS 2024. If you use any of these files, please cite:
+If you use the parallelization components, cite:
 
-```
-Rodrigo Huerta, Antonio González,
+```text
+Rodrigo Huerta, Antonio Gonzalez,
 GPU Simulation Acceleration via Parallelization,
-in 2025 IEEE International Symposium on Performance Analysis of Systems and Software (ISPASS)
+2025 IEEE International Symposium on Performance Analysis of Systems and Software (ISPASS)
 ```
 
-```
-Rodrigo Huerta, Antonio González,
-Parallelizing a modern GPU simulator,
-in arXiv:2401.10082 
-```
+Also cite Accel-Sim:
 
-Finally, if you use this simulator, please also cite the Accel-Sim paper:
-
-```
+```text
 Mahmoud Khairy, Zhensheng Shen, Tor M. Aamodt, Timothy G. Rogers,
 Accel-Sim: An Extensible Simulation Framework for Validated GPU Modeling,
-in 2020 ACM/IEEE 47th Annual International Symposium on Computer Architecture (ISCA)
+2020 ACM/IEEE 47th Annual International Symposium on Computer Architecture (ISCA)
 ```
-
-## Dependencies
-
-This simulator builds on the original Accel-Sim. It requires all upstream [dependencies](https://github.com/accel-sim/accel-sim-framework/blob/main/README.md) plus Google Protocol Buffers.
-
-Tested platforms:
-- Ubuntu 20.04.6, 22.04.5, and 24.04
-- g++/gcc ≤ 11 (CUDA 11.4 requires g++/gcc 9)
-- CUDA 11.4 and CUDA 12.8
-
-Note: Newer g++ versions may fail with RapidJSON.
-
-## Simulator Components
-
-> [!IMPORTANT]
-> From here on, assume your working directory is `./simulator-remodeled/`.
-
-1. **Tracer**: An NVBit tool for generating SASS traces from CUDA applications. While the implementation differs, usage is similar to the Accel-Sim tracer. Code lives in `./util/tracer_nvbit/`.
-
-   ```bash
-   export CUDA_INSTALL_PATH=<path-to-your-cuda>
-   export PATH=$CUDA_INSTALL_PATH/bin:$PATH
-   ./util/tracer_nvbit/install_nvbit.sh
-   make -C ./util/tracer_nvbit/
-   ```
-
-   ---
-
-   The following example demonstrates tracing Rodinia 2.0:
-
-
-   ```bash
-   # Ensure CUDA_INSTALL_PATH is set and PATH includes nvcc
-
-   # Get applications, data files, and build them
-   source ./gpu-app-collection/src/setup_environment
-   make -j -C ./gpu-app-collection/src rodinia_2.0-ft
-   make -C ./gpu-app-collection/src data
-
-   # Run applications with the tracer (requires a real GPU)
-   ./util/tracer_nvbit/run_hw_trace.py -B rodinia_2.0-ft -D <gpu-device-num>
-   ```
-
-   Traces for Rodinia 2.0 will be generated in `./hw_run/traces/`.
-   Important: Applications must be compiled using static libraries; otherwise, extracting static information from cubins may fail. Example Rodinia 2 traces for Turing, Ampere, and Blackwell are provided in `./exampleTraces/`. Uncompress with:
-   `tar -xzvf <trace-archive>.tar.gz`
-
-   Trace format:
-
-   ```bash
-   # Static metadata for all executed instructions in JSON
-   ./app_name/app_parameters/traces/extra_info/enhanced_execution_info.json
-
-   # Dynamic trace (Protocol Buffers)
-   ./app_name/app_parameters/traces/dynamic_trace.pb
-
-   # Per-kernel/threadblock dynamic info (e.g., per-warp PCs, memory addresses)
-   ./app_name/app_parameters/traces/threadblocks
-   ```
-
-2. **Simulator**: The simulator consumes SASS traces. To build it:
-
-   ```bash
-   source ./gpu-simulator/setup_environment_no_git.sh
-   make -j -C ./gpu-simulator/
-   ```
-
-   This will produce an executable in:
-
-   ```bash
-   ./gpu-simulator/bin/release/accel-sim.out
-   ```
-
-   Running the simple example from item 1:
-
-    ```bash
-    ./util/job_launching/run_simulations.py \
-       -B rodinia_2.0-ft \
-       -C RTX3080-Accelwattch_SASS_SIM \
-       -T ./hw_run/traces/device-<device-num>/<cuda-version>/ \
-       -N myTestName
-    ```
-
-   After the jobs finish, collect stats with:
-
-   ```bash
-   ./util/job_launching/get_stats.py -N myTestName | tee stats.csv
-   ```
-
-   To run `accel-sim.out` directly for a specific workload:
-
-    ```bash
-    ./gpu-simulator/bin/release/accel-sim.out \
-       -trace ./hw_run/Ampere/rodinia2/12.8/backprop-rodinia-2.0-ft/4096___data_result_4096_txt/traces/dynamic_trace.pb \
-       -config ./gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM86_RTX3080/gpgpusim.config \
-       -config ./gpu-simulator/configs/tested-cfgs/SM86_RTX3080/trace.config
-    ```
-
-   However, we encourage using the workload launch manager `run_simulations.py` as shown above, especially on clusters with SLURM.
-
-   Application definitions live in `./util/job_launching/apps/define-all-apps.yml`. Each application in each batch can configure RAM, CPU cores, and queue type to better match execution requirements and improve SLURM efficiency.
-
-## Relevant files with important changes respect Accel-sim
-
-   The most important changes compared to Accel-Sim are:
-
-1. **SM Model:**
-   Located in `gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/`. It is focused on the SM implementation including sub-core pipelines, the SM memory unit, and new stats required to support parallelization.
-
-
-2. **Instruction information:**
-   Located in `util/traces_enhanced/`. It manages information about traced kernels and instructions, used during both tracing and simulation. It includes the Google Protocol Buffers implementation.
-   
-
-
-> [!WARNING]
-> This repository shares our model and simulator parallelization with the community. It is not intended to be a long-term maintained repository.
