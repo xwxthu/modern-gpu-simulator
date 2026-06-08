@@ -71,6 +71,7 @@ typedef void * yyscan_t;
 %token <string_value> FUNCTION
 %token <string_value> VARIABLE
 %token FATAL
+%token COMPILE_TIME
 
 %{
 	#include <stdlib.h>
@@ -107,6 +108,7 @@ line: 	HEADER INFO COLON line_info
 line_info: function_name
 	| function_info { ptxinfo->ptxinfo_addinfo(); }
 	| gmem_info
+	| COMPILE_TIME
 	;
 
 function_name:	FUNC QUOTE IDENTIFIER QUOTE { ptxinfo_function($3); }

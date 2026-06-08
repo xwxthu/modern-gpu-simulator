@@ -73,6 +73,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 "function"	TC; yylval->string_value = strdup(yytext); return FUNCTION;
 "variable"	TC; yylval->string_value = strdup(yytext); return VARIABLE;
 "fatal   : Ptx assembly aborted due to errors"	TC; return FATAL;
+"Compile time"[ \t]*"="[ \t]*[-]{0,1}[0-9]+([.][0-9]+){0,1}[ \t]*"ms"	TC; return COMPILE_TIME;
 
 [_A-Za-z$%][_0-9A-Za-z$]*  TC; yylval->string_value = strdup(yytext); return IDENTIFIER;
 [-]{0,1}[0-9]+	 TC; yylval->int_value =  atoi(yytext); return INT_OPERAND;

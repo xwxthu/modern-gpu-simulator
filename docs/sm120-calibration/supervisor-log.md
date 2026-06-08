@@ -733,3 +733,50 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: update the PTX/ptxas parser to accept CUDA 13.1 `Compile time = ... ms` informational lines, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `f151f81d3a680d9523f0ac20b93bfdd4667f565e` (`fix: parse CUDA 13 ptxas barrier usage`) recorded the CUDA 13.1 barrier resource parser fix and bounded the next compile-time informational-line parser blocker.
+
+### 2026-06-09 03:36:13 CST
+
+Action:
+- Spawned S7 CUDA 13.1 `ptxas` compile-time parser worker `019ea8bc-14d7-7303-a68d-9c672e184196`.
+
+Scope:
+- Resolve or precisely bound parsing of `ptxas info    : Compile time = 2.998 ms`.
+- Prefer a minimal compatibility fix that accepts or ignores this informational line without suppressing resource parsing.
+
+### 2026-06-09 03:58:37 CST
+
+Action:
+- S7 CUDA 13.1 `ptxas` compile-time parser worker `019ea8bc-14d7-7303-a68d-9c672e184196` completed `docs/sm120-calibration/worker-logs/worker-20260609-033652-s7-ptxas-compile-time.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/ptxinfo.l`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/ptxinfo.y`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-033652-s7-ptxas-compile-time.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-ptxas-compile-time-20260609-033652/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime and regenerated the `ptxinfo` parser.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected config/latest/generated scoped status was empty.
+
+Partial result:
+- The previous CUDA 13.1 `ptxas` parser blocker on `Compile time = ... ms` is resolved.
+- The smoke parsed the `sm_120` `ptxas` output and advanced to performance-simulation launch.
+- The smoke still produced no real simulator metrics.
+- New blocker: segmentation fault before simulator metrics in `ptx_instruction::set_opcode_and_latency()` at `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/cuda-sim.cc:768`.
+- Evidence maps the top simulator-library frame to `sscanf(gpgpu_ctx->func_sim->opcode_latency_fp, ...)`.
+- Stderr still reports `libgomp: Invalid value for environment variable OMP_NUM_THREADS:`.
+
+Supervisor review:
+- Supervisor reviewer `019ea8cd-856c-76a2-a823-5daeea38b864` returned `ACCEPT`.
+- Reviewer confirmed the parser change is narrow, preserves resource parsing, rebuild evidence shows no new parser conflict count, smoke evidence shows compile-time lines were consumed, and the later segfault is properly bounded.
+
+Follow-up:
+- Pending S7 work remains: debug and fix or precisely bound the `ptx_instruction::set_opcode_and_latency()` segmentation fault, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
