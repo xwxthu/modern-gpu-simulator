@@ -285,3 +285,45 @@ Follow-up:
 - The worker updated the fixture report hash and S6 worker log, then reran blank-context reviewer rounds until Round 3 returned `ACCEPT`.
 - Second supervisor reviewer `019ea79f-9021-77f2-a9cd-9800e16712bb` returned `ACCEPT`.
 - Marked S6 complete and S7 ready to start in `overall-plan.md`.
+
+Checkpoint:
+- Commit `e37d55a8c7c77b3f3c164cbd1678e1624ed790b4` (`feat: add bounded SM120 correlation search`) recorded the S6 bounded-parameter-sweep deliverable.
+
+### 2026-06-08 22:51:29 CST
+
+Action:
+- Spawned S7 validation-planning worker `019ea7a8-2080-7390-b229-b87ef5cbf12c`.
+
+Worker deliverables:
+- `.gitignore` update for `artifacts/s7/`.
+- `docs/sm120-calibration/s7-validation-runbook.md`.
+- `docs/sm120-calibration/s7-validation-manifest-template.yaml`.
+- `simulator-remodeled/util/tuner/check_sm120_s7_validation.py`.
+- `docs/sm120-calibration/worker-logs/worker-20260608-225129-s7-validation.md`.
+
+Worker validation:
+- S7 helper Python syntax check.
+- S7 helper dry-run checks for `RTX5060` and `RTX5070_TI`.
+- S7 helper command-plan mode prints commands without executing hardware collection or simulator workloads.
+- `generate_sm120_configs.py --check-only`.
+- S6 fixture dry-run planned-command check.
+- Manifest-template YAML parsing and required-standard-term checks.
+- `git diff --check`.
+
+Worker internal review:
+- Round 1 returned `CHANGES NEEDED` because the RTX5070Ti helper output could imply hardware collection on `dsp5060` by default.
+- Worker added `--include-hardware-plan` and made non-RTX5060 hardware collection planning opt-in.
+- Round 2 returned `ACCEPT`.
+
+Supervisor review:
+- Supervisor reviewer `019ea7ba-06d3-7e02-95ae-fdd2c83478bb` returned `ACCEPT`.
+- Reviewer confirmed:
+  - Standard terms are used: hardware characterization, microbenchmark calibration, parameter sweep, correlation/validation, smoke test, promotion gate.
+  - `dsp5060` is collection-only and local server owns simulator smoke/correlation.
+  - Fixture/sample output is not treated as real calibration evidence.
+  - Draft parser/search output is not auto-applied to accepted configs or `latest.yaml`.
+  - RTX5070Ti hardware collection is opt-in; default compatibility checks are config/alias/static checks.
+
+Follow-up:
+- Marked S7 `In progress` in `overall-plan.md`, not complete.
+- Pending S7 work remains: real RTX5060 hardware characterization, RTX5060 tuner microbenchmark collection, local S5 parse review, local simulator smoke tests, real supplied-metrics correlation search, and promotion-gate review.

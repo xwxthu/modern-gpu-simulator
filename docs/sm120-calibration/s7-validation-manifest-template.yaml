@@ -1,0 +1,108 @@
+schema_version: 1
+schema_id: sm120_s7_validation_manifest_template_v1
+run_id: rtx5060-s7-YYYYMMDD-HHMMSS
+gpu: RTX5060
+architecture: SM120
+status: draft_not_applied
+fixture_only: false
+workspace_policy:
+  main_workspace: /home/xiewx/accel-0608/modern-gpu-simulator
+  hardware_collection_host: dsp5060
+  simulator_host: local-strong-server
+  dsp5060_allowed_work: official facts and tuner microbenchmark calibration collection only
+  dsp5060_forbidden_work: full simulator, accepted config promotion, main workspace checkout
+  fixture_outputs_are_real_calibration: false
+artifacts:
+  official_facts:
+    path: simulator-remodeled/util/hw_stats/device_info/<timestamp>-dsp5060-device0/
+    required: true
+    sha256_manifest: TODO
+    pass: TODO
+    notes: TODO
+  microbenchmark_raw_output:
+    path: artifacts/s7/<run_id>/sm120-rtx5060-microbench.txt
+    required: true
+    sha256: TODO
+    collection_host: dsp5060
+    collection_command: ./run_all.sh > sm120-rtx5060-microbench.txt 2>&1
+    pass: TODO
+    notes: TODO
+  s5_draft_yaml:
+    path: artifacts/s7/<run_id>/RTX5060-real-microbench-draft.yaml
+    required: true
+    sha256: TODO
+    status_must_be: draft_not_applied
+    do_not_claim_calibrated_must_be: true
+    pass: TODO
+    notes: TODO
+  s6_supplied_metrics_manifest:
+    path: artifacts/s7/<run_id>/RTX5060-s6-supplied-metrics.yaml
+    required: false
+    sha256: TODO
+    pass: TODO
+    notes: Required only when bounded parameter sweep evidence is available.
+  s6_ranked_report:
+    path: artifacts/s7/<run_id>/RTX5060-s6-ranked-report.yaml
+    required: false
+    sha256: TODO
+    status_must_be: draft_not_applied
+    do_not_claim_calibrated_must_be: true
+    pass: TODO
+    notes: Must not be generated from synthetic fixture metrics for promotion.
+  local_smoke_plan_log:
+    path: artifacts/s7/<run_id>/local-smoke-plan.log
+    required: true
+    pass: TODO
+    notes: run_simulations.py -n setup only.
+  local_smoke_run_log:
+    path: artifacts/s7/<run_id>/local-smoke-run.log
+    required: false
+    pass: TODO
+    notes: Required before promotion; run only on local strong server, never dsp5060.
+  rtx5070ti_compatibility_log:
+    path: artifacts/s7/<run_id>/rtx5070ti-compatibility.log
+    required: true
+    pass: TODO
+    notes: No RTX5070Ti hardware required unless explicitly available.
+checks:
+  hardware_characterization:
+    official_facts_from_dsp5060_only: TODO
+    clocks_and_driver_recorded: TODO
+    pass: TODO
+  microbenchmark_calibration:
+    raw_output_from_dsp5060: TODO
+    s5_parser_output_reviewed: TODO
+    unsupported_keys_reviewed: TODO
+    duplicate_conflicts_reviewed: TODO
+    pass: TODO
+  parameter_sweep:
+    s6_search_space_bounded: TODO
+    supplied_metrics_not_fixture: TODO
+    candidate_count_within_s6_limits: TODO
+    pass: TODO
+  correlation_validation:
+    weighted_normalized_error_recorded: TODO
+    target_metrics_have_hardware_provenance: TODO
+    pass: TODO
+  smoke_test:
+    local_setup_only_plan_passed: TODO
+    local_short_smoke_passed: TODO
+    no_full_sim_on_dsp5060: TODO
+    pass: TODO
+  rtx5070ti_compatibility:
+    generator_check_only_passed: TODO
+    generated_rtx5070ti_config_exists: TODO
+    rtx5070ti_alias_still_defined: TODO
+    no_rtx5070ti_hardware_required: TODO
+    pass: TODO
+promotion_gate:
+  source_status: draft_not_applied
+  reviewer: TODO
+  reviewer_verdict: TODO
+  staged_delta_path: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/RTX5060/<reviewed-delta>.yaml
+  latest_yaml_update_allowed: false
+  auto_apply_allowed: false
+  accepted_config_write_allowed: false
+  pass: TODO
+residual_risks:
+  - TODO
