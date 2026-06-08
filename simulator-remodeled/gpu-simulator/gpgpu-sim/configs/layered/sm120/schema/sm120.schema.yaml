@@ -1,0 +1,329 @@
+schema_version: 1
+schema_id: sm120_bootstrap_mvp
+description: >
+  MVP owner/profile schema for SM120 bootstrap-current-flat config generation.
+  The bootstrap generator validates every active option in the current flat
+  SM120 gpgpusim.config and trace.config files against these exact owner lists.
+
+profiles:
+  bootstrap:
+    allow_placeholder: true
+    allow_inherited_from_5070ti: true
+    allow_implicit_defaults: true
+    omitted_implicit_defaults:
+      - "-power_simulation_enabled"
+  smoke:
+    allow_placeholder: true
+    allow_inherited_from_5070ti: true
+    allow_implicit_defaults: false
+  performance:
+    allow_placeholder: false
+    allow_inherited_from_5070ti: false
+    allow_implicit_defaults: false
+
+owners:
+  sm120_base:
+    description: SM120 common architecture model and simulator policy.
+    allowed_profiles: [bootstrap, smoke, performance]
+    default_source_type: manual_arch_model
+  gpu_overlay:
+    description: Per-GPU SKU facts and runtime/device limits.
+    allowed_profiles: [bootstrap, smoke, performance]
+    default_source_type: placeholder
+  calibration_result:
+    description: Bootstrap timing, cache, memory, scheduler, RF, PRT, and trace values.
+    allowed_profiles: [bootstrap, smoke, performance]
+    default_source_type: placeholder
+
+active_option_key_owners:
+  gpgpusim.config:
+    sm120_base:
+      - "-gpgpu_ptx_instruction_classification"
+      - "-gpgpu_ptx_sim_mode"
+      - "-gpgpu_ptx_force_max_capability"
+      - "-gpgpu_compute_capability_major"
+      - "-gpgpu_compute_capability_minor"
+      - "-gpgpu_ptx_convert_to_ptxplus"
+      - "-gpgpu_ptx_save_converted_ptxplus"
+      - "-gpgpu_n_cores_per_cluster"
+      - "-gpgpu_occupancy_sm_number"
+      - "-gpgpu_shader_core_pipeline"
+      - "-gpgpu_simd_model"
+      - "-gpgpu_pipeline_widths"
+      - "-gpgpu_num_sp_units"
+      - "-gpgpu_num_sfu_units"
+      - "-gpgpu_num_int_units"
+      - "-gpgpu_tensor_core_avail"
+      - "-gpgpu_num_tensor_core_units"
+      - "-gpgpu_sub_core_model"
+      - "-gpgpu_enable_specialized_operand_collector"
+      - "-gpgpu_num_reg_banks"
+      - "-gpgpu_num_sched_per_core"
+      - "-gpgpu_adaptive_cache_config"
+      - "-gpgpu_unified_l1d_size"
+      - "-gpgpu_gmem_skip_L1D"
+      - "-gpgpu_flush_l1_cache"
+      - "-gpgpu_flush_l2_cache"
+      - "-gpgpu_l1_cache_write_ratio"
+      - "-gpgpu_shmem_num_banks"
+      - "-gpgpu_shmem_limited_broadcast"
+      - "-gpgpu_shmem_warp_parts"
+      - "-gpgpu_coalesce_arch"
+      - "-gpgpu_cache:il1"
+      - "-gpgpu_inst_fetch_throughput"
+      - "-gpgpu_tex_cache:l1"
+      - "-gpgpu_const_cache:l1"
+      - "-gpgpu_perfect_inst_const_cache"
+      - "-network_mode"
+      - "-icnt_in_buffer_limit"
+      - "-icnt_out_buffer_limit"
+      - "-icnt_subnets"
+      - "-icnt_flit_size"
+      - "-icnt_arbiter_algo"
+      - "-gpgpu_memlatency_stat"
+      - "-gpgpu_runtime_stat"
+      - "-enable_ptx_file_line_stats"
+      - "-visualizer_enabled"
+      - "-is_L0I_enabled"
+      - "-max_request_allowed_to_L1I"
+      - "-max_reply_allowed_from_L1I"
+      - "-gpgpu_cache:il0"
+      - "-gpgpu_subcore_const_cache:l0"
+      - "-is_fetch_and_decode_improved"
+      - "-is_extra_traces_enabled"
+      - "-is_SM_remodeling_enabled"
+      - "-num_subcores_in_SM"
+      - "-is_remodeling_scoreboarding_enabled"
+      - "-is_ibuffer_remodeled_enabled"
+      - "-fetch_decode_width"
+      - "-is_dp_pipeline_shared_for_subcores"
+      - "-is_fp32ops_allowed_in_int_pipeline"
+      - "-is_fp32_and_int_unified_pipeline"
+      - "-is_const_cache_accessed_blocks_tracking_enabled"
+      - "-is_global_memory_accesses_blocks_tracking_enabled"
+      - "-is_num_virtual_pages_tracking_enabled"
+      - "-virtual_page_size_in_bytes"
+      - "-perfect_constant_cache"
+      - "-perfect_instruction_cache"
+      - "-ibuffer_coalescing"
+      - "-invalidate_instruction_caches_at_kernel_end"
+      - "-is_instruction_prefetching_enabled"
+      - "-is_custom_omp_scheduler_enabled"
+      - "-filter_first_kernel_id"
+      - "-filter_last_kernel_id"
+    gpu_overlay:
+      - "-gpgpu_stack_size_limit"
+      - "-gpgpu_heap_size_limit"
+      - "-gpgpu_runtime_sync_depth_limit"
+      - "-gpgpu_runtime_pending_launch_count_limit"
+      - "-gpgpu_max_concurrent_kernel"
+      - "-gpgpu_n_clusters"
+      - "-gpgpu_n_mem"
+      - "-gpgpu_n_sub_partition_per_mchannel"
+      - "-gpgpu_clock_domains"
+      - "-gpgpu_shader_registers"
+      - "-gpgpu_registers_per_block"
+      - "-gpgpu_shader_cta"
+      - "-gpgpu_shmem_size"
+      - "-gpgpu_shmem_sizeDefault"
+      - "-gpgpu_shmem_per_block"
+      - "-gpgpu_n_mem_per_ctrlr"
+      - "-gpgpu_dram_buswidth"
+      - "-gpgpu_dram_burst_length"
+      - "-dram_data_command_freq_ratio"
+    calibration_result:
+      - "-gpgpu_kernel_launch_latency"
+      - "-gpgpu_TB_launch_latency"
+      - "-ptx_opcode_latency_int"
+      - "-ptx_opcode_initiation_int"
+      - "-ptx_opcode_latency_fp"
+      - "-ptx_opcode_initiation_fp"
+      - "-ptx_opcode_latency_dp"
+      - "-ptx_opcode_initiation_dp"
+      - "-ptx_opcode_latency_sfu"
+      - "-ptx_opcode_initiation_sfu"
+      - "-ptx_opcode_latency_tesnor"
+      - "-ptx_opcode_initiation_tensor"
+      - "-gpgpu_operand_collector_num_units_gen"
+      - "-gpgpu_operand_collector_num_in_ports_gen"
+      - "-gpgpu_operand_collector_num_out_ports_gen"
+      - "-gpgpu_reg_file_port_throughput"
+      - "-gpgpu_scheduler"
+      - "-gpgpu_max_insn_issue_per_warp"
+      - "-gpgpu_dual_issue_diff_exec_units"
+      - "-gpgpu_shmem_option"
+      - "-gpgpu_l1_banks"
+      - "-gpgpu_cache:dl1"
+      - "-gpgpu_l1_banks_hashing_function"
+      - "-gpgpu_n_cluster_ejection_buffer_size"
+      - "-gpgpu_cache:dl2"
+      - "-gpgpu_cache:dl2_texture_only"
+      - "-gpgpu_dram_partition_queues"
+      - "-gpgpu_perf_sim_memcpy"
+      - "-gpgpu_memory_partition_indexing"
+      - "-gpgpu_l2_rop_latency"
+      - "-dram_latency"
+      - "-gpgpu_dram_scheduler"
+      - "-gpgpu_frfcfs_dram_sched_queue_size"
+      - "-gpgpu_dram_return_queue_size"
+      - "-gpgpu_mem_address_mask"
+      - "-gpgpu_mem_addr_mapping"
+      - "-gpgpu_dram_timing_opt"
+      - "-dram_dual_bus_interface"
+      - "-dram_bnk_indexing_policy"
+      - "-dram_bnkgrp_indexing_policy"
+      - "-latency_L0_to_L1"
+      - "-latency_L1_to_L0"
+      - "-ibuffer_remodeled_size"
+      - "-tensor_latency"
+      - "-tensor_extra_latency_16816_fp32_1688_fp32"
+      - "-tensor_rate_per_cycle"
+      - "-branch_latency"
+      - "-half_latency"
+      - "-uniform_latency"
+      - "-predicate_latency"
+      - "-miscellaneous_queue_latency"
+      - "-miscellaneous_no_queue_latency"
+      - "-branch_initiation"
+      - "-half_initiation"
+      - "-uniform_initiation"
+      - "-predicate_initiation"
+      - "-miscellaneous_queue_initiation"
+      - "-miscellaneous_no_queue_initiation"
+      - "-miscellaneous_queue_size"
+      - "-memory_subcore_queue_size"
+      - "-memory_intermidiate_stages_subcore_unit"
+      - "-memory_sm_prt_size"
+      - "-sm_memory_unit_l1c_access_queue_size"
+      - "-sm_memory_unit_l1t_access_queue_size"
+      - "-sm_memory_unit_l1d_access_queue_size"
+      - "-sm_memory_unit_shmem_access_queue_size"
+      - "-sm_memory_unit_bypass_l1d_directly_go_to_l2_access_queue_size"
+      - "-sm_memory_unit_miscellaneous_access_queue_size"
+      - "-num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_mem_inst"
+      - "-num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_dp_inst"
+      - "-memory_maximum_coalescing_cycles"
+      - "-offset_latency_firts_stage_memory_subcore"
+      - "-memory_shared_memory_minimum_latency"
+      - "-memory_shared_memory_extra_latency_ldsm_multiple_matrix"
+      - "-memmory_max_concurrent_requests_shmem_per_sm"
+      - "-memmory_max_concurrent_requests_standard_per_sm"
+      - "-memory_l1d_minimum_latency"
+      - "-memory_global_shared_latency_for_ldgsts"
+      - "-memory_l1d_max_lookups_per_cycle_per_bank"
+      - "-memory_subcore_extra_latency_load_shared_mem"
+      - "-constant_cache_latency_at_sm_structure"
+      - "-memory_num_scalar_units_per_subcore"
+      - "-memory_subcore_link_to_sm_byte_size"
+      - "-is_load_half_bandwidth_in_the_subcore_link_to_sm_enabled"
+      - "-is_store_half_bandwidth_in_the_subcore_link_to_sm_enabled"
+      - "-dp_sm_shared_queue_size"
+      - "-dp_subcore_queue_size"
+      - "-dp_shared_intermidiate_stages"
+      - "-dp_subcore_max_latency"
+      - "-num_const_cache_cycle_misses_before_switch_to_other_warp"
+      - "-num_cycles_issue_port_busy_after_imadwide"
+      - "-num_stall_cycles_wait_after_bits_stall_0_and_yield"
+      - "-num_cycles_to_stall_SM_at_gpu_memory_barrier"
+      - "-num_cycles_to_stall_SM_at_system_memory_barrier"
+      - "-num_cycles_to_stall_SM_at_cta_memory_barrier"
+      - "-prefetch_per_stream_buffer_size"
+      - "-prefetch_num_stream_buffers"
+      - "-num_instruction_prefetches_per_cycle"
+      - "-is_rf_cache_enabled"
+      - "-max_operands_regular_register_file"
+      - "-max_latency_regular_register_file_latency"
+      - "-num_regular_register_file_read_ports_per_bank"
+      - "-num_regular_register_file_write_ports_per_bank"
+      - "-max_size_register_file_write_queue_for_fixed_latency_instructions"
+      - "-max_pops_per_cycle_register_file_write_queue_for_fixed_latency_instructions"
+      - "-num_threads_granularity_read_regular_register_file_dp_inst"
+      - "-num_threads_granularity_read_regular_register_file_mem_inst"
+      - "-num_threads_granularity_read_regular_register_file_sfu_inst"
+      - "-num_threads_granularity_read_regular_register_file_other_inst"
+      - "-num_cycles_needed_to_write_a_reg_from_sm_struct_to_subcore"
+      - "-scoreboard_war_mode"
+      - "-scoreboard_war_max_uses_per_reg"
+      - "-scoreboard_war_static_power"
+      - "-scoreboard_war_dynamic_power"
+      - "-custom_omp_scheduler_ratio_to_dynamic"
+      - "-measure_coalescing_potential_stats"
+      - "-number_of_coalescers"
+      - "-prt_selection_policy_string"
+      - "-number_of_clusters_for_prt_selection"
+      - "-interwarp_coalescing_quanta_warppool_policy_miss_ratio_threshold"
+      - "-is_interwarp_coalescing_enabled"
+      - "-num_interwarp_coalescing_tables"
+      - "-interwarp_coalescing_quanta"
+      - "-interwarp_coalescing_selection_policy_string"
+      - "-max_size_interwarp_coalescing_per_table"
+  trace.config:
+    calibration_result:
+      - "-trace_opcode_latency_initiation_int"
+      - "-trace_opcode_latency_initiation_sp"
+      - "-trace_opcode_latency_initiation_dp"
+      - "-trace_opcode_latency_initiation_sfu"
+      - "-trace_opcode_latency_initiation_tensor"
+      - "-trace_opcode_latency_initiation_branch"
+      - "-trace_opcode_latency_initiation_half"
+      - "-trace_opcode_latency_initiation_uniform"
+      - "-trace_opcode_latency_initiation_predicate"
+      - "-trace_opcode_latency_initiation_miscellaneous_queue"
+      - "-trace_opcode_latency_initiation_miscellaneous_no_queue"
+      - "-specialized_unit_2"
+      - "-trace_opcode_latency_initiation_spec_op_2"
+
+xml_inventory_policy:
+  accelwattch_sass_sim.xml:
+    rendered_strategy: copy_bootstrap_current_flat
+    owner: calibration_result
+    allowed_profiles: [bootstrap]
+    active_elements:
+      tags: [param, stat]
+      required_attributes: [name, value]
+    provenance_required: true
+    power_profile_status: smoke_compatibility_only
+
+icnt_inventory_policy:
+  config_ampere_islip.icnt:
+    rendered_strategy: copy_bootstrap_current_flat
+    owner: sm120_base
+    allowed_profiles: [bootstrap, smoke, performance]
+    active_when:
+      gpgpusim.config:
+        "-network_mode": "1"
+    current_sm120_note: >
+      Current bootstrap SM120 configs use -network_mode 2 local xbar. The icnt
+      file is copied for directory compatibility and future network_mode 1 work.
+
+latency_groups:
+  branch:
+    gpgpusim_latency_key: "-branch_latency"
+    gpgpusim_initiation_key: "-branch_initiation"
+    trace_key: "-trace_opcode_latency_initiation_branch"
+    drift_policy: same_value
+  half:
+    gpgpusim_latency_key: "-half_latency"
+    gpgpusim_initiation_key: "-half_initiation"
+    trace_key: "-trace_opcode_latency_initiation_half"
+    drift_policy: same_value
+  uniform:
+    gpgpusim_latency_key: "-uniform_latency"
+    gpgpusim_initiation_key: "-uniform_initiation"
+    trace_key: "-trace_opcode_latency_initiation_uniform"
+    drift_policy: same_value
+  predicate:
+    gpgpusim_latency_key: "-predicate_latency"
+    gpgpusim_initiation_key: "-predicate_initiation"
+    trace_key: "-trace_opcode_latency_initiation_predicate"
+    drift_policy: same_value
+  miscellaneous_queue:
+    gpgpusim_latency_key: "-miscellaneous_queue_latency"
+    gpgpusim_initiation_key: "-miscellaneous_queue_initiation"
+    trace_key: "-trace_opcode_latency_initiation_miscellaneous_queue"
+    drift_policy: same_value
+  miscellaneous_no_queue:
+    gpgpusim_latency_key: "-miscellaneous_no_queue_latency"
+    gpgpusim_initiation_key: "-miscellaneous_no_queue_initiation"
+    trace_key: "-trace_opcode_latency_initiation_miscellaneous_no_queue"
+    drift_policy: same_value

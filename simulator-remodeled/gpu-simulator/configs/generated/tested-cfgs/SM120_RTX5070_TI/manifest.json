@@ -1,0 +1,4302 @@
+{
+  "active_key_inventory": {
+    "gpgpusim.config": {
+      "count": 217,
+      "owners": {
+        "-branch_initiation": "calibration_result",
+        "-branch_latency": "calibration_result",
+        "-constant_cache_latency_at_sm_structure": "calibration_result",
+        "-custom_omp_scheduler_ratio_to_dynamic": "calibration_result",
+        "-dp_shared_intermidiate_stages": "calibration_result",
+        "-dp_sm_shared_queue_size": "calibration_result",
+        "-dp_subcore_max_latency": "calibration_result",
+        "-dp_subcore_queue_size": "calibration_result",
+        "-dram_bnk_indexing_policy": "calibration_result",
+        "-dram_bnkgrp_indexing_policy": "calibration_result",
+        "-dram_data_command_freq_ratio": "gpu_overlay",
+        "-dram_dual_bus_interface": "calibration_result",
+        "-dram_latency": "calibration_result",
+        "-enable_ptx_file_line_stats": "sm120_base",
+        "-fetch_decode_width": "sm120_base",
+        "-filter_first_kernel_id": "sm120_base",
+        "-filter_last_kernel_id": "sm120_base",
+        "-gpgpu_TB_launch_latency": "calibration_result",
+        "-gpgpu_adaptive_cache_config": "sm120_base",
+        "-gpgpu_cache:dl1": "calibration_result",
+        "-gpgpu_cache:dl2": "calibration_result",
+        "-gpgpu_cache:dl2_texture_only": "calibration_result",
+        "-gpgpu_cache:il0": "sm120_base",
+        "-gpgpu_cache:il1": "sm120_base",
+        "-gpgpu_clock_domains": "gpu_overlay",
+        "-gpgpu_coalesce_arch": "sm120_base",
+        "-gpgpu_compute_capability_major": "sm120_base",
+        "-gpgpu_compute_capability_minor": "sm120_base",
+        "-gpgpu_const_cache:l1": "sm120_base",
+        "-gpgpu_dram_burst_length": "gpu_overlay",
+        "-gpgpu_dram_buswidth": "gpu_overlay",
+        "-gpgpu_dram_partition_queues": "calibration_result",
+        "-gpgpu_dram_return_queue_size": "calibration_result",
+        "-gpgpu_dram_scheduler": "calibration_result",
+        "-gpgpu_dram_timing_opt": "calibration_result",
+        "-gpgpu_dual_issue_diff_exec_units": "calibration_result",
+        "-gpgpu_enable_specialized_operand_collector": "sm120_base",
+        "-gpgpu_flush_l1_cache": "sm120_base",
+        "-gpgpu_flush_l2_cache": "sm120_base",
+        "-gpgpu_frfcfs_dram_sched_queue_size": "calibration_result",
+        "-gpgpu_gmem_skip_L1D": "sm120_base",
+        "-gpgpu_heap_size_limit": "gpu_overlay",
+        "-gpgpu_inst_fetch_throughput": "sm120_base",
+        "-gpgpu_kernel_launch_latency": "calibration_result",
+        "-gpgpu_l1_banks": "calibration_result",
+        "-gpgpu_l1_banks_hashing_function": "calibration_result",
+        "-gpgpu_l1_cache_write_ratio": "sm120_base",
+        "-gpgpu_l2_rop_latency": "calibration_result",
+        "-gpgpu_max_concurrent_kernel": "gpu_overlay",
+        "-gpgpu_max_insn_issue_per_warp": "calibration_result",
+        "-gpgpu_mem_addr_mapping": "calibration_result",
+        "-gpgpu_mem_address_mask": "calibration_result",
+        "-gpgpu_memlatency_stat": "sm120_base",
+        "-gpgpu_memory_partition_indexing": "calibration_result",
+        "-gpgpu_n_cluster_ejection_buffer_size": "calibration_result",
+        "-gpgpu_n_clusters": "gpu_overlay",
+        "-gpgpu_n_cores_per_cluster": "sm120_base",
+        "-gpgpu_n_mem": "gpu_overlay",
+        "-gpgpu_n_mem_per_ctrlr": "gpu_overlay",
+        "-gpgpu_n_sub_partition_per_mchannel": "gpu_overlay",
+        "-gpgpu_num_int_units": "sm120_base",
+        "-gpgpu_num_reg_banks": "sm120_base",
+        "-gpgpu_num_sched_per_core": "sm120_base",
+        "-gpgpu_num_sfu_units": "sm120_base",
+        "-gpgpu_num_sp_units": "sm120_base",
+        "-gpgpu_num_tensor_core_units": "sm120_base",
+        "-gpgpu_occupancy_sm_number": "sm120_base",
+        "-gpgpu_operand_collector_num_in_ports_gen": "calibration_result",
+        "-gpgpu_operand_collector_num_out_ports_gen": "calibration_result",
+        "-gpgpu_operand_collector_num_units_gen": "calibration_result",
+        "-gpgpu_perf_sim_memcpy": "calibration_result",
+        "-gpgpu_perfect_inst_const_cache": "sm120_base",
+        "-gpgpu_pipeline_widths": "sm120_base",
+        "-gpgpu_ptx_convert_to_ptxplus": "sm120_base",
+        "-gpgpu_ptx_force_max_capability": "sm120_base",
+        "-gpgpu_ptx_instruction_classification": "sm120_base",
+        "-gpgpu_ptx_save_converted_ptxplus": "sm120_base",
+        "-gpgpu_ptx_sim_mode": "sm120_base",
+        "-gpgpu_reg_file_port_throughput": "calibration_result",
+        "-gpgpu_registers_per_block": "gpu_overlay",
+        "-gpgpu_runtime_pending_launch_count_limit": "gpu_overlay",
+        "-gpgpu_runtime_stat": "sm120_base",
+        "-gpgpu_runtime_sync_depth_limit": "gpu_overlay",
+        "-gpgpu_scheduler": "calibration_result",
+        "-gpgpu_shader_core_pipeline": "sm120_base",
+        "-gpgpu_shader_cta": "gpu_overlay",
+        "-gpgpu_shader_registers": "gpu_overlay",
+        "-gpgpu_shmem_limited_broadcast": "sm120_base",
+        "-gpgpu_shmem_num_banks": "sm120_base",
+        "-gpgpu_shmem_option": "calibration_result",
+        "-gpgpu_shmem_per_block": "gpu_overlay",
+        "-gpgpu_shmem_size": "gpu_overlay",
+        "-gpgpu_shmem_sizeDefault": "gpu_overlay",
+        "-gpgpu_shmem_warp_parts": "sm120_base",
+        "-gpgpu_simd_model": "sm120_base",
+        "-gpgpu_stack_size_limit": "gpu_overlay",
+        "-gpgpu_sub_core_model": "sm120_base",
+        "-gpgpu_subcore_const_cache:l0": "sm120_base",
+        "-gpgpu_tensor_core_avail": "sm120_base",
+        "-gpgpu_tex_cache:l1": "sm120_base",
+        "-gpgpu_unified_l1d_size": "sm120_base",
+        "-half_initiation": "calibration_result",
+        "-half_latency": "calibration_result",
+        "-ibuffer_coalescing": "sm120_base",
+        "-ibuffer_remodeled_size": "calibration_result",
+        "-icnt_arbiter_algo": "sm120_base",
+        "-icnt_flit_size": "sm120_base",
+        "-icnt_in_buffer_limit": "sm120_base",
+        "-icnt_out_buffer_limit": "sm120_base",
+        "-icnt_subnets": "sm120_base",
+        "-interwarp_coalescing_quanta": "calibration_result",
+        "-interwarp_coalescing_quanta_warppool_policy_miss_ratio_threshold": "calibration_result",
+        "-interwarp_coalescing_selection_policy_string": "calibration_result",
+        "-invalidate_instruction_caches_at_kernel_end": "sm120_base",
+        "-is_L0I_enabled": "sm120_base",
+        "-is_SM_remodeling_enabled": "sm120_base",
+        "-is_const_cache_accessed_blocks_tracking_enabled": "sm120_base",
+        "-is_custom_omp_scheduler_enabled": "sm120_base",
+        "-is_dp_pipeline_shared_for_subcores": "sm120_base",
+        "-is_extra_traces_enabled": "sm120_base",
+        "-is_fetch_and_decode_improved": "sm120_base",
+        "-is_fp32_and_int_unified_pipeline": "sm120_base",
+        "-is_fp32ops_allowed_in_int_pipeline": "sm120_base",
+        "-is_global_memory_accesses_blocks_tracking_enabled": "sm120_base",
+        "-is_ibuffer_remodeled_enabled": "sm120_base",
+        "-is_instruction_prefetching_enabled": "sm120_base",
+        "-is_interwarp_coalescing_enabled": "calibration_result",
+        "-is_load_half_bandwidth_in_the_subcore_link_to_sm_enabled": "calibration_result",
+        "-is_num_virtual_pages_tracking_enabled": "sm120_base",
+        "-is_remodeling_scoreboarding_enabled": "sm120_base",
+        "-is_rf_cache_enabled": "calibration_result",
+        "-is_store_half_bandwidth_in_the_subcore_link_to_sm_enabled": "calibration_result",
+        "-latency_L0_to_L1": "calibration_result",
+        "-latency_L1_to_L0": "calibration_result",
+        "-max_latency_regular_register_file_latency": "calibration_result",
+        "-max_operands_regular_register_file": "calibration_result",
+        "-max_pops_per_cycle_register_file_write_queue_for_fixed_latency_instructions": "calibration_result",
+        "-max_reply_allowed_from_L1I": "sm120_base",
+        "-max_request_allowed_to_L1I": "sm120_base",
+        "-max_size_interwarp_coalescing_per_table": "calibration_result",
+        "-max_size_register_file_write_queue_for_fixed_latency_instructions": "calibration_result",
+        "-measure_coalescing_potential_stats": "calibration_result",
+        "-memmory_max_concurrent_requests_shmem_per_sm": "calibration_result",
+        "-memmory_max_concurrent_requests_standard_per_sm": "calibration_result",
+        "-memory_global_shared_latency_for_ldgsts": "calibration_result",
+        "-memory_intermidiate_stages_subcore_unit": "calibration_result",
+        "-memory_l1d_max_lookups_per_cycle_per_bank": "calibration_result",
+        "-memory_l1d_minimum_latency": "calibration_result",
+        "-memory_maximum_coalescing_cycles": "calibration_result",
+        "-memory_num_scalar_units_per_subcore": "calibration_result",
+        "-memory_shared_memory_extra_latency_ldsm_multiple_matrix": "calibration_result",
+        "-memory_shared_memory_minimum_latency": "calibration_result",
+        "-memory_sm_prt_size": "calibration_result",
+        "-memory_subcore_extra_latency_load_shared_mem": "calibration_result",
+        "-memory_subcore_link_to_sm_byte_size": "calibration_result",
+        "-memory_subcore_queue_size": "calibration_result",
+        "-miscellaneous_no_queue_initiation": "calibration_result",
+        "-miscellaneous_no_queue_latency": "calibration_result",
+        "-miscellaneous_queue_initiation": "calibration_result",
+        "-miscellaneous_queue_latency": "calibration_result",
+        "-miscellaneous_queue_size": "calibration_result",
+        "-network_mode": "sm120_base",
+        "-num_const_cache_cycle_misses_before_switch_to_other_warp": "calibration_result",
+        "-num_cycles_issue_port_busy_after_imadwide": "calibration_result",
+        "-num_cycles_needed_to_write_a_reg_from_sm_struct_to_subcore": "calibration_result",
+        "-num_cycles_to_stall_SM_at_cta_memory_barrier": "calibration_result",
+        "-num_cycles_to_stall_SM_at_gpu_memory_barrier": "calibration_result",
+        "-num_cycles_to_stall_SM_at_system_memory_barrier": "calibration_result",
+        "-num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_dp_inst": "calibration_result",
+        "-num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_mem_inst": "calibration_result",
+        "-num_instruction_prefetches_per_cycle": "calibration_result",
+        "-num_interwarp_coalescing_tables": "calibration_result",
+        "-num_regular_register_file_read_ports_per_bank": "calibration_result",
+        "-num_regular_register_file_write_ports_per_bank": "calibration_result",
+        "-num_stall_cycles_wait_after_bits_stall_0_and_yield": "calibration_result",
+        "-num_subcores_in_SM": "sm120_base",
+        "-num_threads_granularity_read_regular_register_file_dp_inst": "calibration_result",
+        "-num_threads_granularity_read_regular_register_file_mem_inst": "calibration_result",
+        "-num_threads_granularity_read_regular_register_file_other_inst": "calibration_result",
+        "-num_threads_granularity_read_regular_register_file_sfu_inst": "calibration_result",
+        "-number_of_clusters_for_prt_selection": "calibration_result",
+        "-number_of_coalescers": "calibration_result",
+        "-offset_latency_firts_stage_memory_subcore": "calibration_result",
+        "-perfect_constant_cache": "sm120_base",
+        "-perfect_instruction_cache": "sm120_base",
+        "-predicate_initiation": "calibration_result",
+        "-predicate_latency": "calibration_result",
+        "-prefetch_num_stream_buffers": "calibration_result",
+        "-prefetch_per_stream_buffer_size": "calibration_result",
+        "-prt_selection_policy_string": "calibration_result",
+        "-ptx_opcode_initiation_dp": "calibration_result",
+        "-ptx_opcode_initiation_fp": "calibration_result",
+        "-ptx_opcode_initiation_int": "calibration_result",
+        "-ptx_opcode_initiation_sfu": "calibration_result",
+        "-ptx_opcode_initiation_tensor": "calibration_result",
+        "-ptx_opcode_latency_dp": "calibration_result",
+        "-ptx_opcode_latency_fp": "calibration_result",
+        "-ptx_opcode_latency_int": "calibration_result",
+        "-ptx_opcode_latency_sfu": "calibration_result",
+        "-ptx_opcode_latency_tesnor": "calibration_result",
+        "-scoreboard_war_dynamic_power": "calibration_result",
+        "-scoreboard_war_max_uses_per_reg": "calibration_result",
+        "-scoreboard_war_mode": "calibration_result",
+        "-scoreboard_war_static_power": "calibration_result",
+        "-sm_memory_unit_bypass_l1d_directly_go_to_l2_access_queue_size": "calibration_result",
+        "-sm_memory_unit_l1c_access_queue_size": "calibration_result",
+        "-sm_memory_unit_l1d_access_queue_size": "calibration_result",
+        "-sm_memory_unit_l1t_access_queue_size": "calibration_result",
+        "-sm_memory_unit_miscellaneous_access_queue_size": "calibration_result",
+        "-sm_memory_unit_shmem_access_queue_size": "calibration_result",
+        "-tensor_extra_latency_16816_fp32_1688_fp32": "calibration_result",
+        "-tensor_latency": "calibration_result",
+        "-tensor_rate_per_cycle": "calibration_result",
+        "-uniform_initiation": "calibration_result",
+        "-uniform_latency": "calibration_result",
+        "-virtual_page_size_in_bytes": "sm120_base",
+        "-visualizer_enabled": "sm120_base"
+      },
+      "provenance_by_key": {
+        "-branch_initiation": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-branch_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-constant_cache_latency_at_sm_structure": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-custom_omp_scheduler_ratio_to_dynamic": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dp_shared_intermidiate_stages": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dp_sm_shared_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dp_subcore_max_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dp_subcore_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dram_bnk_indexing_policy": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dram_bnkgrp_indexing_policy": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dram_data_command_freq_ratio": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-dram_dual_bus_interface": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-dram_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-enable_ptx_file_line_stats": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-fetch_decode_width": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-filter_first_kernel_id": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-filter_last_kernel_id": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_TB_launch_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_adaptive_cache_config": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_cache:dl1": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_cache:dl2": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_cache:dl2_texture_only": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_cache:il0": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_cache:il1": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_clock_domains": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_coalesce_arch": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_compute_capability_major": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_compute_capability_minor": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_const_cache:l1": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_dram_burst_length": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_dram_buswidth": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_dram_partition_queues": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_dram_return_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_dram_scheduler": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_dram_timing_opt": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_dual_issue_diff_exec_units": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_enable_specialized_operand_collector": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_flush_l1_cache": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_flush_l2_cache": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_gmem_skip_L1D": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_heap_size_limit": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_inst_fetch_throughput": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_kernel_launch_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_l1_banks": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_l1_banks_hashing_function": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_l1_cache_write_ratio": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_l2_rop_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_max_concurrent_kernel": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_max_insn_issue_per_warp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_mem_addr_mapping": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_mem_address_mask": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_memlatency_stat": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_memory_partition_indexing": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_n_cluster_ejection_buffer_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_n_clusters": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_n_cores_per_cluster": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_n_mem": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_n_mem_per_ctrlr": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_n_sub_partition_per_mchannel": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_num_int_units": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_num_reg_banks": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_num_sched_per_core": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_num_sfu_units": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_num_sp_units": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_num_tensor_core_units": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_occupancy_sm_number": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_operand_collector_num_in_ports_gen": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_operand_collector_num_out_ports_gen": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_operand_collector_num_units_gen": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_perf_sim_memcpy": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_perfect_inst_const_cache": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_pipeline_widths": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_ptx_convert_to_ptxplus": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_ptx_force_max_capability": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_ptx_instruction_classification": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_ptx_save_converted_ptxplus": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_ptx_sim_mode": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_reg_file_port_throughput": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_registers_per_block": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_runtime_pending_launch_count_limit": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_runtime_stat": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_runtime_sync_depth_limit": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_scheduler": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_shader_core_pipeline": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_shader_cta": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_shader_registers": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_shmem_limited_broadcast": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_shmem_num_banks": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_shmem_option": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_shmem_per_block": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_shmem_size": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_shmem_sizeDefault": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_shmem_warp_parts": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_simd_model": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_stack_size_limit": {
+          "confidence": "bootstrap",
+          "owner": "gpu_overlay",
+          "source_type": "placeholder"
+        },
+        "-gpgpu_sub_core_model": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_subcore_const_cache:l0": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_tensor_core_avail": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_tex_cache:l1": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-gpgpu_unified_l1d_size": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-half_initiation": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-half_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ibuffer_coalescing": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-ibuffer_remodeled_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-icnt_arbiter_algo": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-icnt_flit_size": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-icnt_in_buffer_limit": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-icnt_out_buffer_limit": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-icnt_subnets": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-interwarp_coalescing_quanta": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-interwarp_coalescing_quanta_warppool_policy_miss_ratio_threshold": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-interwarp_coalescing_selection_policy_string": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-invalidate_instruction_caches_at_kernel_end": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_L0I_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_SM_remodeling_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_const_cache_accessed_blocks_tracking_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_custom_omp_scheduler_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_dp_pipeline_shared_for_subcores": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_extra_traces_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_fetch_and_decode_improved": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_fp32_and_int_unified_pipeline": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_fp32ops_allowed_in_int_pipeline": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_global_memory_accesses_blocks_tracking_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_ibuffer_remodeled_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_instruction_prefetching_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_interwarp_coalescing_enabled": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-is_load_half_bandwidth_in_the_subcore_link_to_sm_enabled": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-is_num_virtual_pages_tracking_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_remodeling_scoreboarding_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-is_rf_cache_enabled": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-is_store_half_bandwidth_in_the_subcore_link_to_sm_enabled": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-latency_L0_to_L1": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-latency_L1_to_L0": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-max_latency_regular_register_file_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-max_operands_regular_register_file": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-max_pops_per_cycle_register_file_write_queue_for_fixed_latency_instructions": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-max_reply_allowed_from_L1I": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-max_request_allowed_to_L1I": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-max_size_interwarp_coalescing_per_table": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-max_size_register_file_write_queue_for_fixed_latency_instructions": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-measure_coalescing_potential_stats": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memmory_max_concurrent_requests_shmem_per_sm": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memmory_max_concurrent_requests_standard_per_sm": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_global_shared_latency_for_ldgsts": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_intermidiate_stages_subcore_unit": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_l1d_max_lookups_per_cycle_per_bank": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_l1d_minimum_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_maximum_coalescing_cycles": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_num_scalar_units_per_subcore": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_shared_memory_extra_latency_ldsm_multiple_matrix": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_shared_memory_minimum_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_sm_prt_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_subcore_extra_latency_load_shared_mem": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_subcore_link_to_sm_byte_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-memory_subcore_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-miscellaneous_no_queue_initiation": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-miscellaneous_no_queue_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-miscellaneous_queue_initiation": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-miscellaneous_queue_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-miscellaneous_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-network_mode": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-num_const_cache_cycle_misses_before_switch_to_other_warp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_cycles_issue_port_busy_after_imadwide": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_cycles_needed_to_write_a_reg_from_sm_struct_to_subcore": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_cycles_to_stall_SM_at_cta_memory_barrier": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_cycles_to_stall_SM_at_gpu_memory_barrier": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_cycles_to_stall_SM_at_system_memory_barrier": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_dp_inst": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_mem_inst": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_instruction_prefetches_per_cycle": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_interwarp_coalescing_tables": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_regular_register_file_read_ports_per_bank": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_regular_register_file_write_ports_per_bank": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_stall_cycles_wait_after_bits_stall_0_and_yield": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_subcores_in_SM": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-num_threads_granularity_read_regular_register_file_dp_inst": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_threads_granularity_read_regular_register_file_mem_inst": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_threads_granularity_read_regular_register_file_other_inst": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-num_threads_granularity_read_regular_register_file_sfu_inst": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-number_of_clusters_for_prt_selection": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-number_of_coalescers": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-offset_latency_firts_stage_memory_subcore": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-perfect_constant_cache": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-perfect_instruction_cache": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-predicate_initiation": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-predicate_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-prefetch_num_stream_buffers": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-prefetch_per_stream_buffer_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-prt_selection_policy_string": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_initiation_dp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_initiation_fp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_initiation_int": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_initiation_sfu": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_initiation_tensor": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_latency_dp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_latency_fp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_latency_int": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_latency_sfu": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-ptx_opcode_latency_tesnor": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-scoreboard_war_dynamic_power": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-scoreboard_war_max_uses_per_reg": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-scoreboard_war_mode": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-scoreboard_war_static_power": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-sm_memory_unit_bypass_l1d_directly_go_to_l2_access_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-sm_memory_unit_l1c_access_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-sm_memory_unit_l1d_access_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-sm_memory_unit_l1t_access_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-sm_memory_unit_miscellaneous_access_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-sm_memory_unit_shmem_access_queue_size": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-tensor_extra_latency_16816_fp32_1688_fp32": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-tensor_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-tensor_rate_per_cycle": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-uniform_initiation": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-uniform_latency": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-virtual_page_size_in_bytes": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        },
+        "-visualizer_enabled": {
+          "confidence": "bootstrap",
+          "owner": "sm120_base",
+          "source_type": "manual_arch_model"
+        }
+      }
+    },
+    "trace.config": {
+      "count": 13,
+      "owners": {
+        "-specialized_unit_2": "calibration_result",
+        "-trace_opcode_latency_initiation_branch": "calibration_result",
+        "-trace_opcode_latency_initiation_dp": "calibration_result",
+        "-trace_opcode_latency_initiation_half": "calibration_result",
+        "-trace_opcode_latency_initiation_int": "calibration_result",
+        "-trace_opcode_latency_initiation_miscellaneous_no_queue": "calibration_result",
+        "-trace_opcode_latency_initiation_miscellaneous_queue": "calibration_result",
+        "-trace_opcode_latency_initiation_predicate": "calibration_result",
+        "-trace_opcode_latency_initiation_sfu": "calibration_result",
+        "-trace_opcode_latency_initiation_sp": "calibration_result",
+        "-trace_opcode_latency_initiation_spec_op_2": "calibration_result",
+        "-trace_opcode_latency_initiation_tensor": "calibration_result",
+        "-trace_opcode_latency_initiation_uniform": "calibration_result"
+      },
+      "provenance_by_key": {
+        "-specialized_unit_2": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_branch": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_dp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_half": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_int": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_miscellaneous_no_queue": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_miscellaneous_queue": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_predicate": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_sfu": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_sp": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_spec_op_2": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_tensor": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        },
+        "-trace_opcode_latency_initiation_uniform": {
+          "confidence": "bootstrap",
+          "owner": "calibration_result",
+          "source_type": "placeholder"
+        }
+      }
+    }
+  },
+  "compatibility": {
+    "existing_flat_sm120_configs_modified": false,
+    "legacy_extra_params_policy": "unmanifested_override"
+  },
+  "generator": {
+    "command": [
+      "simulator-remodeled/util/tuner/generate_sm120_configs.py"
+    ],
+    "git_commit": "21853fa204f1cce3bde636705edf9b8e90051974",
+    "script": "simulator-remodeled/util/tuner/generate_sm120_configs.py",
+    "script_sha256": "67703b3d57c6653cadb58d110bc56aa3e1c95f3f1a74241a4cdfbbb148b085b2",
+    "timestamp": "2026-06-08T11:37:11Z"
+  },
+  "icnt_inventory": {
+    "config_ampere_islip.icnt": {
+      "active_with_current_bootstrap": false,
+      "network_mode": "2",
+      "owner": "sm120_base",
+      "sha256": "3796695c663983ca84dd3f1bc8cc0326a5330206afa09cb2d399777c6310d99c"
+    }
+  },
+  "input_hashes_sha256": {
+    "simulator-remodeled/gpu-simulator/configs/layered/sm120/trace-render-rules.yaml": "8d30190e2080c85ca4a61b61d5326820dc42e2aedbefca081dbf8f5d9549f63a",
+    "simulator-remodeled/gpu-simulator/configs/tested-cfgs/SM120_RTX5070_TI/trace.config": "a4d2d01079241db28ee3601c7a25adacdf64dd5a6656560fce893493ce77fbf1",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/base/SM120_BASE.yaml": "92cd4d51440f4f4aa8c18d460480f4bcb3d95d8fe43cf1af0afe35915c819b52",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/RTX5070_TI/bootstrap-current-flat.yaml": "6a6c7bd56596cd124cd03c0563df00f7bfc394bbed5819de6f5537dd8dfcb4e1",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/overlays/RTX5070_TI.yaml": "88b8fc601018d6145dfa93296812f699437ec632eb6339cd298d2d72b316c1e0",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/profiles/bootstrap.yaml": "fa8c8170bbf1550aaec07093a68ec64fd8ff687b69a33ec060f413fb61dbe3d1",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/sm120.schema.yaml": "d44fb1539e5b64fd042931992c630b5dbed0501a785f901e2f88665cf3d822f0",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/accelwattch_sass_sim.xml": "887dcef47215e1dbbc493685d43ece9c9a1f7db64dd82441f7a1dd5e5789eb38",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/config_ampere_islip.icnt": "c5c5ed5c00ce40fe3a9878290c8eddd7aa040ecf29c1611720a0f0cc5c4d3bc8",
+    "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config": "4cab065ec99a36f8807eed801ec74b9a335404207355a30602ed58a2a221c4f4",
+    "simulator-remodeled/util/tuner/generate_sm120_configs.py": "67703b3d57c6653cadb58d110bc56aa3e1c95f3f1a74241a4cdfbbb148b085b2"
+  },
+  "limitations": [
+    "bootstrap-current-flat copies current flat values; it is not a new calibration result",
+    "RTX5060 timing, memory, trace, and XML values remain inherited or placeholder until S5/S6",
+    "power is not enabled or calibrated by the bootstrap profile"
+  ],
+  "note": "Trace-root mirror manifest. Full generated artifacts are recorded in the gpgpu-sim generated directory.",
+  "outputs": {
+    "manifest_json": "simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.json",
+    "manifest_yaml": "simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.yaml",
+    "trace_config": "simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/trace.config"
+  },
+  "provenance": {
+    "accelwattch_xml": {
+      "confidence": "bootstrap",
+      "notes": "Power configuration is not validated by this profile.",
+      "source_detail": "Existing AccelWattch XML copied for compatibility.",
+      "source_type": "placeholder"
+    },
+    "calibration_result": {
+      "confidence": "bootstrap",
+      "replacement_plan": "Replace timing/cache/memory/RF/PRT values with staged microbenchmark and targeted correlation results.",
+      "replacement_stage": "S5",
+      "source_detail": "Current flat SM120_RTX5070_TI config values.",
+      "source_type": "placeholder"
+    },
+    "gpu_overlay": {
+      "confidence": "bootstrap",
+      "notes": "Per-GPU values are seeded from the existing flat config until official tool/device-query evidence is attached.\n",
+      "replacement_stage": "S5",
+      "source_detail": "Current flat SM120_RTX5070_TI config.",
+      "source_type": "placeholder"
+    },
+    "icnt": {
+      "confidence": "bootstrap",
+      "notes": "Current SM120 bootstrap configs select -network_mode 2 local xbar.",
+      "source_detail": "Copied current config_ampere_islip.icnt for directory compatibility.",
+      "source_type": "manual_arch_model"
+    },
+    "sm120_base": {
+      "confidence": "bootstrap",
+      "notes": "This MVP records current model policy. It does not claim that every hardcoded remodeled assumption has been independently validated.\n",
+      "source_detail": "Current flat SM120 configs plus remodeled SM120 source model.",
+      "source_type": "manual_arch_model"
+    }
+  },
+  "repository": {
+    "git_commit": "21853fa204f1cce3bde636705edf9b8e90051974",
+    "git_status_short_branch": [
+      "## dev-5060...origin/dev-5060 [ahead 4]",
+      " M docs/sm120-calibration/overall-plan.md",
+      "A  docs/sm120-calibration/s4-config-generator.md",
+      " M docs/sm120-calibration/supervisor-log.md",
+      "A  docs/sm120-calibration/worker-logs/worker-20260608-195431-s4-generator.md",
+      "A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/manifest.json",
+      "A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/manifest.yaml",
+      "A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/trace.config",
+      "A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.json",
+      "A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.yaml",
+      "A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/trace.config",
+      "A  simulator-remodeled/gpu-simulator/configs/layered/sm120/trace-render-rules.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/accelwattch_sass_sim.xml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/config_ampere_islip.icnt",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/gpgpusim.config",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/manifest.json",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/manifest.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/accelwattch_sass_sim.xml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/config_ampere_islip.icnt",
+      "AM simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.json",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/base/SM120_BASE.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/RTX5060/bootstrap-current-flat.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/RTX5070_TI/bootstrap-current-flat.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/overlays/RTX5060.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/overlays/RTX5070_TI.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/profiles/bootstrap.yaml",
+      "A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/sm120.schema.yaml",
+      "M  simulator-remodeled/util/job_launching/configs/define-standard-cfgs.yml",
+      "AM simulator-remodeled/util/tuner/generate_sm120_configs.py"
+    ],
+    "root": "/home/xiewx/accel-0608/modern-gpu-simulator"
+  },
+  "schema_version": 1,
+  "selection": {
+    "calibration_id": "bootstrap-current-flat",
+    "config_name": "SM120_RTX5070_TI",
+    "gpu": "RTX5070_TI",
+    "layers": [
+      "SM120_BASE",
+      "RTX5070_TI",
+      "bootstrap-current-flat",
+      "bootstrap"
+    ],
+    "profile": "bootstrap"
+  },
+  "source_files": {
+    "accelwattch_xml": "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/accelwattch_sass_sim.xml",
+    "gpgpusim_config": "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config",
+    "icnt": "simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/config_ampere_islip.icnt",
+    "trace_config": "simulator-remodeled/gpu-simulator/configs/tested-cfgs/SM120_RTX5070_TI/trace.config"
+  },
+  "validations": {
+    "active_key_coverage": "pass",
+    "bootstrap_implicit_power_default": "not_rendered",
+    "golden_bootstrap_active_diff": "pass",
+    "golden_icnt_non_comment_diff": "pass",
+    "golden_xml_inventory_diff": "pass",
+    "latency_groups": [
+      {
+        "group": "branch",
+        "initiation": "1",
+        "latency": "2",
+        "policy": "same_value"
+      },
+      {
+        "group": "half",
+        "initiation": "2",
+        "latency": "3",
+        "policy": "same_value"
+      },
+      {
+        "group": "uniform",
+        "initiation": "2",
+        "latency": "2",
+        "policy": "same_value"
+      },
+      {
+        "group": "predicate",
+        "initiation": "2",
+        "latency": "13",
+        "policy": "same_value"
+      },
+      {
+        "group": "miscellaneous_queue",
+        "initiation": "2",
+        "latency": "2",
+        "policy": "same_value"
+      },
+      {
+        "group": "miscellaneous_no_queue",
+        "initiation": "1",
+        "latency": "1",
+        "policy": "same_value"
+      }
+    ],
+    "mirrored_trace_path": "pass",
+    "owner_profile_policy": "pass"
+  },
+  "xml_inventory": {
+    "accelwattch_sass_sim.xml": {
+      "active_param_or_stat_count": 339,
+      "owner": "calibration_result",
+      "provenance_items": [
+        {
+          "confidence": "bootstrap",
+          "name": "Dir_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/param[@Dir_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "Directory_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/param[@Directory_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clockrate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/param[@clockrate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "device_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/param[@device_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/param[@ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L1Directory0]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "L2_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/param[@L2_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clockrate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/param[@clockrate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "device_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/param[@device_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/param[@ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L20]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "Dir_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/param[@Dir_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "Directory_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/param[@Directory_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clockrate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/param[@clockrate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "device_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/param[@device_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/param[@ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L2Directory0]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "L3_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/param[@L3_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clockrate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/param[@clockrate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "device_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/param[@device_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/param[@ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.L30]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "chip_coverage",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@chip_coverage]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clockrate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@clockrate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "flit_bits",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@flit_bits]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "has_global_link",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@has_global_link]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "horizontal_nodes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@horizontal_nodes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "input_buffer_entries_per_vc",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@input_buffer_entries_per_vc]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "input_ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@input_ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "link_latency",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@link_latency]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "link_throughput",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@link_throughput]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "output_ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@output_ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "vertical_nodes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@vertical_nodes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "virtual_channel_per_port",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/param[@virtual_channel_per_port]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.NoC0]/stat[@total_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "BTB_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.BTB]/param[@BTB_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ccache_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/param[@ccache_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dcache_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/param[@dcache_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_entries",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/param[@number_entries]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/stat[@total_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/stat[@total_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.icache]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "icache_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.icache]/param[@icache_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.icache]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.icache]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.icache]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_entries",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/param[@number_entries]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/stat[@total_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/stat[@total_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "chooser_predictor_bits",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@chooser_predictor_bits]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "chooser_predictor_entries",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@chooser_predictor_entries]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "global_predictor_bits",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@global_predictor_bits]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "global_predictor_entries",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@global_predictor_entries]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "local_predictor_entries",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@local_predictor_entries]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "local_predictor_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@local_predictor_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "sharedmemory_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/param[@sharedmemory_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "buffer_sizes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/param[@buffer_sizes]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "tcache_config",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/param[@tcache_config]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "conflicts",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@conflicts]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@read_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "read_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@read_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@write_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "write_misses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@write_misses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ALU_per_core",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@ALU_per_core]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FPU_per_core",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@FPU_per_core]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "LSU_order",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@LSU_order]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MUL_per_core",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@MUL_per_core]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "RAS_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@RAS_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ROB_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@ROB_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "archi_Regs_FRF_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@archi_Regs_FRF_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "archi_Regs_IRF_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@archi_Regs_IRF_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clock_rate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@clock_rate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "collector_units",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@collector_units]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "commit_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@commit_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "core_clock_ratio",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@core_clock_ratio]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "decode_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@decode_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "decoded_stream_buffer_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@decoded_stream_buffer_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fetch_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@fetch_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fp_instruction_window_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@fp_instruction_window_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fp_issue_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@fp_issue_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "instruction_buffer_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@instruction_buffer_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "instruction_length",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@instruction_length]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "instruction_window_scheme",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@instruction_window_scheme]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "instruction_window_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@instruction_window_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "issue_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@issue_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "load_buffer_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@load_buffer_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "machine_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@machine_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@memory_ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_hardware_threads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@number_hardware_threads]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_instruction_fetch_ports",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@number_instruction_fetch_ports]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "opcode_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@opcode_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "phy_Regs_FRF_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@phy_Regs_FRF_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "phy_Regs_IRF_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@phy_Regs_IRF_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "pipeline_depth",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@pipeline_depth]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "pipelines_per_core",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@pipelines_per_core]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "prediction_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@prediction_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "register_windows_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@register_windows_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "rename_scheme",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@rename_scheme]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "rf_banks",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@rf_banks]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "simd_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@simd_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "store_buffer_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@store_buffer_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "warp_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/param[@warp_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ALU_cdb_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@ALU_cdb_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ALU_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@ALU_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FPU_cdb_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@FPU_cdb_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FPU_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@FPU_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "IFU_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@IFU_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "LSU_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@LSU_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MUL_cdb_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@MUL_cdb_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MUL_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@MUL_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MemManU_D_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@MemManU_D_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MemManU_I_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@MemManU_I_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ROB_reads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@ROB_reads]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ROB_writes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@ROB_writes]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "branch_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@branch_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "branch_mispredictions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@branch_mispredictions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "busy_cycles",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@busy_cycles]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "cdb_alu_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@cdb_alu_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "cdb_fpu_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@cdb_fpu_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "cdb_mul_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@cdb_mul_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "committed_fp_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@committed_fp_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "committed_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@committed_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "committed_int_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@committed_int_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "context_switches",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@context_switches]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "float_regfile_reads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@float_regfile_reads]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "float_regfile_writes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@float_regfile_writes]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fp_inst_window_reads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@fp_inst_window_reads]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fp_inst_window_wakeup_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@fp_inst_window_wakeup_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fp_inst_window_writes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@fp_inst_window_writes]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fp_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@fp_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fp_rename_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@fp_rename_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "fpu_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@fpu_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "function_calls",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@function_calls]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "ialu_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@ialu_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "idle_cycles",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@idle_cycles]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "inst_window_reads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@inst_window_reads]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "inst_window_wakeup_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@inst_window_wakeup_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "inst_window_writes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@inst_window_writes]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "int_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@int_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "int_regfile_reads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@int_regfile_reads]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "int_regfile_writes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@int_regfile_writes]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "load_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@load_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "mul_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@mul_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "non_rf_operands",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@non_rf_operands]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "pipeline_duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@pipeline_duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "rename_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@rename_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "store_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@store_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_cycles",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@total_cycles]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_instructions",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.core0]/stat[@total_instructions]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_flashcs",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.flashc]/param[@number_flashcs]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "peak_transfer_rate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.flashc]/param[@peak_transfer_rate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.flashc]/param[@type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "withPHY",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.flashc]/param[@withPHY]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.flashc]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_load_perc",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.flashc]/stat[@total_load_perc]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "IO_buffer_size_per_channel",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@IO_buffer_size_per_channel]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "PRT_entries",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@PRT_entries]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "addressbus_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@addressbus_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "block_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@block_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "databus_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@databus_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_act_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_act_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_activity_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_activity_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_cmd_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_cmd_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_const_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_const_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_nop_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_nop_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_pre_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_pre_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_rd_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_rd_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_req_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_req_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "dram_wr_coeff",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@dram_wr_coeff]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "mc_clock",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@mc_clock]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_channels_per_mc",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@memory_channels_per_mc]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_mcs",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@number_mcs]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_ranks",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@number_ranks]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "peak_transfer_rate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@peak_transfer_rate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "req_window_size_per_channel",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@req_window_size_per_channel]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "withPHY",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/param[@withPHY]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/stat[@memory_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_reads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/stat[@memory_reads]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_writes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mc]/stat[@memory_writes]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "Block_width_of_DRAM_chip",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@Block_width_of_DRAM_chip]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "burstlength_of_DRAM_chip",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@burstlength_of_DRAM_chip]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "capacity_per_channel",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@capacity_per_channel]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "device_clock",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@device_clock]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "internal_prefetch_of_DRAM_chip",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@internal_prefetch_of_DRAM_chip]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "mem_tech_node",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@mem_tech_node]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "num_banks_of_DRAM_chip",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@num_banks_of_DRAM_chip]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_ranks",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@number_ranks]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "output_width_of_DRAM_chip",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@output_width_of_DRAM_chip]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "page_size_of_DRAM_chip",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@page_size_of_DRAM_chip]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "peak_transfer_rate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/param[@peak_transfer_rate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_accesses",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/stat[@memory_accesses]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_reads",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/stat[@memory_reads]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "memory_writes",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.mem]/stat[@memory_writes]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clockrate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.niu]/param[@clockrate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_units",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.niu]/param[@number_units]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.niu]/param[@type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.niu]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_load_perc",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.niu]/stat[@total_load_perc]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "clockrate",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.pcie]/param[@clockrate]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "num_channels",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.pcie]/param[@num_channels]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_units",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.pcie]/param[@number_units]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.pcie]/param[@type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "withPHY",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.pcie]/param[@withPHY]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "duty_cycle",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.pcie]/stat[@duty_cycle]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_load_perc",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/component[@system.pcie]/stat[@total_load_perc]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "CC_H",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@CC_H]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "CC_M",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@CC_M]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "DC_RH",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@DC_RH]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "DC_RM",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@DC_RM]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "DC_WH",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@DC_WH]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "DC_WM",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@DC_WM]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "DP_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@DP_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "DP_MUL_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@DP_MUL_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FP_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@FP_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FP_EXP_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@FP_EXP_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FP_INT",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@FP_INT]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FP_LG_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@FP_LG_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FP_MUL_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@FP_MUL_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FP_SIN_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@FP_SIN_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "FP_SQRT_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@FP_SQRT_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "GPU_Architecture",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@GPU_Architecture]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "IC_H",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@IC_H]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "IC_M",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@IC_M]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "IDLE_CORE_N",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@IDLE_CORE_N]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "INT_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@INT_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "INT_MUL_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@INT_MUL_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "L2_RH",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@L2_RH]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "L2_RM",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@L2_RM]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "L2_WH",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@L2_WH]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "L2_WM",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@L2_WM]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MEM_PRE",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@MEM_PRE]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MEM_RD",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@MEM_RD]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "MEM_WR",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@MEM_WR]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "NOC_A",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@NOC_A]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "PIPE_A",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@PIPE_A]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "REG_RD",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@REG_RD]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "REG_WR",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@REG_WR]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "SHRD_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@SHRD_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "TENSOR_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@TENSOR_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "TEX_ACC",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@TEX_ACC]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "TOT_INST",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@TOT_INST]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "architecture",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@architecture]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "constant_power",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@constant_power]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "core_tech_node",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@core_tech_node]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "device_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@device_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "homogeneous_L1Directorys",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@homogeneous_L1Directorys]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "homogeneous_L2Directorys",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@homogeneous_L2Directorys]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "homogeneous_L2s",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@homogeneous_L2s]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "homogeneous_L3s",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@homogeneous_L3s]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "homogeneous_NoCs",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@homogeneous_NoCs]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "homogeneous_ccs",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@homogeneous_ccs]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "homogeneous_cores",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@homogeneous_cores]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "idle_core_power",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@idle_core_power]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "interconnect_projection_type",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@interconnect_projection_type]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "longer_channel_device",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@longer_channel_device]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "machine_bits",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@machine_bits]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_cache_levels",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@number_cache_levels]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_of_L1Directories",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@number_of_L1Directories]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_of_L2Directories",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@number_of_L2Directories]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_of_L2s",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@number_of_L2s]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_of_L3s",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@number_of_L3s]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "number_of_NoCs",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@number_of_NoCs]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "physical_address_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@physical_address_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat1_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat1_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat1_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat1_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat2_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat2_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat2_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat2_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat3_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat3_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat3_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat3_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat4_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat4_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat4_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat4_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat5_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat5_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat5_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat5_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat6_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat6_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_cat6_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_cat6_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_geomean_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_geomean_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_geomean_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_geomean_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_intadd_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_intadd_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_intadd_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_intadd_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_intmul_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_intmul_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_intmul_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_intmul_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_l1_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_l1_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_l2_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_l2_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_light_addlane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_light_addlane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_light_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_light_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "static_shared_flane",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@static_shared_flane]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "virtual_address_width",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@virtual_address_width]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "virtual_memory_page_size",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/param[@virtual_memory_page_size]",
+          "source_type": "placeholder",
+          "tag": "param"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "busy_cycles",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/stat[@busy_cycles]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "idle_cycles",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/stat[@idle_cycles]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "num_idle_cores",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/stat[@num_idle_cores]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        },
+        {
+          "confidence": "bootstrap",
+          "name": "total_cycles",
+          "owner": "calibration_result",
+          "path": "component/component[@system]/stat[@total_cycles]",
+          "source_type": "placeholder",
+          "tag": "stat"
+        }
+      ],
+      "sha256": "177e324baadf409885c8e456338174caa855020cd12a666259a5b506b886a3e2",
+      "source_type": "placeholder"
+    }
+  }
+}

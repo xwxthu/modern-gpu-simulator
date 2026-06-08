@@ -1,0 +1,25 @@
+schema_version: 1
+profile: bootstrap
+description: >
+  Reproduce the current flat SM120 configs as generated compatibility outputs.
+  This profile preserves implicit simulator defaults and does not add
+  -power_simulation_enabled 0.
+required_outputs:
+  - gpgpusim.config
+  - trace.config
+  - config_ampere_islip.icnt
+  - accelwattch_sass_sim.xml
+  - manifest.yaml
+  - manifest.json
+golden_diff:
+  ignore_comments: true
+  ignore_blank_lines: true
+  compare_active_gpgpusim_options: true
+  compare_active_trace_options: true
+  compare_active_xml_params_and_stats: true
+  compare_icnt_non_comment_lines: true
+legacy_extra_params_policy: unmanifested_override
+limitations:
+  - Values are copied from current flat configs and are not new calibration results.
+  - Placeholder and inherited_from_5070ti provenance are allowed only for bootstrap/smoke compatibility.
+  - AccelWattch XML is copied for compatibility; power remains uncalibrated for RTX5060.

@@ -1,0 +1,19 @@
+schema_version: 1
+calibration_id: bootstrap-current-flat
+gpu: RTX5070_TI
+profile: bootstrap
+description: >
+  Bootstrap seed copied from current SM120_RTX5070_TI flat configs. This is not
+  a new calibration result.
+provenance_by_owner:
+  calibration_result:
+    source_type: placeholder
+    source_detail: Current flat SM120_RTX5070_TI config values.
+    confidence: bootstrap
+    replacement_stage: S5
+    replacement_plan: Replace timing/cache/memory/RF/PRT values with staged microbenchmark and targeted correlation results.
+xml_provenance:
+  source_type: placeholder
+  source_detail: Existing AccelWattch XML copied for compatibility.
+  confidence: bootstrap
+  notes: Power configuration is not validated by this profile.

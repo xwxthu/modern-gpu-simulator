@@ -1,0 +1,22 @@
+schema_version: 1
+layer_id: RTX5060
+owner: gpu_overlay
+config_name: SM120_RTX5060
+aliases:
+  - RTX5060
+  - SM120_RTX5060
+provenance_by_owner:
+  gpu_overlay:
+    source_type: placeholder
+    source_detail: Current flat SM120_RTX5060 config.
+    confidence: bootstrap
+    replacement_stage: S5
+    notes: >
+      SM count, memory partition count, and clocks are seeded from the current
+      smoke-ready flat config. Attach official-tool/device-query evidence before
+      treating these values as calibrated device facts.
+bootstrap_source_files:
+  gpgpusim_config: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/gpgpusim.config
+  trace_config: simulator-remodeled/gpu-simulator/configs/tested-cfgs/SM120_RTX5060/trace.config
+  accelwattch_xml: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/accelwattch_sass_sim.xml
+  icnt: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/config_ampere_islip.icnt

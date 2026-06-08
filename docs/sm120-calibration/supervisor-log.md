@@ -167,3 +167,38 @@ Follow-up:
 - Worker documented the behavior and ran an additional blank-context reviewer round.
 - Second supervisor reviewer `019ea701-f1aa-73e2-9f43-07f97fd0d478` returned `accept`.
 - Marked S3 complete and S4 ready to start in `overall-plan.md`.
+
+Checkpoint:
+- Commit `21853fa204f1cce3bde636705edf9b8e90051974` (`feat: add SM120 calibration prerequisites`) recorded the S3 prerequisite deliverable.
+
+### 2026-06-08 19:54:31 CST
+
+Action:
+- Spawned S4 generator worker `019ea706-5791-75d3-b320-c881bd8cdbc1`.
+
+Worker deliverables:
+- Layered SM120 bootstrap inputs under `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/`.
+- Trace render rules under `simulator-remodeled/gpu-simulator/configs/layered/sm120/`.
+- Generator script `simulator-remodeled/util/tuner/generate_sm120_configs.py`.
+- Generated bootstrap configs under mirrored `configs/generated/tested-cfgs/SM120_*` roots.
+- Generated job-launch aliases `RTX5060_SM120_GEN` and `RTX5070_TI_SM120_GEN`.
+- `docs/sm120-calibration/s4-config-generator.md`.
+- `docs/sm120-calibration/worker-logs/worker-20260608-195431-s4-generator.md`.
+
+Worker validation:
+- `generate_sm120_configs.py` generation and `--check-only`.
+- Python syntax check.
+- `git diff --check`.
+- Generated-output reproducibility hash diff.
+- Active golden equivalence checks for `gpgpusim.config` and `trace.config`.
+- Manifest spot checks for script/input hashes and provenance inventory.
+
+Supervisor review:
+- First supervisor reviewer `019ea723-fde3-79c0-a8db-c1a6def9dbb2` returned `changes-needed`.
+- Required fix: enforce path safety for overlay `config_name`, generated output roots, and flat source roots.
+
+Follow-up:
+- Worker added safe `config_name` validation, resolved-root output checks, and source-root validation for flat bootstrap files.
+- Worker added negative path tests and a third blank-context reviewer round.
+- Second supervisor reviewer `019ea733-bd29-7031-bd73-1a373a1fc693` returned `accept`.
+- Marked S4 complete and S5 ready to start in `overall-plan.md`.

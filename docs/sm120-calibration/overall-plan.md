@@ -24,7 +24,7 @@ Make the modern simulator maintainable as:
 | S1 | Complete | Audit current parameter/config/calibration surface | Produce a parameter taxonomy for SM120 configs and remodeled source constants; identify config-driven, hardcoded, measurable, and search-only parameters. |
 | S2 | Complete | Design SM120 configuration layering | Define `SM120_BASE` plus per-GPU overlay strategy; specify file layout and generation rules without breaking existing configs. |
 | S3 | Complete | Modernize calibration prerequisites | Plan and implement CUDA 13.2 / SM120 microbenchmark build support, `.venv`, and hardware collection interface using official tools. |
-| S4 | Not started | Extend tuner/config generation | Update tuner templates and parsing so it can generate complete modern SM120 configs, including remodeled parameters. |
+| S4 | Complete | Extend tuner/config generation | Update tuner templates and parsing so it can generate complete modern SM120 configs, including remodeled parameters. |
 | S5 | Not started | Add staged microbenchmark calibration | Add or adapt microbenchmarks and parsers for directly measurable parameters, with isolated tests where practical. |
 | S6 | Not started | Add targeted correlation search | Implement small, staged search for parameters not directly measurable, using simulator runs on the strong local server and hardware data from `dsp5060`. |
 | S7 | Not started | Validate on RTX5060 and preserve RTX5070Ti compatibility | Run smoke, calibration, and correlation checks; produce final configs/reports. |
@@ -32,9 +32,9 @@ Make the modern simulator maintainable as:
 
 ## Current Active Stage
 
-S4: Extend tuner/config generation.
+S5: Add staged microbenchmark calibration.
 
-S0 through S3 are complete. S4 is ready to start.
+S0 through S4 are complete. S5 is ready to start.
 
 ## Checkpoint Policy
 

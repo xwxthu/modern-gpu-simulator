@@ -1,0 +1,23 @@
+schema_version: 1
+calibration_id: bootstrap-current-flat
+gpu: RTX5060
+profile: bootstrap
+description: >
+  Bootstrap seed copied from current SM120_RTX5060 flat configs. Most timing,
+  memory, trace, and power values are inherited from the RTX5070 Ti baseline.
+provenance_by_owner:
+  calibration_result:
+    source_type: inherited_from_5070ti
+    source_device: RTX5070_TI
+    source_detail: Current flat SM120_RTX5060 config values derived from SM120_RTX5070_TI.
+    confidence: bootstrap
+    allowed_profiles: [bootstrap, smoke]
+    replacement_stage: S5
+    replacement_plan: Replace inherited values with RTX5060 measurements and targeted correlation results.
+xml_provenance:
+  source_type: inherited_from_5070ti
+  source_device: RTX5070_TI
+  source_detail: Existing RTX5060 XML explicitly states it was copied from SM120_RTX5070_TI.
+  confidence: bootstrap
+  allowed_profiles: [bootstrap, smoke]
+  notes: Do not use as calibrated RTX5060 power data.

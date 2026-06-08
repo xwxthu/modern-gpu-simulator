@@ -1,0 +1,19 @@
+schema_version: 1
+layer_id: SM120_BASE
+owner: sm120_base
+description: >
+  SM120 common architecture/model layer used by the bootstrap-current-flat MVP.
+  Exact active option ownership is defined in schema/sm120.schema.yaml.
+provenance_by_owner:
+  sm120_base:
+    source_type: manual_arch_model
+    source_detail: Current flat SM120 configs plus remodeled SM120 source model.
+    confidence: bootstrap
+    notes: >
+      This MVP records current model policy. It does not claim that every
+      hardcoded remodeled assumption has been independently validated.
+icnt_provenance:
+  source_type: manual_arch_model
+  source_detail: Copied current config_ampere_islip.icnt for directory compatibility.
+  confidence: bootstrap
+  notes: Current SM120 bootstrap configs select -network_mode 2 local xbar.

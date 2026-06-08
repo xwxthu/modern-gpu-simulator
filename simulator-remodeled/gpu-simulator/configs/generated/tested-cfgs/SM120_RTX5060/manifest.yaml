@@ -1,0 +1,3363 @@
+schema_version: 1
+generator:
+  script: simulator-remodeled/util/tuner/generate_sm120_configs.py
+  script_sha256: 67703b3d57c6653cadb58d110bc56aa3e1c95f3f1a74241a4cdfbbb148b085b2
+  command:
+  - simulator-remodeled/util/tuner/generate_sm120_configs.py
+  git_commit: 21853fa204f1cce3bde636705edf9b8e90051974
+  timestamp: '2026-06-08T11:37:11Z'
+repository:
+  root: /home/xiewx/accel-0608/modern-gpu-simulator
+  git_commit: 21853fa204f1cce3bde636705edf9b8e90051974
+  git_status_short_branch:
+  - '## dev-5060...origin/dev-5060 [ahead 4]'
+  - ' M docs/sm120-calibration/overall-plan.md'
+  - A  docs/sm120-calibration/s4-config-generator.md
+  - ' M docs/sm120-calibration/supervisor-log.md'
+  - A  docs/sm120-calibration/worker-logs/worker-20260608-195431-s4-generator.md
+  - A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/manifest.json
+  - A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/manifest.yaml
+  - A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/trace.config
+  - AM simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.json
+  - AM simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.yaml
+  - A  simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5070_TI/trace.config
+  - A  simulator-remodeled/gpu-simulator/configs/layered/sm120/trace-render-rules.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/accelwattch_sass_sim.xml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/config_ampere_islip.icnt
+  - AM simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/gpgpusim.config
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/manifest.json
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/manifest.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/accelwattch_sass_sim.xml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/config_ampere_islip.icnt
+  - AM simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config
+  - AM simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.json
+  - AM simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5070_TI/manifest.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/base/SM120_BASE.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/RTX5060/bootstrap-current-flat.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/RTX5070_TI/bootstrap-current-flat.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/overlays/RTX5060.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/overlays/RTX5070_TI.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/profiles/bootstrap.yaml
+  - A  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/sm120.schema.yaml
+  - M  simulator-remodeled/util/job_launching/configs/define-standard-cfgs.yml
+  - AM simulator-remodeled/util/tuner/generate_sm120_configs.py
+selection:
+  gpu: RTX5060
+  config_name: SM120_RTX5060
+  profile: bootstrap
+  calibration_id: bootstrap-current-flat
+  layers:
+  - SM120_BASE
+  - RTX5060
+  - bootstrap-current-flat
+  - bootstrap
+input_hashes_sha256:
+  simulator-remodeled/util/tuner/generate_sm120_configs.py: 67703b3d57c6653cadb58d110bc56aa3e1c95f3f1a74241a4cdfbbb148b085b2
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/sm120.schema.yaml: d44fb1539e5b64fd042931992c630b5dbed0501a785f901e2f88665cf3d822f0
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/profiles/bootstrap.yaml: fa8c8170bbf1550aaec07093a68ec64fd8ff687b69a33ec060f413fb61dbe3d1
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/base/SM120_BASE.yaml: 92cd4d51440f4f4aa8c18d460480f4bcb3d95d8fe43cf1af0afe35915c819b52
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/overlays/RTX5060.yaml: 3c6453cd9f9debf580bdff6a1d0926eda3096eeff8f392fdd6f9a84c6f4f9f9b
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/RTX5060/bootstrap-current-flat.yaml: 5333722e36c20b5ba2213ae0aa3e2408ff8c6d90e798c1a7e363c92ad9ebc8e4
+  simulator-remodeled/gpu-simulator/configs/layered/sm120/trace-render-rules.yaml: 8d30190e2080c85ca4a61b61d5326820dc42e2aedbefca081dbf8f5d9549f63a
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/gpgpusim.config: e10690b21acde5607f8141f06a87c5dec3cc87ba9c444d2fbb2d936a4db56cae
+  simulator-remodeled/gpu-simulator/configs/tested-cfgs/SM120_RTX5060/trace.config: a4d2d01079241db28ee3601c7a25adacdf64dd5a6656560fce893493ce77fbf1
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/accelwattch_sass_sim.xml: eff99f976b7df4b1ea834c75847d476f1a08c9a96cd421021df5ce59438e3d88
+  simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/config_ampere_islip.icnt: c5c5ed5c00ce40fe3a9878290c8eddd7aa040ecf29c1611720a0f0cc5c4d3bc8
+source_files:
+  gpgpusim_config: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/gpgpusim.config
+  trace_config: simulator-remodeled/gpu-simulator/configs/tested-cfgs/SM120_RTX5060/trace.config
+  accelwattch_xml: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/accelwattch_sass_sim.xml
+  icnt: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5060/config_ampere_islip.icnt
+outputs:
+  trace_config: simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/trace.config
+  manifest_yaml: simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/manifest.yaml
+  manifest_json: simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/manifest.json
+provenance:
+  sm120_base:
+    source_type: manual_arch_model
+    source_detail: Current flat SM120 configs plus remodeled SM120 source model.
+    confidence: bootstrap
+    notes: 'This MVP records current model policy. It does not claim that every hardcoded remodeled assumption has been independently
+      validated.
+
+      '
+  gpu_overlay:
+    source_type: placeholder
+    source_detail: Current flat SM120_RTX5060 config.
+    confidence: bootstrap
+    replacement_stage: S5
+    notes: 'SM count, memory partition count, and clocks are seeded from the current smoke-ready flat config. Attach official-tool/device-query
+      evidence before treating these values as calibrated device facts.
+
+      '
+  calibration_result:
+    source_type: inherited_from_5070ti
+    source_device: RTX5070_TI
+    source_detail: Current flat SM120_RTX5060 config values derived from SM120_RTX5070_TI.
+    confidence: bootstrap
+    allowed_profiles:
+    - bootstrap
+    - smoke
+    replacement_stage: S5
+    replacement_plan: Replace inherited values with RTX5060 measurements and targeted correlation results.
+  accelwattch_xml:
+    source_type: inherited_from_5070ti
+    source_device: RTX5070_TI
+    source_detail: Existing RTX5060 XML explicitly states it was copied from SM120_RTX5070_TI.
+    confidence: bootstrap
+    allowed_profiles:
+    - bootstrap
+    - smoke
+    notes: Do not use as calibrated RTX5060 power data.
+  icnt:
+    source_type: manual_arch_model
+    source_detail: Copied current config_ampere_islip.icnt for directory compatibility.
+    confidence: bootstrap
+    notes: Current SM120 bootstrap configs select -network_mode 2 local xbar.
+active_key_inventory:
+  gpgpusim.config:
+    count: 217
+    owners:
+      -branch_initiation: calibration_result
+      -branch_latency: calibration_result
+      -constant_cache_latency_at_sm_structure: calibration_result
+      -custom_omp_scheduler_ratio_to_dynamic: calibration_result
+      -dp_shared_intermidiate_stages: calibration_result
+      -dp_sm_shared_queue_size: calibration_result
+      -dp_subcore_max_latency: calibration_result
+      -dp_subcore_queue_size: calibration_result
+      -dram_bnk_indexing_policy: calibration_result
+      -dram_bnkgrp_indexing_policy: calibration_result
+      -dram_data_command_freq_ratio: gpu_overlay
+      -dram_dual_bus_interface: calibration_result
+      -dram_latency: calibration_result
+      -enable_ptx_file_line_stats: sm120_base
+      -fetch_decode_width: sm120_base
+      -filter_first_kernel_id: sm120_base
+      -filter_last_kernel_id: sm120_base
+      -gpgpu_TB_launch_latency: calibration_result
+      -gpgpu_adaptive_cache_config: sm120_base
+      -gpgpu_cache:dl1: calibration_result
+      -gpgpu_cache:dl2: calibration_result
+      -gpgpu_cache:dl2_texture_only: calibration_result
+      -gpgpu_cache:il0: sm120_base
+      -gpgpu_cache:il1: sm120_base
+      -gpgpu_clock_domains: gpu_overlay
+      -gpgpu_coalesce_arch: sm120_base
+      -gpgpu_compute_capability_major: sm120_base
+      -gpgpu_compute_capability_minor: sm120_base
+      -gpgpu_const_cache:l1: sm120_base
+      -gpgpu_dram_burst_length: gpu_overlay
+      -gpgpu_dram_buswidth: gpu_overlay
+      -gpgpu_dram_partition_queues: calibration_result
+      -gpgpu_dram_return_queue_size: calibration_result
+      -gpgpu_dram_scheduler: calibration_result
+      -gpgpu_dram_timing_opt: calibration_result
+      -gpgpu_dual_issue_diff_exec_units: calibration_result
+      -gpgpu_enable_specialized_operand_collector: sm120_base
+      -gpgpu_flush_l1_cache: sm120_base
+      -gpgpu_flush_l2_cache: sm120_base
+      -gpgpu_frfcfs_dram_sched_queue_size: calibration_result
+      -gpgpu_gmem_skip_L1D: sm120_base
+      -gpgpu_heap_size_limit: gpu_overlay
+      -gpgpu_inst_fetch_throughput: sm120_base
+      -gpgpu_kernel_launch_latency: calibration_result
+      -gpgpu_l1_banks: calibration_result
+      -gpgpu_l1_banks_hashing_function: calibration_result
+      -gpgpu_l1_cache_write_ratio: sm120_base
+      -gpgpu_l2_rop_latency: calibration_result
+      -gpgpu_max_concurrent_kernel: gpu_overlay
+      -gpgpu_max_insn_issue_per_warp: calibration_result
+      -gpgpu_mem_addr_mapping: calibration_result
+      -gpgpu_mem_address_mask: calibration_result
+      -gpgpu_memlatency_stat: sm120_base
+      -gpgpu_memory_partition_indexing: calibration_result
+      -gpgpu_n_cluster_ejection_buffer_size: calibration_result
+      -gpgpu_n_clusters: gpu_overlay
+      -gpgpu_n_cores_per_cluster: sm120_base
+      -gpgpu_n_mem: gpu_overlay
+      -gpgpu_n_mem_per_ctrlr: gpu_overlay
+      -gpgpu_n_sub_partition_per_mchannel: gpu_overlay
+      -gpgpu_num_int_units: sm120_base
+      -gpgpu_num_reg_banks: sm120_base
+      -gpgpu_num_sched_per_core: sm120_base
+      -gpgpu_num_sfu_units: sm120_base
+      -gpgpu_num_sp_units: sm120_base
+      -gpgpu_num_tensor_core_units: sm120_base
+      -gpgpu_occupancy_sm_number: sm120_base
+      -gpgpu_operand_collector_num_in_ports_gen: calibration_result
+      -gpgpu_operand_collector_num_out_ports_gen: calibration_result
+      -gpgpu_operand_collector_num_units_gen: calibration_result
+      -gpgpu_perf_sim_memcpy: calibration_result
+      -gpgpu_perfect_inst_const_cache: sm120_base
+      -gpgpu_pipeline_widths: sm120_base
+      -gpgpu_ptx_convert_to_ptxplus: sm120_base
+      -gpgpu_ptx_force_max_capability: sm120_base
+      -gpgpu_ptx_instruction_classification: sm120_base
+      -gpgpu_ptx_save_converted_ptxplus: sm120_base
+      -gpgpu_ptx_sim_mode: sm120_base
+      -gpgpu_reg_file_port_throughput: calibration_result
+      -gpgpu_registers_per_block: gpu_overlay
+      -gpgpu_runtime_pending_launch_count_limit: gpu_overlay
+      -gpgpu_runtime_stat: sm120_base
+      -gpgpu_runtime_sync_depth_limit: gpu_overlay
+      -gpgpu_scheduler: calibration_result
+      -gpgpu_shader_core_pipeline: sm120_base
+      -gpgpu_shader_cta: gpu_overlay
+      -gpgpu_shader_registers: gpu_overlay
+      -gpgpu_shmem_limited_broadcast: sm120_base
+      -gpgpu_shmem_num_banks: sm120_base
+      -gpgpu_shmem_option: calibration_result
+      -gpgpu_shmem_per_block: gpu_overlay
+      -gpgpu_shmem_size: gpu_overlay
+      -gpgpu_shmem_sizeDefault: gpu_overlay
+      -gpgpu_shmem_warp_parts: sm120_base
+      -gpgpu_simd_model: sm120_base
+      -gpgpu_stack_size_limit: gpu_overlay
+      -gpgpu_sub_core_model: sm120_base
+      -gpgpu_subcore_const_cache:l0: sm120_base
+      -gpgpu_tensor_core_avail: sm120_base
+      -gpgpu_tex_cache:l1: sm120_base
+      -gpgpu_unified_l1d_size: sm120_base
+      -half_initiation: calibration_result
+      -half_latency: calibration_result
+      -ibuffer_coalescing: sm120_base
+      -ibuffer_remodeled_size: calibration_result
+      -icnt_arbiter_algo: sm120_base
+      -icnt_flit_size: sm120_base
+      -icnt_in_buffer_limit: sm120_base
+      -icnt_out_buffer_limit: sm120_base
+      -icnt_subnets: sm120_base
+      -interwarp_coalescing_quanta: calibration_result
+      -interwarp_coalescing_quanta_warppool_policy_miss_ratio_threshold: calibration_result
+      -interwarp_coalescing_selection_policy_string: calibration_result
+      -invalidate_instruction_caches_at_kernel_end: sm120_base
+      -is_L0I_enabled: sm120_base
+      -is_SM_remodeling_enabled: sm120_base
+      -is_const_cache_accessed_blocks_tracking_enabled: sm120_base
+      -is_custom_omp_scheduler_enabled: sm120_base
+      -is_dp_pipeline_shared_for_subcores: sm120_base
+      -is_extra_traces_enabled: sm120_base
+      -is_fetch_and_decode_improved: sm120_base
+      -is_fp32_and_int_unified_pipeline: sm120_base
+      -is_fp32ops_allowed_in_int_pipeline: sm120_base
+      -is_global_memory_accesses_blocks_tracking_enabled: sm120_base
+      -is_ibuffer_remodeled_enabled: sm120_base
+      -is_instruction_prefetching_enabled: sm120_base
+      -is_interwarp_coalescing_enabled: calibration_result
+      -is_load_half_bandwidth_in_the_subcore_link_to_sm_enabled: calibration_result
+      -is_num_virtual_pages_tracking_enabled: sm120_base
+      -is_remodeling_scoreboarding_enabled: sm120_base
+      -is_rf_cache_enabled: calibration_result
+      -is_store_half_bandwidth_in_the_subcore_link_to_sm_enabled: calibration_result
+      -latency_L0_to_L1: calibration_result
+      -latency_L1_to_L0: calibration_result
+      -max_latency_regular_register_file_latency: calibration_result
+      -max_operands_regular_register_file: calibration_result
+      -max_pops_per_cycle_register_file_write_queue_for_fixed_latency_instructions: calibration_result
+      -max_reply_allowed_from_L1I: sm120_base
+      -max_request_allowed_to_L1I: sm120_base
+      -max_size_interwarp_coalescing_per_table: calibration_result
+      -max_size_register_file_write_queue_for_fixed_latency_instructions: calibration_result
+      -measure_coalescing_potential_stats: calibration_result
+      -memmory_max_concurrent_requests_shmem_per_sm: calibration_result
+      -memmory_max_concurrent_requests_standard_per_sm: calibration_result
+      -memory_global_shared_latency_for_ldgsts: calibration_result
+      -memory_intermidiate_stages_subcore_unit: calibration_result
+      -memory_l1d_max_lookups_per_cycle_per_bank: calibration_result
+      -memory_l1d_minimum_latency: calibration_result
+      -memory_maximum_coalescing_cycles: calibration_result
+      -memory_num_scalar_units_per_subcore: calibration_result
+      -memory_shared_memory_extra_latency_ldsm_multiple_matrix: calibration_result
+      -memory_shared_memory_minimum_latency: calibration_result
+      -memory_sm_prt_size: calibration_result
+      -memory_subcore_extra_latency_load_shared_mem: calibration_result
+      -memory_subcore_link_to_sm_byte_size: calibration_result
+      -memory_subcore_queue_size: calibration_result
+      -miscellaneous_no_queue_initiation: calibration_result
+      -miscellaneous_no_queue_latency: calibration_result
+      -miscellaneous_queue_initiation: calibration_result
+      -miscellaneous_queue_latency: calibration_result
+      -miscellaneous_queue_size: calibration_result
+      -network_mode: sm120_base
+      -num_const_cache_cycle_misses_before_switch_to_other_warp: calibration_result
+      -num_cycles_issue_port_busy_after_imadwide: calibration_result
+      -num_cycles_needed_to_write_a_reg_from_sm_struct_to_subcore: calibration_result
+      -num_cycles_to_stall_SM_at_cta_memory_barrier: calibration_result
+      -num_cycles_to_stall_SM_at_gpu_memory_barrier: calibration_result
+      -num_cycles_to_stall_SM_at_system_memory_barrier: calibration_result
+      -num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_dp_inst: calibration_result
+      -num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_mem_inst: calibration_result
+      -num_instruction_prefetches_per_cycle: calibration_result
+      -num_interwarp_coalescing_tables: calibration_result
+      -num_regular_register_file_read_ports_per_bank: calibration_result
+      -num_regular_register_file_write_ports_per_bank: calibration_result
+      -num_stall_cycles_wait_after_bits_stall_0_and_yield: calibration_result
+      -num_subcores_in_SM: sm120_base
+      -num_threads_granularity_read_regular_register_file_dp_inst: calibration_result
+      -num_threads_granularity_read_regular_register_file_mem_inst: calibration_result
+      -num_threads_granularity_read_regular_register_file_other_inst: calibration_result
+      -num_threads_granularity_read_regular_register_file_sfu_inst: calibration_result
+      -number_of_clusters_for_prt_selection: calibration_result
+      -number_of_coalescers: calibration_result
+      -offset_latency_firts_stage_memory_subcore: calibration_result
+      -perfect_constant_cache: sm120_base
+      -perfect_instruction_cache: sm120_base
+      -predicate_initiation: calibration_result
+      -predicate_latency: calibration_result
+      -prefetch_num_stream_buffers: calibration_result
+      -prefetch_per_stream_buffer_size: calibration_result
+      -prt_selection_policy_string: calibration_result
+      -ptx_opcode_initiation_dp: calibration_result
+      -ptx_opcode_initiation_fp: calibration_result
+      -ptx_opcode_initiation_int: calibration_result
+      -ptx_opcode_initiation_sfu: calibration_result
+      -ptx_opcode_initiation_tensor: calibration_result
+      -ptx_opcode_latency_dp: calibration_result
+      -ptx_opcode_latency_fp: calibration_result
+      -ptx_opcode_latency_int: calibration_result
+      -ptx_opcode_latency_sfu: calibration_result
+      -ptx_opcode_latency_tesnor: calibration_result
+      -scoreboard_war_dynamic_power: calibration_result
+      -scoreboard_war_max_uses_per_reg: calibration_result
+      -scoreboard_war_mode: calibration_result
+      -scoreboard_war_static_power: calibration_result
+      -sm_memory_unit_bypass_l1d_directly_go_to_l2_access_queue_size: calibration_result
+      -sm_memory_unit_l1c_access_queue_size: calibration_result
+      -sm_memory_unit_l1d_access_queue_size: calibration_result
+      -sm_memory_unit_l1t_access_queue_size: calibration_result
+      -sm_memory_unit_miscellaneous_access_queue_size: calibration_result
+      -sm_memory_unit_shmem_access_queue_size: calibration_result
+      -tensor_extra_latency_16816_fp32_1688_fp32: calibration_result
+      -tensor_latency: calibration_result
+      -tensor_rate_per_cycle: calibration_result
+      -uniform_initiation: calibration_result
+      -uniform_latency: calibration_result
+      -virtual_page_size_in_bytes: sm120_base
+      -visualizer_enabled: sm120_base
+    provenance_by_key:
+      -branch_initiation:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -branch_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -constant_cache_latency_at_sm_structure:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -custom_omp_scheduler_ratio_to_dynamic:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dp_shared_intermidiate_stages:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dp_sm_shared_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dp_subcore_max_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dp_subcore_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dram_bnk_indexing_policy:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dram_bnkgrp_indexing_policy:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dram_data_command_freq_ratio:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -dram_dual_bus_interface:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -dram_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -enable_ptx_file_line_stats:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -fetch_decode_width:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -filter_first_kernel_id:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -filter_last_kernel_id:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_TB_launch_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_adaptive_cache_config:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_cache:dl1:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_cache:dl2:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_cache:dl2_texture_only:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_cache:il0:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_cache:il1:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_clock_domains:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_coalesce_arch:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_compute_capability_major:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_compute_capability_minor:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_const_cache:l1:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_dram_burst_length:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_dram_buswidth:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_dram_partition_queues:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_dram_return_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_dram_scheduler:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_dram_timing_opt:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_dual_issue_diff_exec_units:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_enable_specialized_operand_collector:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_flush_l1_cache:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_flush_l2_cache:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_frfcfs_dram_sched_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_gmem_skip_L1D:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_heap_size_limit:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_inst_fetch_throughput:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_kernel_launch_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_l1_banks:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_l1_banks_hashing_function:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_l1_cache_write_ratio:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_l2_rop_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_max_concurrent_kernel:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_max_insn_issue_per_warp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_mem_addr_mapping:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_mem_address_mask:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_memlatency_stat:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_memory_partition_indexing:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_n_cluster_ejection_buffer_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_n_clusters:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_n_cores_per_cluster:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_n_mem:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_n_mem_per_ctrlr:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_n_sub_partition_per_mchannel:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_num_int_units:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_num_reg_banks:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_num_sched_per_core:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_num_sfu_units:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_num_sp_units:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_num_tensor_core_units:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_occupancy_sm_number:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_operand_collector_num_in_ports_gen:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_operand_collector_num_out_ports_gen:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_operand_collector_num_units_gen:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_perf_sim_memcpy:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_perfect_inst_const_cache:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_pipeline_widths:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_ptx_convert_to_ptxplus:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_ptx_force_max_capability:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_ptx_instruction_classification:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_ptx_save_converted_ptxplus:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_ptx_sim_mode:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_reg_file_port_throughput:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_registers_per_block:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_runtime_pending_launch_count_limit:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_runtime_stat:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_runtime_sync_depth_limit:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_scheduler:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_shader_core_pipeline:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_shader_cta:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_shader_registers:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_shmem_limited_broadcast:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_shmem_num_banks:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_shmem_option:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -gpgpu_shmem_per_block:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_shmem_size:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_shmem_sizeDefault:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_shmem_warp_parts:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_simd_model:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_stack_size_limit:
+        owner: gpu_overlay
+        source_type: placeholder
+        confidence: bootstrap
+      -gpgpu_sub_core_model:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_subcore_const_cache:l0:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_tensor_core_avail:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_tex_cache:l1:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -gpgpu_unified_l1d_size:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -half_initiation:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -half_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ibuffer_coalescing:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -ibuffer_remodeled_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -icnt_arbiter_algo:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -icnt_flit_size:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -icnt_in_buffer_limit:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -icnt_out_buffer_limit:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -icnt_subnets:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -interwarp_coalescing_quanta:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -interwarp_coalescing_quanta_warppool_policy_miss_ratio_threshold:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -interwarp_coalescing_selection_policy_string:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -invalidate_instruction_caches_at_kernel_end:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_L0I_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_SM_remodeling_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_const_cache_accessed_blocks_tracking_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_custom_omp_scheduler_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_dp_pipeline_shared_for_subcores:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_extra_traces_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_fetch_and_decode_improved:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_fp32_and_int_unified_pipeline:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_fp32ops_allowed_in_int_pipeline:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_global_memory_accesses_blocks_tracking_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_ibuffer_remodeled_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_instruction_prefetching_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_interwarp_coalescing_enabled:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -is_load_half_bandwidth_in_the_subcore_link_to_sm_enabled:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -is_num_virtual_pages_tracking_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_remodeling_scoreboarding_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -is_rf_cache_enabled:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -is_store_half_bandwidth_in_the_subcore_link_to_sm_enabled:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -latency_L0_to_L1:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -latency_L1_to_L0:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -max_latency_regular_register_file_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -max_operands_regular_register_file:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -max_pops_per_cycle_register_file_write_queue_for_fixed_latency_instructions:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -max_reply_allowed_from_L1I:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -max_request_allowed_to_L1I:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -max_size_interwarp_coalescing_per_table:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -max_size_register_file_write_queue_for_fixed_latency_instructions:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -measure_coalescing_potential_stats:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memmory_max_concurrent_requests_shmem_per_sm:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memmory_max_concurrent_requests_standard_per_sm:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_global_shared_latency_for_ldgsts:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_intermidiate_stages_subcore_unit:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_l1d_max_lookups_per_cycle_per_bank:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_l1d_minimum_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_maximum_coalescing_cycles:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_num_scalar_units_per_subcore:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_shared_memory_extra_latency_ldsm_multiple_matrix:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_shared_memory_minimum_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_sm_prt_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_subcore_extra_latency_load_shared_mem:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_subcore_link_to_sm_byte_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -memory_subcore_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -miscellaneous_no_queue_initiation:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -miscellaneous_no_queue_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -miscellaneous_queue_initiation:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -miscellaneous_queue_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -miscellaneous_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -network_mode:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -num_const_cache_cycle_misses_before_switch_to_other_warp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_cycles_issue_port_busy_after_imadwide:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_cycles_needed_to_write_a_reg_from_sm_struct_to_subcore:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_cycles_to_stall_SM_at_cta_memory_barrier:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_cycles_to_stall_SM_at_gpu_memory_barrier:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_cycles_to_stall_SM_at_system_memory_barrier:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_dp_inst:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_cycles_to_wait_to_dispatch_another_inst_from_subcore_to_sm_shared_pipeline_when_is_mem_inst:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_instruction_prefetches_per_cycle:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_interwarp_coalescing_tables:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_regular_register_file_read_ports_per_bank:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_regular_register_file_write_ports_per_bank:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_stall_cycles_wait_after_bits_stall_0_and_yield:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_subcores_in_SM:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -num_threads_granularity_read_regular_register_file_dp_inst:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_threads_granularity_read_regular_register_file_mem_inst:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_threads_granularity_read_regular_register_file_other_inst:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -num_threads_granularity_read_regular_register_file_sfu_inst:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -number_of_clusters_for_prt_selection:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -number_of_coalescers:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -offset_latency_firts_stage_memory_subcore:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -perfect_constant_cache:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -perfect_instruction_cache:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -predicate_initiation:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -predicate_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -prefetch_num_stream_buffers:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -prefetch_per_stream_buffer_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -prt_selection_policy_string:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_initiation_dp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_initiation_fp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_initiation_int:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_initiation_sfu:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_initiation_tensor:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_latency_dp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_latency_fp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_latency_int:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_latency_sfu:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -ptx_opcode_latency_tesnor:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -scoreboard_war_dynamic_power:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -scoreboard_war_max_uses_per_reg:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -scoreboard_war_mode:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -scoreboard_war_static_power:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -sm_memory_unit_bypass_l1d_directly_go_to_l2_access_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -sm_memory_unit_l1c_access_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -sm_memory_unit_l1d_access_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -sm_memory_unit_l1t_access_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -sm_memory_unit_miscellaneous_access_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -sm_memory_unit_shmem_access_queue_size:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -tensor_extra_latency_16816_fp32_1688_fp32:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -tensor_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -tensor_rate_per_cycle:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -uniform_initiation:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -uniform_latency:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -virtual_page_size_in_bytes:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+      -visualizer_enabled:
+        owner: sm120_base
+        source_type: manual_arch_model
+        confidence: bootstrap
+  trace.config:
+    count: 13
+    owners:
+      -specialized_unit_2: calibration_result
+      -trace_opcode_latency_initiation_branch: calibration_result
+      -trace_opcode_latency_initiation_dp: calibration_result
+      -trace_opcode_latency_initiation_half: calibration_result
+      -trace_opcode_latency_initiation_int: calibration_result
+      -trace_opcode_latency_initiation_miscellaneous_no_queue: calibration_result
+      -trace_opcode_latency_initiation_miscellaneous_queue: calibration_result
+      -trace_opcode_latency_initiation_predicate: calibration_result
+      -trace_opcode_latency_initiation_sfu: calibration_result
+      -trace_opcode_latency_initiation_sp: calibration_result
+      -trace_opcode_latency_initiation_spec_op_2: calibration_result
+      -trace_opcode_latency_initiation_tensor: calibration_result
+      -trace_opcode_latency_initiation_uniform: calibration_result
+    provenance_by_key:
+      -specialized_unit_2:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_branch:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_dp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_half:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_int:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_miscellaneous_no_queue:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_miscellaneous_queue:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_predicate:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_sfu:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_sp:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_spec_op_2:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_tensor:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+      -trace_opcode_latency_initiation_uniform:
+        owner: calibration_result
+        source_type: inherited_from_5070ti
+        confidence: bootstrap
+xml_inventory:
+  accelwattch_sass_sim.xml:
+    active_param_or_stat_count: 339
+    owner: calibration_result
+    source_type: inherited_from_5070ti
+    sha256: 3cc4266f5e9adf70b7334003ca8c3e5a798bcc65b4bcbd4a90c3f019bbe16f45
+    provenance_items:
+    - path: component/component[@system]/component[@system.L1Directory0]/param[@Dir_config]
+      tag: param
+      name: Dir_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/param[@Directory_type]
+      tag: param
+      name: Directory_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/param[@clockrate]
+      tag: param
+      name: clockrate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/param[@device_type]
+      tag: param
+      name: device_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/param[@ports]
+      tag: param
+      name: ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L1Directory0]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/param[@L2_config]
+      tag: param
+      name: L2_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/param[@clockrate]
+      tag: param
+      name: clockrate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/param[@device_type]
+      tag: param
+      name: device_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/param[@ports]
+      tag: param
+      name: ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L20]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/param[@Dir_config]
+      tag: param
+      name: Dir_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/param[@Directory_type]
+      tag: param
+      name: Directory_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/param[@clockrate]
+      tag: param
+      name: clockrate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/param[@device_type]
+      tag: param
+      name: device_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/param[@ports]
+      tag: param
+      name: ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L2Directory0]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/param[@L3_config]
+      tag: param
+      name: L3_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/param[@clockrate]
+      tag: param
+      name: clockrate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/param[@device_type]
+      tag: param
+      name: device_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/param[@ports]
+      tag: param
+      name: ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.L30]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@chip_coverage]
+      tag: param
+      name: chip_coverage
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@clockrate]
+      tag: param
+      name: clockrate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@flit_bits]
+      tag: param
+      name: flit_bits
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@has_global_link]
+      tag: param
+      name: has_global_link
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@horizontal_nodes]
+      tag: param
+      name: horizontal_nodes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@input_buffer_entries_per_vc]
+      tag: param
+      name: input_buffer_entries_per_vc
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@input_ports]
+      tag: param
+      name: input_ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@link_latency]
+      tag: param
+      name: link_latency
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@link_throughput]
+      tag: param
+      name: link_throughput
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@output_ports]
+      tag: param
+      name: output_ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@type]
+      tag: param
+      name: type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@vertical_nodes]
+      tag: param
+      name: vertical_nodes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/param[@virtual_channel_per_port]
+      tag: param
+      name: virtual_channel_per_port
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.NoC0]/stat[@total_accesses]
+      tag: stat
+      name: total_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.BTB]/param[@BTB_config]
+      tag: param
+      name: BTB_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/param[@ccache_config]
+      tag: param
+      name: ccache_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.ccache]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/param[@dcache_config]
+      tag: param
+      name: dcache_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dcache]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/param[@number_entries]
+      tag: param
+      name: number_entries
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/stat[@total_accesses]
+      tag: stat
+      name: total_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.dtlb]/stat[@total_misses]
+      tag: stat
+      name: total_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.icache]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.icache]/param[@icache_config]
+      tag: param
+      name: icache_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.icache]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.icache]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.icache]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/param[@number_entries]
+      tag: param
+      name: number_entries
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/stat[@total_accesses]
+      tag: stat
+      name: total_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.itlb]/stat[@total_misses]
+      tag: stat
+      name: total_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@chooser_predictor_bits]
+      tag: param
+      name: chooser_predictor_bits
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@chooser_predictor_entries]
+      tag: param
+      name: chooser_predictor_entries
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@global_predictor_bits]
+      tag: param
+      name: global_predictor_bits
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@global_predictor_entries]
+      tag: param
+      name: global_predictor_entries
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@local_predictor_entries]
+      tag: param
+      name: local_predictor_entries
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.predictor]/param[@local_predictor_size]
+      tag: param
+      name: local_predictor_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/param[@sharedmemory_config]
+      tag: param
+      name: sharedmemory_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.sharedmemory]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/param[@buffer_sizes]
+      tag: param
+      name: buffer_sizes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/param[@tcache_config]
+      tag: param
+      name: tcache_config
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@conflicts]
+      tag: stat
+      name: conflicts
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@read_accesses]
+      tag: stat
+      name: read_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@read_misses]
+      tag: stat
+      name: read_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@write_accesses]
+      tag: stat
+      name: write_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/component[@system.core0.tcache]/stat[@write_misses]
+      tag: stat
+      name: write_misses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@ALU_per_core]
+      tag: param
+      name: ALU_per_core
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@FPU_per_core]
+      tag: param
+      name: FPU_per_core
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@LSU_order]
+      tag: param
+      name: LSU_order
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@MUL_per_core]
+      tag: param
+      name: MUL_per_core
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@RAS_size]
+      tag: param
+      name: RAS_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@ROB_size]
+      tag: param
+      name: ROB_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@archi_Regs_FRF_size]
+      tag: param
+      name: archi_Regs_FRF_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@archi_Regs_IRF_size]
+      tag: param
+      name: archi_Regs_IRF_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@clock_rate]
+      tag: param
+      name: clock_rate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@collector_units]
+      tag: param
+      name: collector_units
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@commit_width]
+      tag: param
+      name: commit_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@core_clock_ratio]
+      tag: param
+      name: core_clock_ratio
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@decode_width]
+      tag: param
+      name: decode_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@decoded_stream_buffer_size]
+      tag: param
+      name: decoded_stream_buffer_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@fetch_width]
+      tag: param
+      name: fetch_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@fp_instruction_window_size]
+      tag: param
+      name: fp_instruction_window_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@fp_issue_width]
+      tag: param
+      name: fp_issue_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@instruction_buffer_size]
+      tag: param
+      name: instruction_buffer_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@instruction_length]
+      tag: param
+      name: instruction_length
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@instruction_window_scheme]
+      tag: param
+      name: instruction_window_scheme
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@instruction_window_size]
+      tag: param
+      name: instruction_window_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@issue_width]
+      tag: param
+      name: issue_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@load_buffer_size]
+      tag: param
+      name: load_buffer_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@machine_type]
+      tag: param
+      name: machine_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@memory_ports]
+      tag: param
+      name: memory_ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@number_hardware_threads]
+      tag: param
+      name: number_hardware_threads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@number_instruction_fetch_ports]
+      tag: param
+      name: number_instruction_fetch_ports
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@opcode_width]
+      tag: param
+      name: opcode_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@phy_Regs_FRF_size]
+      tag: param
+      name: phy_Regs_FRF_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@phy_Regs_IRF_size]
+      tag: param
+      name: phy_Regs_IRF_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@pipeline_depth]
+      tag: param
+      name: pipeline_depth
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@pipelines_per_core]
+      tag: param
+      name: pipelines_per_core
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@prediction_width]
+      tag: param
+      name: prediction_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@register_windows_size]
+      tag: param
+      name: register_windows_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@rename_scheme]
+      tag: param
+      name: rename_scheme
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@rf_banks]
+      tag: param
+      name: rf_banks
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@simd_width]
+      tag: param
+      name: simd_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@store_buffer_size]
+      tag: param
+      name: store_buffer_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/param[@warp_size]
+      tag: param
+      name: warp_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@ALU_cdb_duty_cycle]
+      tag: stat
+      name: ALU_cdb_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@ALU_duty_cycle]
+      tag: stat
+      name: ALU_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@FPU_cdb_duty_cycle]
+      tag: stat
+      name: FPU_cdb_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@FPU_duty_cycle]
+      tag: stat
+      name: FPU_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@IFU_duty_cycle]
+      tag: stat
+      name: IFU_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@LSU_duty_cycle]
+      tag: stat
+      name: LSU_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@MUL_cdb_duty_cycle]
+      tag: stat
+      name: MUL_cdb_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@MUL_duty_cycle]
+      tag: stat
+      name: MUL_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@MemManU_D_duty_cycle]
+      tag: stat
+      name: MemManU_D_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@MemManU_I_duty_cycle]
+      tag: stat
+      name: MemManU_I_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@ROB_reads]
+      tag: stat
+      name: ROB_reads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@ROB_writes]
+      tag: stat
+      name: ROB_writes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@branch_instructions]
+      tag: stat
+      name: branch_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@branch_mispredictions]
+      tag: stat
+      name: branch_mispredictions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@busy_cycles]
+      tag: stat
+      name: busy_cycles
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@cdb_alu_accesses]
+      tag: stat
+      name: cdb_alu_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@cdb_fpu_accesses]
+      tag: stat
+      name: cdb_fpu_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@cdb_mul_accesses]
+      tag: stat
+      name: cdb_mul_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@committed_fp_instructions]
+      tag: stat
+      name: committed_fp_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@committed_instructions]
+      tag: stat
+      name: committed_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@committed_int_instructions]
+      tag: stat
+      name: committed_int_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@context_switches]
+      tag: stat
+      name: context_switches
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@float_regfile_reads]
+      tag: stat
+      name: float_regfile_reads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@float_regfile_writes]
+      tag: stat
+      name: float_regfile_writes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@fp_inst_window_reads]
+      tag: stat
+      name: fp_inst_window_reads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@fp_inst_window_wakeup_accesses]
+      tag: stat
+      name: fp_inst_window_wakeup_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@fp_inst_window_writes]
+      tag: stat
+      name: fp_inst_window_writes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@fp_instructions]
+      tag: stat
+      name: fp_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@fp_rename_accesses]
+      tag: stat
+      name: fp_rename_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@fpu_accesses]
+      tag: stat
+      name: fpu_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@function_calls]
+      tag: stat
+      name: function_calls
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@ialu_accesses]
+      tag: stat
+      name: ialu_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@idle_cycles]
+      tag: stat
+      name: idle_cycles
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@inst_window_reads]
+      tag: stat
+      name: inst_window_reads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@inst_window_wakeup_accesses]
+      tag: stat
+      name: inst_window_wakeup_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@inst_window_writes]
+      tag: stat
+      name: inst_window_writes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@int_instructions]
+      tag: stat
+      name: int_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@int_regfile_reads]
+      tag: stat
+      name: int_regfile_reads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@int_regfile_writes]
+      tag: stat
+      name: int_regfile_writes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@load_instructions]
+      tag: stat
+      name: load_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@mul_accesses]
+      tag: stat
+      name: mul_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@non_rf_operands]
+      tag: stat
+      name: non_rf_operands
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@pipeline_duty_cycle]
+      tag: stat
+      name: pipeline_duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@rename_accesses]
+      tag: stat
+      name: rename_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@store_instructions]
+      tag: stat
+      name: store_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@total_cycles]
+      tag: stat
+      name: total_cycles
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.core0]/stat[@total_instructions]
+      tag: stat
+      name: total_instructions
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.flashc]/param[@number_flashcs]
+      tag: param
+      name: number_flashcs
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.flashc]/param[@peak_transfer_rate]
+      tag: param
+      name: peak_transfer_rate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.flashc]/param[@type]
+      tag: param
+      name: type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.flashc]/param[@withPHY]
+      tag: param
+      name: withPHY
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.flashc]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.flashc]/stat[@total_load_perc]
+      tag: stat
+      name: total_load_perc
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@IO_buffer_size_per_channel]
+      tag: param
+      name: IO_buffer_size_per_channel
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@PRT_entries]
+      tag: param
+      name: PRT_entries
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@addressbus_width]
+      tag: param
+      name: addressbus_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@block_size]
+      tag: param
+      name: block_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@databus_width]
+      tag: param
+      name: databus_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_act_coeff]
+      tag: param
+      name: dram_act_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_activity_coeff]
+      tag: param
+      name: dram_activity_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_cmd_coeff]
+      tag: param
+      name: dram_cmd_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_const_coeff]
+      tag: param
+      name: dram_const_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_nop_coeff]
+      tag: param
+      name: dram_nop_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_pre_coeff]
+      tag: param
+      name: dram_pre_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_rd_coeff]
+      tag: param
+      name: dram_rd_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_req_coeff]
+      tag: param
+      name: dram_req_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@dram_wr_coeff]
+      tag: param
+      name: dram_wr_coeff
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@mc_clock]
+      tag: param
+      name: mc_clock
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@memory_channels_per_mc]
+      tag: param
+      name: memory_channels_per_mc
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@number_mcs]
+      tag: param
+      name: number_mcs
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@number_ranks]
+      tag: param
+      name: number_ranks
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@peak_transfer_rate]
+      tag: param
+      name: peak_transfer_rate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@req_window_size_per_channel]
+      tag: param
+      name: req_window_size_per_channel
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@type]
+      tag: param
+      name: type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/param[@withPHY]
+      tag: param
+      name: withPHY
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/stat[@memory_accesses]
+      tag: stat
+      name: memory_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/stat[@memory_reads]
+      tag: stat
+      name: memory_reads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mc]/stat[@memory_writes]
+      tag: stat
+      name: memory_writes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@Block_width_of_DRAM_chip]
+      tag: param
+      name: Block_width_of_DRAM_chip
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@burstlength_of_DRAM_chip]
+      tag: param
+      name: burstlength_of_DRAM_chip
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@capacity_per_channel]
+      tag: param
+      name: capacity_per_channel
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@device_clock]
+      tag: param
+      name: device_clock
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@internal_prefetch_of_DRAM_chip]
+      tag: param
+      name: internal_prefetch_of_DRAM_chip
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@mem_tech_node]
+      tag: param
+      name: mem_tech_node
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@num_banks_of_DRAM_chip]
+      tag: param
+      name: num_banks_of_DRAM_chip
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@number_ranks]
+      tag: param
+      name: number_ranks
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@output_width_of_DRAM_chip]
+      tag: param
+      name: output_width_of_DRAM_chip
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@page_size_of_DRAM_chip]
+      tag: param
+      name: page_size_of_DRAM_chip
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/param[@peak_transfer_rate]
+      tag: param
+      name: peak_transfer_rate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/stat[@memory_accesses]
+      tag: stat
+      name: memory_accesses
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/stat[@memory_reads]
+      tag: stat
+      name: memory_reads
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.mem]/stat[@memory_writes]
+      tag: stat
+      name: memory_writes
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.niu]/param[@clockrate]
+      tag: param
+      name: clockrate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.niu]/param[@number_units]
+      tag: param
+      name: number_units
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.niu]/param[@type]
+      tag: param
+      name: type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.niu]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.niu]/stat[@total_load_perc]
+      tag: stat
+      name: total_load_perc
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.pcie]/param[@clockrate]
+      tag: param
+      name: clockrate
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.pcie]/param[@num_channels]
+      tag: param
+      name: num_channels
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.pcie]/param[@number_units]
+      tag: param
+      name: number_units
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.pcie]/param[@type]
+      tag: param
+      name: type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.pcie]/param[@withPHY]
+      tag: param
+      name: withPHY
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.pcie]/stat[@duty_cycle]
+      tag: stat
+      name: duty_cycle
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/component[@system.pcie]/stat[@total_load_perc]
+      tag: stat
+      name: total_load_perc
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@CC_H]
+      tag: param
+      name: CC_H
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@CC_M]
+      tag: param
+      name: CC_M
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@DC_RH]
+      tag: param
+      name: DC_RH
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@DC_RM]
+      tag: param
+      name: DC_RM
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@DC_WH]
+      tag: param
+      name: DC_WH
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@DC_WM]
+      tag: param
+      name: DC_WM
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@DP_ACC]
+      tag: param
+      name: DP_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@DP_MUL_ACC]
+      tag: param
+      name: DP_MUL_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@FP_ACC]
+      tag: param
+      name: FP_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@FP_EXP_ACC]
+      tag: param
+      name: FP_EXP_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@FP_INT]
+      tag: param
+      name: FP_INT
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@FP_LG_ACC]
+      tag: param
+      name: FP_LG_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@FP_MUL_ACC]
+      tag: param
+      name: FP_MUL_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@FP_SIN_ACC]
+      tag: param
+      name: FP_SIN_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@FP_SQRT_ACC]
+      tag: param
+      name: FP_SQRT_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@GPU_Architecture]
+      tag: param
+      name: GPU_Architecture
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@IC_H]
+      tag: param
+      name: IC_H
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@IC_M]
+      tag: param
+      name: IC_M
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@IDLE_CORE_N]
+      tag: param
+      name: IDLE_CORE_N
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@INT_ACC]
+      tag: param
+      name: INT_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@INT_MUL_ACC]
+      tag: param
+      name: INT_MUL_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@L2_RH]
+      tag: param
+      name: L2_RH
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@L2_RM]
+      tag: param
+      name: L2_RM
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@L2_WH]
+      tag: param
+      name: L2_WH
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@L2_WM]
+      tag: param
+      name: L2_WM
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@MEM_PRE]
+      tag: param
+      name: MEM_PRE
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@MEM_RD]
+      tag: param
+      name: MEM_RD
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@MEM_WR]
+      tag: param
+      name: MEM_WR
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@NOC_A]
+      tag: param
+      name: NOC_A
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@PIPE_A]
+      tag: param
+      name: PIPE_A
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@REG_RD]
+      tag: param
+      name: REG_RD
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@REG_WR]
+      tag: param
+      name: REG_WR
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@SHRD_ACC]
+      tag: param
+      name: SHRD_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@TENSOR_ACC]
+      tag: param
+      name: TENSOR_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@TEX_ACC]
+      tag: param
+      name: TEX_ACC
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@TOT_INST]
+      tag: param
+      name: TOT_INST
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@architecture]
+      tag: param
+      name: architecture
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@constant_power]
+      tag: param
+      name: constant_power
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@core_tech_node]
+      tag: param
+      name: core_tech_node
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@device_type]
+      tag: param
+      name: device_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@homogeneous_L1Directorys]
+      tag: param
+      name: homogeneous_L1Directorys
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@homogeneous_L2Directorys]
+      tag: param
+      name: homogeneous_L2Directorys
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@homogeneous_L2s]
+      tag: param
+      name: homogeneous_L2s
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@homogeneous_L3s]
+      tag: param
+      name: homogeneous_L3s
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@homogeneous_NoCs]
+      tag: param
+      name: homogeneous_NoCs
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@homogeneous_ccs]
+      tag: param
+      name: homogeneous_ccs
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@homogeneous_cores]
+      tag: param
+      name: homogeneous_cores
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@idle_core_power]
+      tag: param
+      name: idle_core_power
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@interconnect_projection_type]
+      tag: param
+      name: interconnect_projection_type
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@longer_channel_device]
+      tag: param
+      name: longer_channel_device
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@machine_bits]
+      tag: param
+      name: machine_bits
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@number_cache_levels]
+      tag: param
+      name: number_cache_levels
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@number_of_L1Directories]
+      tag: param
+      name: number_of_L1Directories
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@number_of_L2Directories]
+      tag: param
+      name: number_of_L2Directories
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@number_of_L2s]
+      tag: param
+      name: number_of_L2s
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@number_of_L3s]
+      tag: param
+      name: number_of_L3s
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@number_of_NoCs]
+      tag: param
+      name: number_of_NoCs
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@physical_address_width]
+      tag: param
+      name: physical_address_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat1_addlane]
+      tag: param
+      name: static_cat1_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat1_flane]
+      tag: param
+      name: static_cat1_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat2_addlane]
+      tag: param
+      name: static_cat2_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat2_flane]
+      tag: param
+      name: static_cat2_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat3_addlane]
+      tag: param
+      name: static_cat3_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat3_flane]
+      tag: param
+      name: static_cat3_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat4_addlane]
+      tag: param
+      name: static_cat4_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat4_flane]
+      tag: param
+      name: static_cat4_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat5_addlane]
+      tag: param
+      name: static_cat5_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat5_flane]
+      tag: param
+      name: static_cat5_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat6_addlane]
+      tag: param
+      name: static_cat6_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_cat6_flane]
+      tag: param
+      name: static_cat6_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_geomean_addlane]
+      tag: param
+      name: static_geomean_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_geomean_flane]
+      tag: param
+      name: static_geomean_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_intadd_addlane]
+      tag: param
+      name: static_intadd_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_intadd_flane]
+      tag: param
+      name: static_intadd_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_intmul_addlane]
+      tag: param
+      name: static_intmul_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_intmul_flane]
+      tag: param
+      name: static_intmul_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_l1_flane]
+      tag: param
+      name: static_l1_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_l2_flane]
+      tag: param
+      name: static_l2_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_light_addlane]
+      tag: param
+      name: static_light_addlane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_light_flane]
+      tag: param
+      name: static_light_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@static_shared_flane]
+      tag: param
+      name: static_shared_flane
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@virtual_address_width]
+      tag: param
+      name: virtual_address_width
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/param[@virtual_memory_page_size]
+      tag: param
+      name: virtual_memory_page_size
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/stat[@busy_cycles]
+      tag: stat
+      name: busy_cycles
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/stat[@idle_cycles]
+      tag: stat
+      name: idle_cycles
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/stat[@num_idle_cores]
+      tag: stat
+      name: num_idle_cores
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+    - path: component/component[@system]/stat[@total_cycles]
+      tag: stat
+      name: total_cycles
+      owner: calibration_result
+      source_type: inherited_from_5070ti
+      confidence: bootstrap
+icnt_inventory:
+  config_ampere_islip.icnt:
+    owner: sm120_base
+    active_with_current_bootstrap: false
+    network_mode: '2'
+    sha256: 3796695c663983ca84dd3f1bc8cc0326a5330206afa09cb2d399777c6310d99c
+validations:
+  active_key_coverage: pass
+  owner_profile_policy: pass
+  golden_bootstrap_active_diff: pass
+  golden_xml_inventory_diff: pass
+  golden_icnt_non_comment_diff: pass
+  mirrored_trace_path: pass
+  bootstrap_implicit_power_default: not_rendered
+  latency_groups:
+  - group: branch
+    latency: '2'
+    initiation: '1'
+    policy: same_value
+  - group: half
+    latency: '3'
+    initiation: '2'
+    policy: same_value
+  - group: uniform
+    latency: '2'
+    initiation: '2'
+    policy: same_value
+  - group: predicate
+    latency: '13'
+    initiation: '2'
+    policy: same_value
+  - group: miscellaneous_queue
+    latency: '2'
+    initiation: '2'
+    policy: same_value
+  - group: miscellaneous_no_queue
+    latency: '1'
+    initiation: '1'
+    policy: same_value
+compatibility:
+  legacy_extra_params_policy: unmanifested_override
+  existing_flat_sm120_configs_modified: false
+limitations:
+- bootstrap-current-flat copies current flat values; it is not a new calibration result
+- RTX5060 timing, memory, trace, and XML values remain inherited or placeholder until S5/S6
+- power is not enabled or calibrated by the bootstrap profile
+note: Trace-root mirror manifest. Full generated artifacts are recorded in the gpgpu-sim generated directory.

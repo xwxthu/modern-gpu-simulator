@@ -6,6 +6,12 @@ RTX5060:
 RTX5070_TI:
     base_file: "$GPGPUSIM_ROOT/configs/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config"
 
+RTX5060_SM120_GEN:
+    base_file: "$GPGPUSIM_ROOT/configs/generated/tested-cfgs/SM120_RTX5060/gpgpusim.config"
+
+RTX5070_TI_SM120_GEN:
+    base_file: "$GPGPUSIM_ROOT/configs/generated/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config"
+
 RTX3080_TI:
     base_file: "$GPGPUSIM_ROOT/configs/tested-cfgs/SM86_RTX3080_TI/gpgpusim.config"
 

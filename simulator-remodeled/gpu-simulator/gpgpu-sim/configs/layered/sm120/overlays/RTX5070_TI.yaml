@@ -1,0 +1,21 @@
+schema_version: 1
+layer_id: RTX5070_TI
+owner: gpu_overlay
+config_name: SM120_RTX5070_TI
+aliases:
+  - RTX5070_TI
+  - SM120_RTX5070_TI
+provenance_by_owner:
+  gpu_overlay:
+    source_type: placeholder
+    source_detail: Current flat SM120_RTX5070_TI config.
+    confidence: bootstrap
+    replacement_stage: S5
+    notes: >
+      Per-GPU values are seeded from the existing flat config until official
+      tool/device-query evidence is attached.
+bootstrap_source_files:
+  gpgpusim_config: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config
+  trace_config: simulator-remodeled/gpu-simulator/configs/tested-cfgs/SM120_RTX5070_TI/trace.config
+  accelwattch_xml: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/accelwattch_sass_sim.xml
+  icnt: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/tested-cfgs/SM120_RTX5070_TI/config_ampere_islip.icnt

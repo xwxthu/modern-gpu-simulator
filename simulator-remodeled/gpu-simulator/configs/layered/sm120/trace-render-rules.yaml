@@ -1,0 +1,22 @@
+schema_version: 1
+rules_id: sm120_trace_bootstrap_current_flat
+rendered_file: trace.config
+render_strategy: copy_bootstrap_current_flat_with_latency_drift_validation
+description: >
+  Trace bootstrap rendering consumes the source trace.config named by the
+  selected per-GPU calibration input. The generator validates the canonical
+  branch/half/uniform/predicate/misc latency groups against gpgpusim.config.
+drift_checked_groups:
+  - branch
+  - half
+  - uniform
+  - predicate
+  - miscellaneous_queue
+  - miscellaneous_no_queue
+independent_or_derived_groups_recorded_only:
+  - int
+  - sp
+  - dp
+  - sfu
+  - tensor
+  - tex_specialized_unit
