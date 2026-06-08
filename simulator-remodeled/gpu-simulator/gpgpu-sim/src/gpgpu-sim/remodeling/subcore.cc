@@ -978,7 +978,9 @@ void Subcore::fetch(SM *shared_sm) {
                                             ->get_IBuffer_remodeled()
                                             ->get_next_pc_to_fetch_request();
         // Request different address for different kernels
-        unsigned int unique_function_id = c_warp->get_current_unique_function_id_call();
+        unsigned int unique_function_id = m_config->is_trace_mode
+                                              ? c_warp->get_current_unique_function_id_call()
+                                              : 0;
         address_type global_pc_addr =
             shared_sm->from_local_pc_to_global_pc_address(local_pc_request, unique_function_id);
         unsigned int line_size = m_config->m_L0I_config.get_line_sz();

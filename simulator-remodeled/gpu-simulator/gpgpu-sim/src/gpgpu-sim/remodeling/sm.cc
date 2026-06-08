@@ -1986,12 +1986,18 @@ void SM::get_icnt_power_stats(long &n_simt_to_mem, long &n_mem_to_simt) const {
 }
 
 address_type SM::from_local_pc_to_global_pc_address(address_type local_pc, unsigned int unique_function_id) {
+  if (!m_config->is_trace_mode) {
+    return local_pc + PROGRAM_MEM_START;
+  }
   address_type first_pc_of_kernel = get_gpu()->get_extra_trace_info().get_kernel_by_unique_function_id(unique_function_id).get_function_addr();
   address_type res = local_pc + first_pc_of_kernel;
   return res;
 }
 
 address_type SM::from_global_pc_address_to_local_pc(address_type global_pc, unsigned int unique_function_id) {
+  if (!m_config->is_trace_mode) {
+    return global_pc - PROGRAM_MEM_START;
+  }
   address_type first_pc_of_kernel = get_gpu()->get_extra_trace_info().get_kernel_by_unique_function_id(unique_function_id).get_function_addr();
   address_type res = global_pc - first_pc_of_kernel;
   return res;

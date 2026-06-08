@@ -884,3 +884,54 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the `shd_warp_t::get_current_unique_function_id_call()` assertion on the remodeled fetch path, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `4fa4577d27d68f8bd4f71603ef1f56796c595dd3` (`fix: initialize remodeled SM stats`) recorded the remodeled per-SM stats initialization fix.
+
+### 2026-06-09 05:07:49 CST
+
+Action:
+- Spawned S7 function-call-stack assertion worker `019ea90f-e471-7aa0-ac26-38cedad6107e`.
+
+Scope:
+- Resolve or precisely bound the assertion `!m_function_call_stack.empty()` in `shd_warp_t::get_current_unique_function_id_call()` called from remodeled `Subcore::fetch()`.
+- Prefer a root-cause fix in warp/function metadata initialization or remodeled fetch semantics, not weakening the assertion without evidence.
+
+### 2026-06-09 05:28:51 CST
+
+Action:
+- S7 function-call-stack assertion worker `019ea90f-e471-7aa0-ac26-38cedad6107e` completed `docs/sm120-calibration/worker-logs/worker-20260609-051136-s7-function-stack.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-051136-s7-function-stack.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-function-stack-20260609-051136/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected config/latest/generated scoped status was empty.
+
+Root cause:
+- Remodeled fetch always used the trace-mode warp function-call stack to derive function-relative instruction-cache addresses.
+- PTX/performance simulation mode uses baseline `PROGRAM_MEM_START` instruction addresses and does not seed trace-mode function-call stacks.
+
+Partial result:
+- Trace mode still uses `get_current_unique_function_id_call()` and keeps the assertion intact.
+- PTX mode now uses function id `0` as the carrier value and remodeled PTX PC translation round-trips through `PROGRAM_MEM_START`.
+- The previous `shd_warp_t::get_current_unique_function_id_call()` assertion is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: segmentation fault from null `traced_instruction` in `warp_inst_t::assign_predicate_latencies_if_needed()`, called from `Subcore::single_decode()`.
+- Stderr still reports `libgomp: Invalid value for environment variable OMP_NUM_THREADS:`.
+
+Supervisor review:
+- Supervisor reviewer `019ea921-525e-70b3-9320-8bcd8d26f1df` returned `ACCEPT`.
+- Reviewer confirmed mode separation is clean, trace-mode stack semantics remain intact, function id `0` is a valid PTX-mode carrier value, and the new null `traced_instruction` decode blocker is properly bounded.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the null `traced_instruction` dereference in PTX-mode remodeled decode/predicate latency handling, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
