@@ -1,0 +1,120 @@
+schema_version: 1
+schema_id: sm120_microbenchmark_calibration_result_v1
+description: >
+  Machine-readable manifest shape for staged SM120 microbenchmark calibration
+  results. Result files are draft inputs until reviewed and copied into a GPU
+  latest.yaml or staged delta consumed by the S4+ generator.
+
+required_top_level_fields:
+  - schema_version
+  - schema_id
+  - calibration_id
+  - gpu
+  - architecture
+  - status
+  - generated_at
+  - source
+  - summary
+  - stages
+  - derived_delta
+  - unsupported_keys
+  - handoff
+
+status_values:
+  - draft_not_applied
+  - reviewed_delta
+  - applied_to_latest
+  - rejected
+
+source_types:
+  microbenchmark:
+    description: Output from GPU_Microbenchmark/run_all.sh or a single tuner microbenchmark.
+    allowed_collection_host: dsp5060_or_other_gpu_host
+  system_config:
+    description: Tuner system_config output or an official-fact collector output that emits config-style lines.
+    allowed_collection_host: dsp5060_or_other_gpu_host
+  manual_arch_model:
+    description: Reviewed architecture-model assertion, not produced by the S5 parser.
+  correlation_search:
+    description: Later S6 targeted search result, not produced by the S5 parser.
+  placeholder:
+    description: Bootstrap placeholder only.
+
+stage_order:
+  - official_device_query_facts
+  - system_core_config_microbench
+  - memory_l2_l1_config_microbench
+  - trace_latency_groups
+  - rf_prefetch_remodeled_parameters
+  - power_placeholder
+
+stage_contract:
+  official_device_query_facts:
+    input: >
+      Tuner system_config output or reviewed official-fact data already converted
+      to config-style lines. Raw nvidia-smi and human-readable CUDA deviceQuery
+      text are not accepted by the S5 parser.
+    output: Candidate base or GPU overlay facts.
+    provenance_required:
+      - source_type
+      - collection_host
+      - input_sha256
+      - source_benchmark
+      - source_line
+  system_core_config_microbench:
+    input: Tuner core_config/config_int/config_fpu/config_dpu/config_sfu/config_tensor output.
+    output: Candidate SM120 base facts or calibration-result opcode deltas.
+    provenance_required:
+      - source_type
+      - input_sha256
+      - source_benchmark
+      - source_line
+  memory_l2_l1_config_microbench:
+    input: Tuner l1_cache, l2_cache, mem, and shared-memory benchmark output.
+    output: Candidate GPU overlay facts or calibration-result memory/cache deltas.
+    provenance_required:
+      - source_type
+      - input_sha256
+      - source_benchmark
+      - source_line
+  trace_latency_groups:
+    input: Tuner trace latency/initiation config lines or reviewed trace-specific measurements.
+    output: Candidate trace.config calibration-result deltas.
+    provenance_required:
+      - source_type
+      - input_sha256
+      - source_benchmark
+      - source_line
+  rf_prefetch_remodeled_parameters:
+    input: Future focused microbenchmarks or S6 targeted search.
+    output: Candidate calibration-result deltas for remodeled RF, prefetch, PRT, and scheduler knobs.
+    provenance_required:
+      - source_type
+      - input_sha256
+      - source_benchmark
+      - source_line
+  power_placeholder:
+    input: none in S5 MVP.
+    output: no delta; power remains disabled or smoke-compatibility only.
+    provenance_required: []
+
+derived_delta_item_fields:
+  - key
+  - value
+  - owner
+  - target_layer
+  - stage
+  - source_line
+  - source_benchmark
+  - observation_count
+  - status
+
+handoff_policy:
+  s4_current_state: bootstrap-current-flat only.
+  parser_output_policy: >
+    Parser output is a draft manifest. It must not overwrite flat SM120 configs,
+    generated S4 configs, or latest.yaml without review.
+  latest_yaml_policy: >
+    A reviewed S5 result may become calibration-results/<GPU>/latest.yaml or a
+    staged delta file only for owner-matched keys. Unsupported keys remain in the
+    manifest for follow-up schema or benchmark work.

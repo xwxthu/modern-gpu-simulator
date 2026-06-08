@@ -109,3 +109,15 @@ generated configs are outside the generated manifest and must be treated as
 - The `.icnt` file is copied for directory completeness. Current SM120
   bootstrap configs use `-network_mode 2` local xbar, so inline `-icnt_*`
   options are the active interconnect settings.
+
+## S5 Handoff
+
+S5 calibration-result drafts are not consumed by this S4 generator yet. Current
+generated configs remain `bootstrap-current-flat` until reviewed S5 data is
+copied into `calibration-results/<GPU>/latest.yaml` or a staged delta file and
+the generator grows an explicit `--calibration-result` input.
+
+The handoff contract is documented in
+`docs/sm120-calibration/s5-microbenchmark-calibration.md`. Raw parser output
+must stay `draft_not_applied`; it must not overwrite existing flat SM120 configs
+or generated S4 outputs.

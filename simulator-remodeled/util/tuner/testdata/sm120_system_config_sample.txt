@@ -1,0 +1,8 @@
+running ./system_config microbenchmark
+Device Name = Synthetic SM120 system_config Fixture
+
+//Accel_Sim config:
+-gpgpu_compute_capability_major 12
+-gpgpu_compute_capability_minor 0
+-gpgpu_n_clusters 30
+-gpgpu_clock_domains 2640:2640:2640:14000

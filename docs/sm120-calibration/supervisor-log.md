@@ -202,3 +202,48 @@ Follow-up:
 - Worker added negative path tests and a third blank-context reviewer round.
 - Second supervisor reviewer `019ea733-bd29-7031-bd73-1a373a1fc693` returned `accept`.
 - Marked S4 complete and S5 ready to start in `overall-plan.md`.
+
+Checkpoint:
+- Commit `c0660f6a736854e81724ddbb9ffa27ce17834e13` (`feat: generate layered SM120 bootstrap configs`) recorded the S4 generated-bootstrap deliverable.
+
+### 2026-06-08 20:44:04 CST
+
+Action:
+- Spawned S5 microbenchmark-calibration worker `019ea742-bc97-7632-b96e-fe6ea904735c`.
+
+Worker deliverables:
+- `simulator-remodeled/util/tuner/parse_sm120_microbench.py`
+- `simulator-remodeled/util/tuner/testdata/sm120_microbench_sample.txt`
+- `simulator-remodeled/util/tuner/testdata/sm120_system_config_sample.txt`
+- `simulator-remodeled/util/tuner/testdata/sm120_human_devicequery_sample.txt`
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/calibration-result.schema.yaml`
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/samples/RTX5060-microbench-draft.yaml`
+- `docs/sm120-calibration/s5-microbenchmark-calibration.md`
+- `docs/sm120-calibration/worker-logs/worker-20260608-204404-s5-microbench.md`
+- S4 handoff note in `docs/sm120-calibration/s4-config-generator.md`
+
+Worker validation:
+- Parser Python syntax check.
+- Microbenchmark fixture parse and byte-for-byte sample draft reproducibility.
+- Tuner `system_config` config-line fixture parse.
+- Human-readable CUDA `deviceQuery` negative fixture and empty-input negative checks.
+- `--fail-on-unsupported` exits with status `2`.
+- `generate_sm120_configs.py --check-only`.
+- `git diff --check`.
+- Flat SM120 configs, S4 generated configs, and `generate_sm120_configs.py` status remain clean.
+
+Supervisor review:
+- First supervisor reviewer `019ea762-bc92-75b1-926b-5eef8af9b38a` returned `changes-needed`.
+- Required fixes:
+  - The parser and docs overstated `device_query` support; the code only parsed config-style lines and should not imply raw `nvidia-smi` or human-readable CUDA `deviceQuery` parsing.
+  - Raw parser drafts should keep `handoff.do_not_claim_calibrated: true`.
+  - The unsupported sample-key explanation should match `key_not_in_s5_supported_stage_map`.
+
+Follow-up:
+- Worker narrowed parser source types to `microbenchmark` and `system_config`.
+- Worker documented that raw `nvidia-smi` and human-readable CUDA `deviceQuery` text are unsupported by the S5 parser and must be converted to reviewed config-style lines first.
+- Worker added negative empty-input and human-readable `deviceQuery` checks.
+- Worker made all raw parser drafts keep `handoff.do_not_claim_calibrated: true`.
+- Worker updated the unsupported-key documentation and reran blank-context reviewer rounds until Round 3 returned `ACCEPT`.
+- Second supervisor reviewer `019ea776-7af5-7bc3-9446-6ac1be7d45e3` returned `ACCEPT`.
+- Marked S5 complete and S6 ready to start in `overall-plan.md`.

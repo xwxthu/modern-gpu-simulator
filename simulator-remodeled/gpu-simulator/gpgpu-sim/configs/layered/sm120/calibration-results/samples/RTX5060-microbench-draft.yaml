@@ -1,0 +1,398 @@
+schema_version: 1
+schema_id: sm120_microbenchmark_calibration_result_v1
+calibration_id: RTX5060-synthetic-sm120-microbench-draft
+gpu: RTX5060
+architecture: SM120
+status: draft_not_applied
+generated_at: '2026-06-08T12:00:00Z'
+fixture_only: true
+parser:
+  script: simulator-remodeled/util/tuner/parse_sm120_microbench.py
+  script_sha256: 29d5be1dee0137084e93638f756c59e6d52c79c2f281b4f2379e4dc229ea5ea8
+  schema: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/sm120.schema.yaml
+  schema_sha256: d44fb1539e5b64fd042931992c630b5dbed0501a785f901e2f88665cf3d822f0
+source:
+  source_type: microbenchmark
+  label: sm120_microbench_sample
+  input_path: simulator-remodeled/util/tuner/testdata/sm120_microbench_sample.txt
+  input_sha256: 701255d2a2be154bb89ee08772acc437b04f0d73b0a0aa907e7e3242d2c431a9
+  collection_host: local-fixture
+  collection_command: synthetic fixture, no GPU run
+  notes: ''
+summary:
+  parsed_config_line_count: 12
+  supported_line_count: 11
+  unsupported_line_count: 1
+  duplicate_key_count: 0
+  conflicting_duplicate_key_count: 0
+  derived_delta_key_count: 11
+stages:
+  official_device_query_facts:
+    description: Official facts already emitted as tuner config lines.
+    expected_source_types:
+    - system_config
+    - microbenchmark
+    output_target: base_or_gpu_overlay_candidate
+    parameter_keys:
+    - -gpgpu_compute_capability_major
+    - -gpgpu_compute_capability_minor
+    - -gpgpu_n_clusters
+    - -gpgpu_n_cores_per_cluster
+    - -gpgpu_clock_domains
+    - -gpgpu_shader_registers
+    - -gpgpu_registers_per_block
+    - -gpgpu_occupancy_sm_number
+    - -gpgpu_shader_core_pipeline
+    - -gpgpu_shader_cta
+    - -gpgpu_shmem_size
+    - -gpgpu_shmem_sizeDefault
+    - -gpgpu_shmem_per_block
+    records:
+    - file: gpgpusim.config
+      key: -gpgpu_compute_capability_major
+      value: '12'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      source_type: microbenchmark
+      benchmark: system_config
+      line: 5
+      support_status: supported
+    - file: gpgpusim.config
+      key: -gpgpu_compute_capability_minor
+      value: '0'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      source_type: microbenchmark
+      benchmark: system_config
+      line: 6
+      support_status: supported
+    - file: gpgpusim.config
+      key: -gpgpu_n_clusters
+      value: '30'
+      owner: gpu_overlay
+      target_layer: overlays/RTX5060.yaml
+      source_type: microbenchmark
+      benchmark: system_config
+      line: 7
+      support_status: supported
+    - file: gpgpusim.config
+      key: -gpgpu_n_cores_per_cluster
+      value: '1'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      source_type: microbenchmark
+      benchmark: system_config
+      line: 8
+      support_status: supported
+    - file: gpgpusim.config
+      key: -gpgpu_clock_domains
+      value: 2640:2640:2640:14000
+      owner: gpu_overlay
+      target_layer: overlays/RTX5060.yaml
+      source_type: microbenchmark
+      benchmark: system_config
+      line: 9
+      support_status: supported
+  system_core_config_microbench:
+    description: Core unit counts, issue widths, and opcode latency/initiation lines.
+    expected_source_types:
+    - microbenchmark
+    output_target: sm120_base_or_calibration_result_candidate
+    parameter_keys:
+    - -gpgpu_pipeline_widths
+    - -gpgpu_num_sp_units
+    - -gpgpu_num_sfu_units
+    - -gpgpu_num_int_units
+    - -gpgpu_tensor_core_avail
+    - -gpgpu_num_tensor_core_units
+    - -gpgpu_sub_core_model
+    - -gpgpu_enable_specialized_operand_collector
+    - -gpgpu_operand_collector_num_units_gen
+    - -gpgpu_operand_collector_num_in_ports_gen
+    - -gpgpu_operand_collector_num_out_ports_gen
+    - -gpgpu_num_sched_per_core
+    - -gpgpu_inst_fetch_throughput
+    - -gpgpu_max_insn_issue_per_warp
+    - -gpgpu_dual_issue_diff_exec_units
+    - -ptx_opcode_latency_int
+    - -ptx_opcode_initiation_int
+    - -ptx_opcode_latency_fp
+    - -ptx_opcode_initiation_fp
+    - -ptx_opcode_latency_dp
+    - -ptx_opcode_initiation_dp
+    - -ptx_opcode_latency_sfu
+    - -ptx_opcode_initiation_sfu
+    - -ptx_opcode_latency_tesnor
+    - -ptx_opcode_initiation_tensor
+    - -tensor_latency
+    - -tensor_extra_latency_16816_fp32_1688_fp32
+    - -tensor_rate_per_cycle
+    records:
+    - file: gpgpusim.config
+      key: -gpgpu_num_int_units
+      value: '4'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      source_type: microbenchmark
+      benchmark: config_int
+      line: 15
+      support_status: supported
+    - file: gpgpusim.config
+      key: -ptx_opcode_latency_int
+      value: 4,4,4,4,21
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      source_type: microbenchmark
+      benchmark: config_int
+      line: 16
+      support_status: supported
+    - file: gpgpusim.config
+      key: -ptx_opcode_initiation_int
+      value: 2,2,2,2,2
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      source_type: microbenchmark
+      benchmark: config_int
+      line: 17
+      support_status: supported
+  memory_l2_l1_config_microbench:
+    description: Memory, L2, L1, shared-memory, and DRAM geometry/timing candidates.
+    expected_source_types:
+    - microbenchmark
+    - system_config
+    output_target: gpu_overlay_or_calibration_result_candidate
+    parameter_keys:
+    - -gpgpu_adaptive_cache_config
+    - -gpgpu_l1_banks
+    - -gpgpu_cache:dl1
+    - -gpgpu_l1_banks_hashing_function
+    - -gpgpu_gmem_skip_L1D
+    - -gpgpu_n_cluster_ejection_buffer_size
+    - -gpgpu_l1_cache_write_ratio
+    - -gpgpu_n_sub_partition_per_mchannel
+    - -gpgpu_cache:dl2
+    - -gpgpu_cache:dl2_texture_only
+    - -gpgpu_perf_sim_memcpy
+    - -gpgpu_memory_partition_indexing
+    - -gpgpu_l2_rop_latency
+    - -gpgpu_n_mem
+    - -gpgpu_n_mem_per_ctrlr
+    - -gpgpu_dram_buswidth
+    - -gpgpu_dram_burst_length
+    - -dram_data_command_freq_ratio
+    - -dram_latency
+    - -gpgpu_dram_scheduler
+    - -gpgpu_frfcfs_dram_sched_queue_size
+    - -gpgpu_dram_return_queue_size
+    - -gpgpu_mem_address_mask
+    - -gpgpu_mem_addr_mapping
+    - -gpgpu_dram_timing_opt
+    - -dram_dual_bus_interface
+    - -dram_bnk_indexing_policy
+    - -dram_bnkgrp_indexing_policy
+    - -memory_shared_memory_minimum_latency
+    - -memory_l1d_minimum_latency
+    - -constant_cache_latency_at_sm_structure
+    records:
+    - file: gpgpusim.config
+      key: -gpgpu_l1_banks
+      value: '4'
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      source_type: microbenchmark
+      benchmark: l1_config
+      line: 22
+      support_status: supported
+    - file: gpgpusim.config
+      key: -gpgpu_cache:dl1
+      value: S:4,128,64,L:L:m:N:L,A:512:64,16:0,32
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      source_type: microbenchmark
+      benchmark: l1_config
+      line: 23
+      support_status: supported
+  trace_latency_groups:
+    description: Trace frontend latency/initiation pairs and specialized-unit trace groups.
+    expected_source_types:
+    - microbenchmark
+    output_target: calibration_result_candidate
+    parameter_keys:
+    - -trace_opcode_latency_initiation_int
+    - -trace_opcode_latency_initiation_sp
+    - -trace_opcode_latency_initiation_dp
+    - -trace_opcode_latency_initiation_sfu
+    - -trace_opcode_latency_initiation_tensor
+    - -trace_opcode_latency_initiation_branch
+    - -trace_opcode_latency_initiation_half
+    - -trace_opcode_latency_initiation_uniform
+    - -trace_opcode_latency_initiation_predicate
+    - -trace_opcode_latency_initiation_miscellaneous_queue
+    - -trace_opcode_latency_initiation_miscellaneous_no_queue
+    - -specialized_unit_2
+    - -trace_opcode_latency_initiation_spec_op_2
+    records:
+    - file: trace.config
+      key: -trace_opcode_latency_initiation_int
+      value: 4,2
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      source_type: microbenchmark
+      benchmark: config_int
+      line: 18
+      support_status: supported
+  rf_prefetch_remodeled_parameters:
+    description: Register-file, prefetch, scheduler, PRT, and remodeled SM timing knobs.
+    expected_source_types:
+    - microbenchmark
+    - correlation_search
+    output_target: calibration_result_candidate
+    parameter_keys:
+    - -gpgpu_num_reg_banks
+    - -gpgpu_reg_file_port_throughput
+    - -latency_L0_to_L1
+    - -latency_L1_to_L0
+    - -ibuffer_remodeled_size
+    - -prefetch_per_stream_buffer_size
+    - -prefetch_num_stream_buffers
+    - -num_instruction_prefetches_per_cycle
+    - -is_rf_cache_enabled
+    - -max_operands_regular_register_file
+    - -max_latency_regular_register_file_latency
+    - -num_regular_register_file_read_ports_per_bank
+    - -num_regular_register_file_write_ports_per_bank
+    - -custom_omp_scheduler_ratio_to_dynamic
+    - -number_of_coalescers
+    - -prt_selection_policy_string
+    - -number_of_clusters_for_prt_selection
+    - -is_interwarp_coalescing_enabled
+    - -num_interwarp_coalescing_tables
+    - -interwarp_coalescing_quanta
+    - -interwarp_coalescing_selection_policy_string
+    - -max_size_interwarp_coalescing_per_table
+    records: []
+  power_placeholder:
+    description: Power calibration placeholder. S5 MVP records no power measurements.
+    expected_source_types: []
+    output_target: no_delta
+    parameter_keys: []
+    records: []
+derived_delta:
+  status: draft_not_applied
+  conflicting_keys_withheld: []
+  files:
+    gpgpusim.config:
+    - key: -gpgpu_cache:dl1
+      value: S:4,128,64,L:L:m:N:L,A:512:64,16:0,32
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      stage: memory_l2_l1_config_microbench
+      source_line: 23
+      source_benchmark: l1_config
+      observation_count: 1
+      status: draft_not_applied
+    - key: -gpgpu_clock_domains
+      value: 2640:2640:2640:14000
+      owner: gpu_overlay
+      target_layer: overlays/RTX5060.yaml
+      stage: official_device_query_facts
+      source_line: 9
+      source_benchmark: system_config
+      observation_count: 1
+      status: draft_not_applied
+    - key: -gpgpu_compute_capability_major
+      value: '12'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      stage: official_device_query_facts
+      source_line: 5
+      source_benchmark: system_config
+      observation_count: 1
+      status: draft_not_applied
+    - key: -gpgpu_compute_capability_minor
+      value: '0'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      stage: official_device_query_facts
+      source_line: 6
+      source_benchmark: system_config
+      observation_count: 1
+      status: draft_not_applied
+    - key: -gpgpu_l1_banks
+      value: '4'
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      stage: memory_l2_l1_config_microbench
+      source_line: 22
+      source_benchmark: l1_config
+      observation_count: 1
+      status: draft_not_applied
+    - key: -gpgpu_n_clusters
+      value: '30'
+      owner: gpu_overlay
+      target_layer: overlays/RTX5060.yaml
+      stage: official_device_query_facts
+      source_line: 7
+      source_benchmark: system_config
+      observation_count: 1
+      status: draft_not_applied
+    - key: -gpgpu_n_cores_per_cluster
+      value: '1'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      stage: official_device_query_facts
+      source_line: 8
+      source_benchmark: system_config
+      observation_count: 1
+      status: draft_not_applied
+    - key: -gpgpu_num_int_units
+      value: '4'
+      owner: sm120_base
+      target_layer: base/SM120_BASE.yaml
+      stage: system_core_config_microbench
+      source_line: 15
+      source_benchmark: config_int
+      observation_count: 1
+      status: draft_not_applied
+    - key: -ptx_opcode_initiation_int
+      value: 2,2,2,2,2
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      stage: system_core_config_microbench
+      source_line: 17
+      source_benchmark: config_int
+      observation_count: 1
+      status: draft_not_applied
+    - key: -ptx_opcode_latency_int
+      value: 4,4,4,4,21
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      stage: system_core_config_microbench
+      source_line: 16
+      source_benchmark: config_int
+      observation_count: 1
+      status: draft_not_applied
+    trace.config:
+    - key: -trace_opcode_latency_initiation_int
+      value: 4,2
+      owner: calibration_result
+      target_layer: calibration-results/RTX5060/latest.yaml
+      stage: trace_latency_groups
+      source_line: 18
+      source_benchmark: config_int
+      observation_count: 1
+      status: draft_not_applied
+unsupported_keys:
+  gpgpusim.config:
+  - key: -gpgpu_l1_latency
+    value: '33'
+    line: 24
+    benchmark: l1_config
+    reason: key_not_in_s5_supported_stage_map
+  trace.config: []
+duplicate_keys: []
+handoff:
+  s4_generator_status: bootstrap-current-flat only; this draft is not consumed automatically
+  next_step: After reviewer approval of real collected data, copy supported calibration_result entries into calibration-results/RTX5060/latest.yaml
+    or a staged delta file. Update overlays/base only for owner-matched device facts.
+  do_not_claim_calibrated: true

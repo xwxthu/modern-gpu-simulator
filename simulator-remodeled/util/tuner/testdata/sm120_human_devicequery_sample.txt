@@ -1,0 +1,7 @@
+  Device : "Synthetic SM120 Human Device Query"
+
+  CUDA version number                         : 12.0
+  Multiprocessors Count                       : 30
+  Warp size                                   : 32
+  Maximum number of threads per block         : 1024
+  Total amount of global memory               : 8589934592 bytes
