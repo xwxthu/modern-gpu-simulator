@@ -31,9 +31,9 @@ static const char *L2_Cache_Write_Policy = ",L:B:m:L:";
 int main() {
   intilizeDeviceProp(0);
 
-  if (deviceProp.l2CacheSize) {
+  if (L2_SIZE) {
     printf("L2 Cache Size = %.0f MB\n",
-           static_cast<float>(deviceProp.l2CacheSize / 1048576.0f));
+           static_cast<float>(L2_SIZE / 1048576.0f));
   }
 
   unsigned mem_channel = get_num_channels(MEM_BITWIDTH, DRAM_MODEL);

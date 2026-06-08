@@ -1,6 +1,9 @@
 BASE_DIR := $(shell pwd)
 BIN_DIR := $(BASE_DIR)/../../../bin/
 
+CUDA_ARCH ?=
+HW_DEF ?=
+
 GENCODE_SM30 ?= -gencode=arch=compute_30,code=\"sm_30,compute_30\"
 GENCODE_SM35 ?= -gencode=arch=compute_35,code=\"sm_35,compute_35\"
 GENCODE_SM50 ?= -gencode=arch=compute_50,code=\"sm_50,compute_50\"
@@ -11,17 +14,34 @@ GENCODE_SM72 ?= -gencode=arch=compute_72,code=\"sm_72,compute_72\"
 GENCODE_SM75 ?= -gencode=arch=compute_75,code=\"sm_75,compute_75\"
 GENCODE_SM80 ?= -gencode=arch=compute_80,code=\"sm_80,compute_80\"
 GENCODE_SM86 ?= -gencode=arch=compute_86,code=\"sm_86,compute_86\"
+GENCODE_SM120 ?= -gencode=arch=compute_120,code=\"sm_120,compute_120\"
 
-CUOPTS =  $(GENCODE_ARCH) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(GENCODE_SM72) $(GENCODE_SM75) $(GENCODE_SM80) $(GENCODE_SM86) 
+ifeq ($(CUDA_ARCH),sm_120)
+CUOPTS ?= $(GENCODE_SM120)
+else
+CUOPTS ?= $(GENCODE_ARCH) $(GENCODE_SM50) $(GENCODE_SM60) $(GENCODE_SM62) $(GENCODE_SM70) $(GENCODE_SM72) $(GENCODE_SM75) $(GENCODE_SM80) $(GENCODE_SM86)
+endif
 
-CC := nvcc
+CUDA_PATH ?= $(or $(CUDA_HOME),$(CUDA_INSTALL_PATH),/usr/local/cuda)
+ifneq ($(filter $(origin CC),default environment environment override),)
+CC := $(CUDA_PATH)/bin/nvcc
+endif
+INCLUDE ?= $(CUDA_PATH)/samples/common/inc/
+LIB ?=
+LIB_FLAGS := $(if $(LIB),-L$(LIB),)
+NVCC_FLAGS ?= $(NVCC_FLGAS)
+HW_DEF_FLAGS :=
 
-CUDA_PATH ?= /use/local/cuda-10.1/
-INCLUDE := $(CUDA_PATH)/samples/common/inc/
-LIB := 
+ifeq ($(HW_DEF),SM120_RTX5060)
+HW_DEF_FLAGS += -DACCELSIM_HW_DEF_SM120_RTX5060
+endif
+ifeq ($(HW_DEF),SM120_RTX5070_TI)
+HW_DEF_FLAGS += -DACCELSIM_HW_DEF_SM120_RTX5070_TI
+endif
 
 release:
-	$(CC) $(NVCC_FLGAS) $(CUOPTS) $(SRC) -o $(EXE) -I$(INCLUDE) -L$(LIB) -lcudart
+	mkdir -p $(BIN_DIR)
+	$(CC) $(NVCC_FLAGS) $(HW_DEF_FLAGS) $(CUOPTS) $(SRC) -o $(EXE) -I$(INCLUDE) $(LIB_FLAGS) -lcudart
 	cp $(EXE) $(BIN_DIR)
 
 clean:

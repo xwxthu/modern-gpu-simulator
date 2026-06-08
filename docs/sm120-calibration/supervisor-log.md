@@ -134,3 +134,36 @@ Follow-up:
 - Worker completed rework and second internal review.
 - Second supervisor reviewer `019ea6c6-010c-7521-8642-96a709309b32` returned `accept`.
 - Marked S2 complete and S3 ready to start in `overall-plan.md`.
+
+Checkpoint:
+- Commit `43b69223a07c0d66cfd1a3111cff2b9aec93787a` (`docs: design SM120 config layering`) recorded the S2 design deliverable.
+
+### 2026-06-08 18:40:42 CST
+
+Action:
+- Spawned S3 prerequisites worker `019ea6c9-1891-7640-880a-0a601e60fa28`.
+
+Worker deliverables:
+- `.gitignore`
+- `docs/sm120-calibration/calibration-prereqs.md`
+- `docs/sm120-calibration/worker-logs/worker-20260608-185309-s3-prereqs.md`
+- `simulator-remodeled/util/hw_stats/collect_sm120_device_info.py`
+- SM120 tuner build and draft `hw_def` changes under `simulator-remodeled/util/tuner/GPU_Microbenchmark/`
+- CUDA 13.x compatibility updates for selected tuner microbenchmarks.
+
+Worker validation:
+- Python syntax check for `collect_sm120_device_info.py`.
+- Dry-run and remote lightweight official-tool collection against `dsp5060`.
+- `make -n` checks for CUDA path, `CUDA_ARCH=sm_120`, and `HW_DEF` behavior.
+- Local CUDA 13.1 compile checks for selected tuner microbenchmarks.
+- `git diff --check`.
+
+Supervisor review:
+- First supervisor reviewer `019ea6f5-1dcd-7ff3-89b1-ba1a24dd18f7` returned `changes-needed`.
+- Required fix: avoid printing `CUDA Cores per multiprocessor : 0` for SM120/unknown architectures in tuner `system/deviceQuery`.
+
+Follow-up:
+- Worker changed unknown SM core-count output to `unknown for sm_XY` rather than inventing a value.
+- Worker documented the behavior and ran an additional blank-context reviewer round.
+- Second supervisor reviewer `019ea701-f1aa-73e2-9f43-07f97fd0d478` returned `accept`.
+- Marked S3 complete and S4 ready to start in `overall-plan.md`.

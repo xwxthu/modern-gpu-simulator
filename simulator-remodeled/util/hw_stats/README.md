@@ -1,5 +1,36 @@
 # Instructions on generating the hardware data for correlation
 
+## SM120 lightweight device-info collection
+
+S3 adds `collect_sm120_device_info.py` for official-tool collection before any
+benchmark or simulator work. It runs short `nvidia-smi`, `nvcc`, `ncu`, and
+`nsys` queries and stores the outputs locally under `util/hw_stats/device_info/`
+(ignored by git).
+
+Examples:
+
+```bash
+# Local dry run, useful for checking output layout.
+python3 collect_sm120_device_info.py --dry-run
+
+# Collect from the RTX 5060 host without placing this workspace there.
+python3 collect_sm120_device_info.py --remote dsp5060 --device 0
+
+# Optional Nsight Compute metric discovery for later S4/S5 metric mapping.
+python3 collect_sm120_device_info.py --remote dsp5060 --device 0 --include-metric-discovery
+```
+
+Each run creates a timestamped local directory with `manifest.json` plus
+`*.stdout.txt` and `*.stderr.txt` files. Nonzero command statuses are recorded in
+the manifest instead of being hidden; use `--strict` only when a caller wants
+any missing tool to fail the script.
+
+The script is intentionally limited to official tool and version queries. It
+does not run full simulations, application benchmarks, or calibration
+microbenchmarks.
+
+## Legacy correlation hardware data
+
 * Make sure CUDA\_INSTALL\_PATH is set and bin/lib directories are in PATH and LD\_LIBRARY\_PATH
 * Build the benchmarks
 ```bash

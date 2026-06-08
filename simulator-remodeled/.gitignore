@@ -1,4 +1,6 @@
 env-setup/
+.venv/
+util/hw_stats/device_info/
 hw_run/
 sim_run_*
 *.DS_Store*

@@ -7,7 +7,7 @@ int main() {
   intilizeDeviceProp(0);
 
   printf("Device Name = %s\n", deviceProp.name);
-  printf("GPU Max Clock rate = %.0f MHz \n", deviceProp.clockRate * 1e-3f);
+  printf("GPU Max Clock rate = %d MHz \n", GPU_CLK_FREQUENCY);
   printf("GPU Base Clock rate = %d MHz \n", CLK_FREQUENCY);
   printf("SM Count = %d\n", deviceProp.multiProcessorCount);
   printf("CUDA version number = %d.%d\n", deviceProp.major, deviceProp.minor);
@@ -16,8 +16,8 @@ int main() {
 
     std::cout << "\n//Accel_Sim config: \n";
 
-    float mem_freq_MHZ = (deviceProp.memoryClockRate * 1e-3f * 2) /
-                         dram_model_freq_ratio[DRAM_MODEL];
+    float mem_freq_MHZ =
+        (MEM_CLK_FREQUENCY * 2) / dram_model_freq_ratio[DRAM_MODEL];
     std::cout << "-gpgpu_compute_capability_major " << deviceProp.major
               << std::endl;
     std::cout << "-gpgpu_compute_capability_minor " << deviceProp.minor
