@@ -446,3 +446,42 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: build the local GPGPU-Sim release library and gpu-app binaries, rerun setup-only smoke planning, then intentionally run one local smoke only after setup is reviewed.
+
+Checkpoint:
+- Commit `6c0329df63d8e789c238725dcc0bb029b7edb2f9` (`docs: record S7 local smoke prerequisites`) recorded the local smoke blocked checkpoint.
+
+### 2026-06-09 00:42:33 CST
+
+Action:
+- Spawned S7 local build-prerequisite worker `019ea812-a2b0-77f3-896a-833eb472f711`.
+
+Worker deliverables:
+- `docs/sm120-calibration/worker-logs/worker-20260609-004233-s7-local-build.md`.
+- CUDA 13 build-compatibility source changes in GPGPU-Sim and the minimal Rodinia backprop app path.
+- Local build evidence under ignored `artifacts/s7/s7-local-build-20260609-003407/`.
+
+Source fixes:
+- Guarded `cudaDeviceProp::clockRate` assignment for CUDA versions before 13.
+- Suppressed CUDA gencodes removed by CUDA 13 for gpu-app builds.
+- Replaced Rodinia backprop `cudaThreadSynchronize()` with `cudaDeviceSynchronize()`.
+- Fixed exact benchmark selectors in `util/job_launching/common.py` so `suite:exe:index` preserves the full run-parameter dictionary.
+
+Worker validation:
+- Built local GPGPU-Sim release library using real CUDA 13.1:
+  `simulator-remodeled/gpu-simulator/gpgpu-sim/lib/gcc-13.3.0/cuda-13010/release/libcudart.so`.
+- Built local `simulator-remodeled/gpu-simulator/bin/release/accel-sim.out`.
+- Built local Rodinia backprop binary:
+  `simulator-remodeled/gpu-app-collection/bin/13.1/release/backprop-rodinia-2.0-ft`.
+- Confirmed CUDA 13.2 is not installed locally; `cuda-13010` is the existing setup script's directory name for CUDA 13.1.
+- `run_simulations.py ... -n` setup-only passed for `rodinia_2.0-ft:backprop-rodinia-2.0-ft:0` and created run files under ignored `artifacts/s7/s7-local-build-20260609-003407/sim-smoke-plan/`.
+- No actual simulator job was launched.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Accepted/generated config scoped status check was empty.
+
+Supervisor review:
+- Supervisor reviewer `019ea824-9182-7a63-9ba6-a8aa0e05182c` returned `ACCEPT`.
+- Reviewer confirmed the CUDA 13 fixes are narrow, the exact-selector fix is correct, build outputs exist and are ELF files, setup-only planning succeeded without `procman.py` launch evidence, and protected config/latest paths are clean.
+
+Follow-up:
+- Pending S7 work remains: reviewed Rodinia data provisioning for `./data/result-4096.txt`, then one intentional local smoke run, followed by real supplied-metrics correlation if smoke metrics are available.

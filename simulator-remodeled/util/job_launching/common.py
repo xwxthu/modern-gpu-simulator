@@ -98,7 +98,7 @@ def parse_app_definition_yaml( def_yml, apps ):
                 apps[suite + ":" + exe_name + ":" + str(count) ] = []
                 apps[suite + ":" + exe_name + ":" + str(count) ].append( ( benchmark_yaml[suite]['exec_dir'],
                                     benchmark_yaml[suite]['data_dirs'],
-                                    exe_name, [args]) )
+                                    exe_name, [runparms]) )
                 count += 1
             apps[suite].append(( benchmark_yaml[suite]['exec_dir'],
                                  benchmark_yaml[suite]['data_dirs'],
