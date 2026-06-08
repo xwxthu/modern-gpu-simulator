@@ -13,6 +13,7 @@ run the program with nsight
  */
 
 #include <assert.h>
+#include <cstdint>
 #include <cstdio>
 #include <iostream>
 using namespace std;

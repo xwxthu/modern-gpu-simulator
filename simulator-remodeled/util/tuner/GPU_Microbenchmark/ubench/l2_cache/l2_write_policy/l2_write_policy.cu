@@ -12,6 +12,7 @@ to run the program with nvsight
 */
 
 #include <assert.h>
+#include <cstdint>
 #include <cstdio>
 #include <iostream>
 using namespace std;

@@ -368,3 +368,41 @@ Supervisor review:
 - Supervisor reviewer `019ea7d7-45a8-7ca0-9a51-21e8d53ddcad` returned `ACCEPT`.
 - Reviewer confirmed the partial/blocked conclusion is supported, no full simulator ran on `dsp5060`, no main workspace was placed on `dsp5060`, and no accepted configs or `latest.yaml` were modified.
 - Low-severity reviewer finding: `artifacts/logs/` was not ignored. Added `artifacts/logs/` to `.gitignore`.
+
+Checkpoint:
+- Commit `a5d058aeff82caf55df90281a5eec88da11d9cc8` (`docs: record RTX5060 S7 collection blocker`) recorded the partial RTX5060 hardware-characterization checkpoint and tuner build blocker.
+
+### 2026-06-08 23:51:02 CST
+
+Action:
+- Spawned S7 tuner build-fix worker `019ea7dc-28c6-7b92-892f-bf929eb1d7cb`.
+
+Worker deliverables:
+- Added `<cstdint>` to five CUDA tuner microbenchmark sources using `uint32_t` in adjacent access-grain/write-policy/memory-atom tests.
+- `docs/sm120-calibration/worker-logs/worker-20260608-235102-s7-tuner-buildfix.md`.
+- Local run evidence under ignored `artifacts/s7/rtx5060-s7-tuner-buildfix-20260608-233545/`.
+
+Source fix:
+- Fixed the CUDA 13.2 `uint32_t` compile blocker with standard fixed-width integer headers rather than a macro workaround.
+- No broad source sweep or unrelated tuner rewrite was performed.
+
+Worker validation:
+- Local CUDA 13.1 compile smoke passed for the five changed sources.
+- `dsp5060` CUDA 13.2 preflight passed and confirmed `sm_120` support.
+- Tuner build on `dsp5060` passed with exit code `0` and produced `58` binaries.
+- `./run_all.sh` on `dsp5060` passed with exit code `0` and produced `438` output lines.
+- S5 parser produced `artifacts/s7/rtx5060-s7-tuner-buildfix-20260608-233545/RTX5060-real-microbench-draft.yaml`.
+- The S5 draft has `status: draft_not_applied`, `fixture_only: false`, and `handoff.do_not_claim_calibrated: true`.
+- S5 parse summary: `76` parsed config lines, `63` supported, `13` unsupported, `0` duplicate conflicts.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Accepted/generated config scoped status check was empty.
+
+Supervisor review:
+- Supervisor reviewer `019ea7f8-690f-7ed1-a4ef-2ee75c9640ae` returned `ACCEPT`.
+- Reviewer confirmed the source diff only adds `#include <cstdint>` to the five target sources, artifact hashes verify, CUDA 13.2 tuner build/run evidence is sufficient, S5 draft-only semantics are preserved, and no accepted configs or `latest.yaml` were modified.
+- Informational reviewer note: three originally CRLF `.cu` files now have one LF-only inserted include line; `git diff --check` passes.
+
+Follow-up:
+- Promotion gate remains closed. The real microbenchmark draft is raw single-run evidence and has not been copied into accepted configs, `latest.yaml`, or generated SM120 configs.
+- Pending S7 work remains: review unsupported S5 keys, run local simulator smoke tests, construct real supplied-metrics S6 correlation manifests, run bounded local correlation if needed, and perform promotion-gate review.

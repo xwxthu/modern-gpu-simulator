@@ -16,6 +16,7 @@ their reply: https://forums.developer.nvidia.com/t/pascal-l1-cache/49571/15
 */
 
 #include <assert.h>
+#include <cstdint>
 #include <cstdio>
 #include <iostream>
 using namespace std;

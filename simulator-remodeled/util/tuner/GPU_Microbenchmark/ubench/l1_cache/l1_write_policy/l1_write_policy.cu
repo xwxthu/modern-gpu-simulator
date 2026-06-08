@@ -9,6 +9,7 @@ paper: https://arxiv.org/pdf/1810.07269.pdf
 */
 
 #include <assert.h>
+#include <cstdint>
 #include <cstdio>
 #include <iostream>
 using namespace std;

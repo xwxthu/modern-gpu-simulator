@@ -8,6 +8,7 @@ run the program with nsight
 
 */
 
+#include <cstdint>
 #include <cstdio>
 #include <iostream>
 
