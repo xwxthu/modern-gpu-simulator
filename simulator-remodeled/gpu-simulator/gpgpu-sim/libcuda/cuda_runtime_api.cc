@@ -2779,6 +2779,17 @@ __host__ cudaError_t CUDARTAPI cudaLaunchKernel(const char *hostFun,
                                   stream);
 }
 
+#if CUDART_VERSION >= 12000
+__host__ cudaError_t CUDARTAPI cudaGetKernel(cudaKernel_t *kernelPtr,
+                                             const void *entryFuncAddr) {
+  if (kernelPtr == NULL || entryFuncAddr == NULL) {
+    return g_last_cudaError = cudaErrorInvalidValue;
+  }
+  *kernelPtr = (cudaKernel_t)entryFuncAddr;
+  return g_last_cudaError = cudaSuccess;
+}
+#endif
+
 /*******************************************************************************
  *                                                                              *
  *                                                                              *
@@ -3617,6 +3628,15 @@ cudaError_t CUDARTAPI __cudaPopCallConfiguration(dim3 *gridDim, dim3 *blockDim,
   if (g_debug_execution >= 3) {
     announce_call(__my_func__);
   }
+  gpgpu_context *ctx = GPGPU_Context();
+  if (ctx->api->g_cuda_launch_stack.empty()) {
+    return g_last_cudaError = cudaErrorInvalidConfiguration;
+  }
+  kernel_config &config = ctx->api->g_cuda_launch_stack.back();
+  if (gridDim) *gridDim = config.grid_dim();
+  if (blockDim) *blockDim = config.block_dim();
+  if (sharedMem) *sharedMem = config.shared_mem();
+  if (stream) *(cudaStream_t *)stream = (cudaStream_t)config.get_stream();
   return g_last_cudaError = cudaSuccess;
 }
 
@@ -3628,6 +3648,21 @@ void CUDARTAPI __cudaRegisterFunction(void **fatCubinHandle,
   cudaRegisterFunctionInternal(fatCubinHandle, hostFun, deviceFun, deviceName,
                                thread_limit, tid, bid, bDim, gDim);
 }
+
+#if CUDART_VERSION >= 13000
+cudaError_t CUDARTAPI __cudaGetKernel(cudaKernel_t *kernelPtr,
+                                      const void *entryFuncAddr) {
+  return cudaGetKernel(kernelPtr, entryFuncAddr);
+}
+
+cudaError_t CUDARTAPI __cudaLaunchKernel(cudaKernel_t kernel, dim3 gridDim,
+                                         dim3 blockDim, void **args,
+                                         size_t sharedMem,
+                                         cudaStream_t stream) {
+  return cudaLaunchKernelInternal((const char *)kernel, gridDim, blockDim,
+                                  (const void **)args, sharedMem, stream);
+}
+#endif
 
 extern void __cudaRegisterVar(
     void **fatCubinHandle,

@@ -558,3 +558,43 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: add reviewed CUDA 13 `libcudart.so.13` ABI support to the GPGPU-Sim runtime, rebuild, rerun one local smoke, then generate real supplied-metrics correlation input only if real simulator metrics exist.
+
+Checkpoint:
+- Commit `3f32727a41fac904b6fa3e4edabd13df5e1ee8c7` (`fix: detach local procman manager`) recorded the procman detach fix and functional local smoke without simulator metrics.
+
+### 2026-06-09 02:08:40 CST
+
+Action:
+- Spawned S7 CUDA 13 runtime ABI worker `019ea85b-90ae-7313-b485-1ee37ac86621`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/Makefile`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/linux-so-version.txt`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/libcuda/cuda_api_object.h`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/libcuda/cuda_runtime_api.cc`.
+- `simulator-remodeled/util/job_launching/run_simulations.py`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-020840-s7-cuda13-abi.md`.
+- Local ABI/smoke evidence under ignored `artifacts/s7/s7-cuda13-abi-20260609-015602/`.
+
+Worker validation:
+- Rebuilt GPGPU-Sim runtime with `SONAME libcudart.so.13`, `libcudart.so.13` symlink, and `libcudart.so.13` version node.
+- Exported/bound CUDA 13 app-side runtime symbols including `cudaGetKernel`, `__cudaGetKernel`, `__cudaLaunchKernel`, and `__cudaPopCallConfiguration`.
+- Updated local run-dir copying to preserve `libcudart.so.*` aliases.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Accepted/generated config scoped status check was empty.
+
+Partial result:
+- The CUDA 13 app now resolves `libcudart.so.13` from the copied GPGPU-Sim runtime rather than system CUDA.
+- The smoke still produced no real simulator metrics.
+- New blocker: runtime loading fails on unresolved trace-driven/remodeling symbol `_ZTV16trace_shd_warp_t` (`vtable for trace_shd_warp_t`).
+- Evidence points to trace-driven/remodeling definitions under `trace-driven/` and `util/traces_enhanced/src/` not being linked into the GPGPU-Sim runtime.
+
+Supervisor review:
+- Supervisor reviewer `019ea874-9e84-71a0-8de4-38651bd90700` returned `ACCEPT`.
+- Reviewer confirmed the ABI changes are narrow, the app binds GPGPU-Sim `libcudart.so.13`, no fake metrics were created, protected config/latest paths are clean, and the new trace-driven symbol blocker is supported by evidence.
+
+Follow-up:
+- Pending S7 work remains: link the required trace-driven/remodeling objects into the runtime or otherwise resolve `_ZTV16trace_shd_warp_t`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.

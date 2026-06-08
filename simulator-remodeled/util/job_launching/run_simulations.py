@@ -373,6 +373,14 @@ if not os.path.exists( running_sim_dir ):
 
 if not os.path.exists(os.path.join(running_sim_dir,os.path.basename(simulator_path))):
     shutil.copy( simulator_path, running_sim_dir )
+if options.trace_dir == "":
+    for versioned_simulator_path in glob.glob(os.path.join(options.simulator_dir, "libcudart.so.*")):
+        target_path = os.path.join(running_sim_dir, os.path.basename(versioned_simulator_path))
+        if not os.path.exists(target_path):
+            if os.path.islink(versioned_simulator_path):
+                os.symlink(os.readlink(versioned_simulator_path), target_path)
+            else:
+                shutil.copy(versioned_simulator_path, target_path)
 options.simulator_dir = running_sim_dir
 
 common.load_defined_yamls()
