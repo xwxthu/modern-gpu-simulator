@@ -21,7 +21,7 @@ Make the modern simulator maintainable as:
 | Stage | Status | Goal | Acceptance Criteria |
 | --- | --- | --- | --- |
 | S0 | Complete | Establish documentation and governance | Supervisor log, overall plan, and worker log rules exist and are committed or ready for checkpoint. |
-| S1 | Not started | Audit current parameter/config/calibration surface | Produce a parameter taxonomy for SM120 configs and remodeled source constants; identify config-driven, hardcoded, measurable, and search-only parameters. |
+| S1 | Complete | Audit current parameter/config/calibration surface | Produce a parameter taxonomy for SM120 configs and remodeled source constants; identify config-driven, hardcoded, measurable, and search-only parameters. |
 | S2 | Not started | Design SM120 configuration layering | Define `SM120_BASE` plus per-GPU overlay strategy; specify file layout and generation rules without breaking existing configs. |
 | S3 | Not started | Modernize calibration prerequisites | Plan and implement CUDA 13.2 / SM120 microbenchmark build support, `.venv`, and hardware collection interface using official tools. |
 | S4 | Not started | Extend tuner/config generation | Update tuner templates and parsing so it can generate complete modern SM120 configs, including remodeled parameters. |
@@ -32,9 +32,9 @@ Make the modern simulator maintainable as:
 
 ## Current Active Stage
 
-S1: Audit current parameter/config/calibration surface.
+S2: Design SM120 configuration layering.
 
-S0 is complete. S1 worker audit is in progress.
+S0 and S1 are complete. S2 is ready to start.
 
 ## Checkpoint Policy
 
