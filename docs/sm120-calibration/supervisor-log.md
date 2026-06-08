@@ -406,3 +406,43 @@ Supervisor review:
 Follow-up:
 - Promotion gate remains closed. The real microbenchmark draft is raw single-run evidence and has not been copied into accepted configs, `latest.yaml`, or generated SM120 configs.
 - Pending S7 work remains: review unsupported S5 keys, run local simulator smoke tests, construct real supplied-metrics S6 correlation manifests, run bounded local correlation if needed, and perform promotion-gate review.
+
+Checkpoint:
+- Commit `bade0d0bc4304f5aa3826b3ca572a14c3a30a22f` (`fix: restore CUDA 13 tuner microbench builds`) recorded the CUDA 13 tuner build fix and real RTX5060 microbenchmark draft collection checkpoint.
+
+### 2026-06-09 00:08:56 CST
+
+Action:
+- Spawned S7 local smoke/correlation-prep worker `019ea7fc-9997-7000-b2e8-ed554a743f04`.
+
+Worker deliverables:
+- `docs/sm120-calibration/worker-logs/worker-20260609-000856-s7-local-smoke.md`.
+- Local run evidence under ignored `artifacts/s7/rtx5060-s7-local-smoke-20260609-000856/`.
+
+Worker validation:
+- Local `generate_sm120_configs.py --check-only` passed.
+- S7 helper dry-run for RTX5060 passed.
+- S6 fixture dry-run and planned-command check passed.
+- Local smoke setup-only command with `run_simulations.py ... -n` was attempted on the local server.
+- `git diff --check` passed.
+- Accepted/generated config scoped status check was empty.
+
+Blocker:
+- Local smoke setup-only failed before run-directory creation because local build prerequisites are missing:
+  `gpgpu-sim/lib/gcc-13.3.0/cuda-13010/release`.
+- Local inspection also found no `simulator-remodeled/gpu-app-collection/bin`.
+- No local simulator job was launched.
+- No full simulator ran on `dsp5060`.
+
+Supplied-metrics status:
+- Worker prepared only a template skeleton:
+  `artifacts/s7/rtx5060-s7-local-smoke-20260609-000856/RTX5060-s6-supplied-metrics.TEMPLATE.yaml`.
+- The template has `candidate_metrics: []` and no fabricated metrics.
+- No real S6 ranking report was generated.
+
+Supervisor review:
+- Supervisor reviewer `019ea80f-7615-7363-ab8c-04bf6bbb0292` returned `ACCEPT`.
+- Reviewer confirmed the partial/blocked conclusion is supported, no simulator job was launched, the supplied-metrics file is template-only, artifact hashes verify, and protected config/latest paths are clean.
+
+Follow-up:
+- Pending S7 work remains: build the local GPGPU-Sim release library and gpu-app binaries, rerun setup-only smoke planning, then intentionally run one local smoke only after setup is reviewed.
