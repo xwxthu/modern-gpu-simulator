@@ -635,3 +635,51 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: add a reviewed runtime initialization path for trace-driven `trace_config` option registration, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `e9206095136e1d78c687d89164f0686bf69e95b1` (`fix: link trace runtime into cudart`) recorded the trace runtime link fix and bounded the next trace option registration blocker.
+
+### 2026-06-09 02:57:26 CST
+
+Action:
+- Spawned S7 trace config option registration worker `019ea898-82de-7bb0-8614-e71c81ff1f3a`.
+
+Scope:
+- Resolve or precisely bound `GPGPU-Sim ** ERROR: Unknown Option: '-is_extra_traces_enabled'` on the CUDA runtime initialization path.
+- Prefer a root-cause fix that registers trace-driven `trace_config` options before parsing `gpgpusim.config`, rather than deleting SM120 trace options from generated configs.
+
+### 2026-06-09 03:16:02 CST
+
+Action:
+- S7 trace config option registration worker `019ea898-82de-7bb0-8614-e71c81ff1f3a` completed `docs/sm120-calibration/worker-logs/worker-20260609-025836-s7-trace-config.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpusim_entrypoint.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpusim_entrypoint.h`.
+- `simulator-remodeled/gpu-simulator/main.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-025836-s7-trace-config.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-trace-config-20260609-025836/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected config/latest/generated scoped status was empty.
+- Final procman state was `Nothing Active`.
+
+Partial result:
+- The previous `Unknown Option: '-is_extra_traces_enabled'` blocker is resolved by registering and parsing trace-driven `trace_config` on the CUDA runtime initialization path.
+- The smoke advanced through config parsing and PTX parsing.
+- The smoke still produced no real simulator metrics.
+- New blocker: CUDA 13.1 `ptxas` resource-output parsing fails on `ptxas info    : Used 28 registers, used 1 barriers, 400 bytes cmem[0], 8 bytes cmem[2]`.
+- Stderr also reports `libgomp: Invalid value for environment variable OMP_NUM_THREADS:`.
+
+Supervisor review:
+- Supervisor reviewer `019ea8a7-c286-79b3-be3d-4d4b7c654022` returned `ACCEPT`.
+- Reviewer confirmed the fix is root-cause oriented, registration order is correct, runtime-owned versus standalone non-owned `trace_config` lifetime is bounded, and the new `ptxas` parser blocker is properly recorded.
+
+Follow-up:
+- Pending S7 work remains: update the PTX/ptxas resource-output parser for CUDA 13.1 output syntax, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.

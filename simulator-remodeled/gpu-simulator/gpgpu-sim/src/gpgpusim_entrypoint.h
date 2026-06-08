@@ -46,6 +46,8 @@ class GPGPUsim_ctx {
     g_sim_lock = PTHREAD_MUTEX_INITIALIZER;
 
     g_the_gpu_config = NULL;
+    g_trace_config = NULL;
+    g_trace_config_owned = false;
     g_the_gpu = NULL;
     g_stream_manager = NULL;
     the_cude_device = NULL;
@@ -65,6 +67,7 @@ class GPGPUsim_ctx {
 
   class gpgpu_sim_config *g_the_gpu_config;
   class trace_config *g_trace_config;
+  bool g_trace_config_owned;
   class gpgpu_sim *g_the_gpu;
   class stream_manager *g_stream_manager;
 

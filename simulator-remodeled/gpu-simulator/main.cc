@@ -282,6 +282,7 @@ gpgpu_sim *gpgpu_trace_sim_init_perf_model(int argc, const char *argv[],
       opp); // register GPU microrachitecture options
   m_config->reg_options(opp);
   m_gpgpu_context->the_gpgpusim->g_trace_config = m_config;
+  m_gpgpu_context->the_gpgpusim->g_trace_config_owned = false;
 
   option_parser_cmdline(opp, argc, argv); // parse configuration options
   fprintf(stdout, "GPGPU-Sim: Configuration options:\n\n");

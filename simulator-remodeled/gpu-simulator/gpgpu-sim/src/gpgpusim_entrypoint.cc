@@ -37,6 +37,9 @@
 #include "gpgpu-sim/icnt_wrapper.h"
 #include "option_parser.h"
 #include "stream_manager.h"
+#if TRACING_ON
+#include "../../trace-driven/trace_driven.h"
+#endif
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
@@ -176,6 +179,13 @@ GPGPUsim_ctx::~GPGPUsim_ctx() {
       delete g_stream_manager;
       g_stream_manager = nullptr;
     }
+    #if TRACING_ON
+    if (g_trace_config_owned && g_trace_config) {
+      delete g_trace_config;
+      g_trace_config = nullptr;
+      g_trace_config_owned = false;
+    }
+    #endif
   }
 
 void gpgpu_context::synchronize() {
@@ -219,6 +229,11 @@ gpgpu_sim *gpgpu_context::gpgpu_ptx_sim_init_perf() {
   the_gpgpusim->g_the_gpu_config = new gpgpu_sim_config(this);
   the_gpgpusim->g_the_gpu_config->reg_options(
       opp);  // register GPU microrachitecture options
+#if TRACING_ON
+  the_gpgpusim->g_trace_config = new trace_config;
+  the_gpgpusim->g_trace_config_owned = true;
+  the_gpgpusim->g_trace_config->reg_options(opp);
+#endif
 
   option_parser_cmdline(opp, sg_argc, sg_argv);  // parse configuration options
   fprintf(stdout, "GPGPU-Sim: Configuration options:\n\n");
@@ -228,6 +243,9 @@ gpgpu_sim *gpgpu_context::gpgpu_ptx_sim_init_perf() {
   // system environment variables
   assert(setlocale(LC_NUMERIC, "C"));
   the_gpgpusim->g_the_gpu_config->init();
+#if TRACING_ON
+  the_gpgpusim->g_trace_config->parse_config();
+#endif
 
   the_gpgpusim->g_the_gpu_config->set_custom_options(false); // MOD. General parse options
 
