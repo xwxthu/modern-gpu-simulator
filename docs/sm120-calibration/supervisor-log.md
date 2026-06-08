@@ -835,3 +835,52 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the remodeled issue-stage stats registration/null-counter blocker in `Subcore::issue(SM*)`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `494dfd72db4d717ee008a2b2e4a23af915ec7fc9` (`fix: preserve runtime opcode latency options`) recorded the runtime option lifetime and validated opcode latency parsing fix.
+
+### 2026-06-09 04:42:08 CST
+
+Action:
+- Spawned S7 remodeled subcore stats worker `019ea8f8-56dd-74d3-ac6c-234029393f2a`.
+
+Scope:
+- Resolve or precisely bound the `Subcore::issue(SM*)` segmentation fault caused by an empty/null stats map entry for `total_num_cycles_issue_stage_stall_no_valid_instruction`.
+- Prefer a root-cause stats registration/initialization fix rather than a local null check that silently drops stats.
+
+### 2026-06-09 05:06:22 CST
+
+Action:
+- S7 remodeled subcore stats worker `019ea8f8-56dd-74d3-ac6c-234029393f2a` completed `docs/sm120-calibration/worker-logs/worker-20260609-044203-s7-subcore-stats.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-044203-s7-subcore-stats.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-subcore-stats-20260609-044203/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected config/latest/generated scoped status was empty.
+
+Root cause:
+- Remodeled `SM` objects were constructed and initialized without calling the existing per-SM stats copy hook.
+- `Subcore::issue()` then accessed the stat key through `operator[]`, inserting an empty/null `shared_ptr` for `total_num_cycles_issue_stage_stall_no_valid_instruction`.
+
+Partial result:
+- The remodeled SM construction path now calls `create_gpu_per_sm_stats(m_gpu->m_gpu_per_sm_stats)` before `init()`.
+- The previous `Subcore::issue(SM*)` null stats shared-pointer crash is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: assertion in `shd_warp_t::get_current_unique_function_id_call()` at `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.h:229`, called from `Subcore::fetch()` at `remodeling/subcore.cc:981`.
+- Stderr still reports `libgomp: Invalid value for environment variable OMP_NUM_THREADS:`.
+
+Supervisor review:
+- Supervisor reviewer `019ea90c-e335-7e11-aa65-a13284dfa67d` returned `ACCEPT`.
+- Reviewer confirmed the fix uses the existing global per-SM stat registration, does not mask missing stats with null checks, has low duplicate-registration risk, and cleanly bounds the new function-call-stack assertion blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the `shd_warp_t::get_current_unique_function_id_call()` assertion on the remodeled fetch path, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.

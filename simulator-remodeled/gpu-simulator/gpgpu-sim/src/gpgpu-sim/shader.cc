@@ -4467,6 +4467,7 @@ void exec_simt_core_cluster::create_shader_core_ctx() {
     if(m_config->is_SM_remodeling_enabled) {
       m_core[i] = new SM(m_config->num_subcores_in_SM, m_gpu, this, sid, m_cluster_id,
                                           m_config, m_mem_config, m_stats);
+      m_core[i]->create_gpu_per_sm_stats(m_gpu->m_gpu_per_sm_stats);
       m_core[i]->init();
     }else {
       m_core[i] = new exec_shader_core_ctx(m_gpu, this, sid, m_cluster_id,
