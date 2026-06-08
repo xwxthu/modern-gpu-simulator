@@ -188,6 +188,7 @@ class Register_file {
  private:
   shader_core_stats *m_stats;
   Subcore* m_subcore;
+  bool m_is_trace_mode;
   bool m_is_rf_cache_enabled;
   bool m_is_unlimited_reads_per_cycles;
   bool m_is_unlimited_writes_per_cycles;

@@ -202,16 +202,25 @@ void functional_unit::release_read_barrier(std::unique_ptr<warp_inst_t> &pipe_re
     }else {
       m_sm->get_scoreboard_WAR()->releaseRegisters(pipe_reg_target.get());
     }
-  } else if (!m_sm->get_config()->is_remodeling_scoreboarding_enabled && m_can_set_wait_barriers && pipe_reg_target
+  } else if (m_sm->get_config()->is_trace_mode &&
+             !m_sm->get_config()->is_remodeling_scoreboarding_enabled) {
+    if (!pipe_reg_target->has_extra_trace_instruction_info()) {
+      fprintf(stderr,
+              "Trace read-barrier release requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    if (m_can_set_wait_barriers && pipe_reg_target
                                             ->get_extra_trace_instruction_info()
                                             .get_control_bits()
                                             .get_is_new_read_barrier()) {
-    m_sm->add_pending_wait_barrier_decrement(
-        pipe_reg_target.get(), Wait_Barrier_Type::READ_WAIT_BARRIER,
-        pipe_reg_target
-            ->get_extra_trace_instruction_info()
-            .get_control_bits()
-            .get_id_new_read_barrier());
+      m_sm->add_pending_wait_barrier_decrement(
+          pipe_reg_target.get(), Wait_Barrier_Type::READ_WAIT_BARRIER,
+          pipe_reg_target
+              ->get_extra_trace_instruction_info()
+              .get_control_bits()
+              .get_id_new_read_barrier());
+    }
   }
 }
 
@@ -223,7 +232,15 @@ bool functional_unit::instruction_finishing_execution(std::unique_ptr<warp_inst_
       retired = true;
     }
   }else {
-    if (!pipe_reg_target
+    if(m_sm->get_config()->is_trace_mode &&
+       !pipe_reg_target->has_extra_trace_instruction_info()) {
+      fprintf(stderr,
+              "Trace instruction retirement requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    if (!pipe_reg_target->has_extra_trace_instruction_info() ||
+        !pipe_reg_target
             ->get_extra_trace_instruction_info()
             .has_destination_registers()) {
       m_sm->instruction_retirement(pipe_reg_target.get());
@@ -513,7 +530,15 @@ functional_unit_shared_sm_part::functional_unit_shared_sm_part(
 void functional_unit_shared_sm_part::cycle() {
   if (!m_pipeline_reg[0]->empty()) {
     unsigned int subcore_id = m_pipeline_reg[0]->get_subcore_id();
-    if(!m_pipeline_reg[0]
+    if(m_sm->get_config()->is_trace_mode &&
+       !m_pipeline_reg[0]->has_extra_trace_instruction_info()) {
+      fprintf(stderr,
+              "Trace shared-SM pipeline retirement requires trace "
+              "instruction metadata.\n");
+      abort();
+    }
+    if(!m_pipeline_reg[0]->has_extra_trace_instruction_info() ||
+       !m_pipeline_reg[0]
             ->get_extra_trace_instruction_info()
             .has_destination_registers()) {
       m_sm->instruction_retirement(m_pipeline_reg[0].get());

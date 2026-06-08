@@ -261,6 +261,7 @@ Register_file::Register_file(unsigned int num_banks, unsigned int num_read_ports
   m_is_unlimited_writes_per_cycles = is_unlimited_writes_per_cycles;
   m_max_num_operands = max_num_operands;
   m_subcore = subcore;
+  m_is_trace_mode = subcore->get_sm()->get_config()->is_trace_mode;
   m_is_rf_cache_enabled = is_rf_cache_enabled;
   m_type = type;
 }
@@ -351,6 +352,16 @@ int Register_file::compute_read_slack(int max_uses) {
 
 RF_instruction_read_request Register_file::is_possible_to_read_cacheable(const warp_inst_t *inst, unsigned int warp_id, unsigned int read_cycles) {
   RF_instruction_read_request res(m_num_banks);
+  if(!inst->has_extra_trace_instruction_info()) {
+    if(m_is_trace_mode) {
+      fprintf(stderr,
+              "Trace register-file read requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    return res;
+  }
+
   int max_num_uses = 0;
   bool can_inst_read_from_rfc = can_read_from_rf_cache(inst);
   if(!m_is_unlimited_reads_per_cycles) {
@@ -399,6 +410,16 @@ RF_instruction_read_request Register_file::is_possible_to_read_cacheable(const w
 
 RF_instruction_read_request Register_file::is_possible_to_read_non_cacheable(const warp_inst_t *inst, unsigned int read_cycles) {
   RF_instruction_read_request res(m_num_banks);
+  if(!inst->has_extra_trace_instruction_info()) {
+    if(m_is_trace_mode) {
+      fprintf(stderr,
+              "Trace register-file read requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    return res;
+  }
+
   int max_num_uses = 0;
   if(!m_is_unlimited_reads_per_cycles) {
     // First dimension is the number of sets, second is the ID of registers that are going to request a read to RF
@@ -430,6 +451,16 @@ RF_instruction_read_request Register_file::is_possible_to_read_non_cacheable(con
 void Register_file::allocate_reads_cacheable(RF_instruction_read_request rf_requests,
                                    const warp_inst_t *pI, unsigned int warp_id, unsigned int read_cycles) {
   assert(rf_requests.m_is_possible_to_read);
+  if(!pI->has_extra_trace_instruction_info()) {
+    if(m_is_trace_mode) {
+      fprintf(stderr,
+              "Trace register-file read allocation requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    return;
+  }
+
   unsigned int first_read_operand = pI->get_extra_trace_instruction_info().get_num_destination_registers();
   unsigned int operand_position = first_read_operand;
   unsigned int operand_rf_cache_position = 0;
@@ -463,6 +494,16 @@ void Register_file::allocate_reads_cacheable(RF_instruction_read_request rf_requ
 
 void Register_file::allocate_reads_non_cacheable(RF_instruction_read_request rf_requests, const warp_inst_t *pI, unsigned int read_cycles) {
   assert(rf_requests.m_is_possible_to_read);
+  if(!pI->has_extra_trace_instruction_info()) {
+    if(m_is_trace_mode) {
+      fprintf(stderr,
+              "Trace register-file read allocation requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    return;
+  }
+
   for(unsigned int i = 0; i < m_num_banks; i++){
     m_banks[i].allocate_read_ports(1, 2 + rf_requests.max_slack_due_to_double_use_of_banks, 1);
   }

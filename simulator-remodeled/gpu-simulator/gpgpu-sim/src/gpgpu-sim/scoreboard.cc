@@ -137,6 +137,17 @@ void Scoreboard::reserveRegisters(const class warp_inst_t* inst) {
   }
 }
 void Scoreboard::reserveRegisters_remodeling(const class warp_inst_t* inst) {
+  if (!inst->has_extra_trace_instruction_info()) {
+    if (m_is_trace_mode) {
+      fprintf(stderr,
+              "Trace remodeled scoreboard requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    reserveRegisters(inst);
+    return;
+  }
+
   unsigned int num_dsts =
       inst->get_extra_trace_instruction_info().get_num_destination_registers();
   for (unsigned int r = 0; r < num_dsts; r++) {
@@ -176,6 +187,17 @@ void Scoreboard::reserveRegisters_remodeling(const class warp_inst_t* inst) {
 
 // Release registers for an instruction
 void Scoreboard::releaseRegisters_remodeling(const class warp_inst_t* inst) {
+  if (!inst->has_extra_trace_instruction_info()) {
+    if (m_is_trace_mode) {
+      fprintf(stderr,
+              "Trace remodeled scoreboard requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    releaseRegisters(inst);
+    return;
+  }
+
   unsigned int num_dsts =
       inst->get_extra_trace_instruction_info().get_num_destination_registers();
   for (unsigned int r = 0; r < num_dsts; r++) {
@@ -214,6 +236,16 @@ void Scoreboard::releaseRegisters(const class warp_inst_t* inst) {
 }
 
 bool Scoreboard::checkCollision_remodeling(unsigned wid, const class warp_inst_t* inst) const {
+  if (!inst->has_extra_trace_instruction_info()) {
+    if (m_is_trace_mode) {
+      fprintf(stderr,
+              "Trace remodeled scoreboard requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
+    return checkCollision(wid, inst);
+  }
+
   // Get list of all input and output registers
   std::set<int> inst_regs;
 

@@ -177,7 +177,14 @@ bool Subcore::writeback_latch_proccess(SM *shared_sm, register_set_uniptr &latch
   Register_file *dst_rf = nullptr;
   bool has_rf_modeled = true;
   if (ready_reg && !ready_reg->empty()) {
-    if(ready_reg->get_extra_trace_instruction_info().has_destination_registers()) {    
+    if(m_config->is_trace_mode &&
+       !ready_reg->has_extra_trace_instruction_info()) {
+      fprintf(stderr,
+              "Trace writeback requires trace instruction metadata.\n");
+      abort();
+    }
+    if(ready_reg->has_extra_trace_instruction_info() &&
+       ready_reg->get_extra_trace_instruction_info().has_destination_registers()) {
       num_encoded_dsts = ready_reg->get_extra_trace_instruction_info().get_num_destination_registers();
       num_uses = get_number_of_uses_per_operand(ready_reg->get_extra_trace_instruction_info(), ready_reg->get_extra_trace_instruction_info().get_operand(0).get_operand_reg_number(), 0, ready_reg->get_extra_trace_instruction_info().get_operand(0).get_operand_type());
       TraceEnhancedOperandType dst_type = TraceEnhancedOperandType::NONE;
@@ -290,6 +297,13 @@ void Subcore::allocate(SM *shared_sm) {
     unsigned int latency_read_fixed_latency_inst = current_ins->is_tensor_core_op_with_4_registers_per_op() ? MAXIMUM_LATENCY_READ_FIXED_LATENCY_INST : NO_TENSOR_OP_4REG_PER_OP_LATENCY_READ_FIXED_LATENCY_INST;
     if(m_pipeline_read_stage_latency_reg[latency_read_fixed_latency_inst - 1]->empty()) {
       unsigned int sm_warp_id = current_ins->warp_id();
+      if(m_config->is_trace_mode &&
+         !current_ins->has_extra_trace_instruction_info()) {
+        fprintf(stderr,
+                "Trace register-file allocation requires trace instruction "
+                "metadata.\n");
+        abort();
+      }
       rf_requests.m_regular = m_regular_rf->is_possible_to_read_cacheable(current_ins, sm_warp_id, fu->get_rf_num_read_cycles());
       rf_requests.m_uniform = m_uniform_rf->is_possible_to_read_cacheable(current_ins, sm_warp_id, m_config->warp_size);
       bool is_read_available = rf_requests.is_possible_to_read();
@@ -298,9 +312,11 @@ void Subcore::allocate(SM *shared_sm) {
       bool is_rf_ready = is_read_available;
       shared_sm->m_sm_stats.m_stats_map["total_num_evals_rf"]->increment_with_integer(1);
       if(is_rf_ready && is_fu_latency_available) {
-        allocate_reads(rf_requests, current_ins, sm_warp_id, fu->get_rf_num_read_cycles());
-        shared_sm->m_sm_stats.m_stats_map["total_num_register_file_cache_hits"]->increment_with_integer(rf_requests.m_regular.m_rf_cache_read_requests.size());
-        shared_sm->m_sm_stats.m_stats_map["total_num_register_file_cache_allocations"]->increment_with_integer(rf_requests.m_regular.m_rf_cache_allocate_requests.size());
+        if (current_ins->has_extra_trace_instruction_info()) {
+          allocate_reads(rf_requests, current_ins, sm_warp_id, fu->get_rf_num_read_cycles());
+          shared_sm->m_sm_stats.m_stats_map["total_num_register_file_cache_hits"]->increment_with_integer(rf_requests.m_regular.m_rf_cache_read_requests.size());
+          shared_sm->m_sm_stats.m_stats_map["total_num_register_file_cache_allocations"]->increment_with_integer(rf_requests.m_regular.m_rf_cache_allocate_requests.size());
+        }
         fu->reserve_latency(target_latency_execution);
         m_CONTROL_ALLOCATE_latch.move_out_to(m_pipeline_read_stage_latency_reg[latency_read_fixed_latency_inst - 1]);
       }else {
@@ -321,6 +337,11 @@ void Subcore::control_stage(SM *shared_sm) {
     bool is_fixed_latency_inst = fu->is_fixed_latency_unit();
     if(!current_ins->m_has_perform_control_stage) {
       if (m_sm->get_config()->is_trace_mode && !((!m_sm->get_shd_warp(current_ins->warp_id())->get_kernel_info()->is_captured_from_binary) || m_sm->get_config()->is_remodeling_scoreboarding_enabled)) {
+        if(!current_ins->has_extra_trace_instruction_info()) {
+          fprintf(stderr,
+                  "Trace control stage requires trace instruction metadata.\n");
+          abort();
+        }
         if (current_ins->get_extra_trace_instruction_info().get_control_bits().get_is_new_read_barrier()) {
           m_sm->add_pending_wait_barrier_increment(current_ins, READ_WAIT_BARRIER, current_ins->get_extra_trace_instruction_info().get_control_bits().get_id_new_read_barrier());
         }
@@ -397,7 +418,11 @@ void Subcore::issue(SM *shared_sm) {
         bool is_not_yield = true;
         
         if(use_traditional_scoreboarding) {
-          are_traditional_scoreaboards_ready = !(shared_sm->get_scoreboard()->checkCollision_remodeling(sm_warp_id, pI) || shared_sm->get_scoreboard_WAR()->checkCollision_remodeling(sm_warp_id, pI));
+          if(m_config->is_trace_mode || pI->has_extra_trace_instruction_info()) {
+            are_traditional_scoreaboards_ready = !(shared_sm->get_scoreboard()->checkCollision_remodeling(sm_warp_id, pI) || shared_sm->get_scoreboard_WAR()->checkCollision_remodeling(sm_warp_id, pI));
+          }else {
+            are_traditional_scoreaboards_ready = !(shared_sm->get_scoreboard()->checkCollision(sm_warp_id, pI) || shared_sm->get_scoreboard_WAR()->checkCollision(sm_warp_id, pI));
+          }
         }else {
           is_stall_counter_0 =
             c_warp->get_dependency_state()->is_stall_counter_0();
@@ -419,7 +444,14 @@ void Subcore::issue(SM *shared_sm) {
         bool has_dst_regs = false;
         TraceEnhancedOperandType dst_type = TraceEnhancedOperandType::NONE;
         if(fu->is_fixed_latency_unit()) {
-          if(pI->get_extra_trace_instruction_info().has_destination_registers()) {
+          if(m_config->is_trace_mode &&
+             !pI->has_extra_trace_instruction_info()) {
+            fprintf(stderr,
+                    "Trace fixed-latency issue requires trace instruction "
+                    "metadata.\n");
+            abort();
+          }
+          if(pI->has_extra_trace_instruction_info() && pI->get_extra_trace_instruction_info().has_destination_registers()) {
             has_dst_regs = true;
             dst_type = fu->get_result_queue_type();
             if(dst_type == TraceEnhancedOperandType::UREG) {
@@ -583,10 +615,16 @@ void Subcore::remove_interwarp_coalescing_dep_counter_at_decode_tracking(warp_in
 }
 
 void Subcore::set_num_pending_cycles_with_issue_port_busy(const warp_inst_t *pI) {
-  if(m_config->is_trace_mode && pI->get_extra_trace_instruction_info().get_is_imad()) {
-    m_num_pending_cycles_with_issue_port_busy = m_config->num_cycles_issue_port_busy_after_imadwide;
-  }else {
-    m_num_pending_cycles_with_issue_port_busy = 0;
+  m_num_pending_cycles_with_issue_port_busy = 0;
+  if(m_config->is_trace_mode) {
+    if(!pI->has_extra_trace_instruction_info()) {
+      fprintf(stderr,
+              "Trace issue-port timing requires trace instruction metadata.\n");
+      abort();
+    }
+    if(pI->get_extra_trace_instruction_info().get_is_imad()) {
+      m_num_pending_cycles_with_issue_port_busy = m_config->num_cycles_issue_port_busy_after_imadwide;
+    }
   }
 }
 
@@ -614,6 +652,11 @@ bool Subcore::is_wait_barriers_ready_entry_point(const warp_inst_t *inst,
 }
 
 std::vector<Wait_Barrier_Checking> Subcore::wait_barriers_to_check_generic(const warp_inst_t* inst, unsigned int subcore_warp_id) {
+  if(m_config->is_trace_mode && !inst->has_extra_trace_instruction_info()) {
+    fprintf(stderr,
+            "Trace wait-barrier check requires trace instruction metadata.\n");
+    abort();
+  }
   int wait_barrier_mask_int = inst->get_extra_trace_instruction_info()
                                   .get_control_bits()
                                   .get_wait_barrier_bits();
@@ -628,6 +671,11 @@ std::vector<Wait_Barrier_Checking> Subcore::wait_barriers_to_check_generic(const
 }
 
 std::vector<Wait_Barrier_Checking> Subcore::wait_barriers_to_check_depbar(const warp_inst_t* inst, unsigned int subcore_warp_id) {
+  if(m_config->is_trace_mode && !inst->has_extra_trace_instruction_info()) {
+    fprintf(stderr,
+            "Trace depbar check requires trace instruction metadata.\n");
+    abort();
+  }
   std::size_t num_operands = inst->get_extra_trace_instruction_info().get_num_operands();
   assert( num_operands > 1);
   traced_operand& op_sb = inst->get_extra_trace_instruction_info().get_operand(0);
@@ -791,7 +839,16 @@ functional_unit* Subcore::get_fu(const warp_inst_t *pI) {
       fu = m_sp_pipeline;
     case SP_OP:
       fu = m_sp_pipeline;
-      if(m_config->is_fp32ops_allowed_in_int_pipeline && m_int_pipeline->can_issue(pI) && !pI->get_extra_trace_instruction_info().get_is_imad()) { /// INCLUIR AQUI IMAD
+      if(m_config->is_trace_mode) {
+        if(!pI->has_extra_trace_instruction_info()) {
+          fprintf(stderr,
+                  "Trace FP32/INT pipeline selection requires trace "
+                  "instruction metadata.\n");
+          abort();
+        }
+      }
+      if(m_config->is_fp32ops_allowed_in_int_pipeline && m_int_pipeline->can_issue(pI) &&
+         !(m_config->is_trace_mode && pI->get_extra_trace_instruction_info().get_is_imad())) { /// INCLUIR AQUI IMAD
         fu = m_int_pipeline;
       }
       break;
@@ -1138,6 +1195,15 @@ SM *Subcore::get_sm() {
 }
 
 void Subcore::manage_instruction_operand_stats(SM *shared_sm, warp_inst_t *pI) {
+  if(!pI->has_extra_trace_instruction_info()) {
+    if(m_config->is_trace_mode) {
+      fprintf(stderr,
+              "Trace operand stats require trace instruction metadata.\n");
+      abort();
+    }
+    return;
+  }
+
   unsigned int first_read_operand = pI->get_extra_trace_instruction_info().get_num_destination_registers();
   if(pI->get_extra_trace_instruction_info().has_destination_registers()) {
     unsigned int num_of_accesses = get_number_of_uses_per_operand(pI->get_extra_trace_instruction_info(), pI->get_extra_trace_instruction_info().get_operand(0).get_operand_reg_number(), 0, pI->get_extra_trace_instruction_info().get_operand(0).get_operand_type());

@@ -449,9 +449,10 @@ void warp_inst_t::assign_predicate_latencies_if_needed(gpgpu_sim *gpu) {
   }
 
   if (!has_extra_trace_instruction_info()) {
-    assert(false &&
-           "Trace predicate latency modeling requires trace instruction metadata.");
-    return;
+    fprintf(stderr,
+            "Trace predicate latency modeling requires trace instruction "
+            "metadata.\n");
+    abort();
   }
 
   const trace_config *trace_conf = gpu->gpgpu_ctx->the_gpgpusim->g_trace_config;
@@ -536,9 +537,10 @@ void warp_inst_t::generate_mem_latencies(gpgpu_sim *gpu) {
   }
 
   if (!has_extra_trace_instruction_info()) {
-    assert(false &&
-           "Trace memory latency modeling requires trace instruction metadata.");
-    return;
+    fprintf(stderr,
+            "Trace memory latency modeling requires trace instruction "
+            "metadata.\n");
+    abort();
   }
 
   bool is_shared = space.is_shared();

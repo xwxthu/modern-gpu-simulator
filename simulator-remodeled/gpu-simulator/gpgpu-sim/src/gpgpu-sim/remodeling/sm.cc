@@ -324,6 +324,12 @@ void SM::instruction_retirement(warp_inst_t *instruction) {
     }
 
   } else {
+    if (!instruction->has_extra_trace_instruction_info()) {
+      fprintf(stderr,
+              "Trace instruction retirement requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
     if (instruction->get_extra_trace_instruction_info()
             .get_control_bits()
             .get_is_new_write_barrier()) {
@@ -382,10 +388,18 @@ void SM::issue_warp(register_set_uniptr &pipe_reg_set, warp_inst_t *next_inst,
   if ((pipe_reg->op == BARRIER_OP) || (pipe_reg->op == MEMORY_BARRIER_OP)) {
     if(pipe_reg->op == MEMORY_BARRIER_OP) {
       pipe_reg->m_num_cycles_to_stall_SM = m_config->num_cycles_to_stall_SM_at_gpu_memory_barrier;
-      if(m_config->is_trace_mode && pipe_reg->get_extra_trace_instruction_info().get_is_system_memory_barrier()) {
+      if(m_config->is_trace_mode && pipe_reg->has_extra_trace_instruction_info() &&
+         pipe_reg->get_extra_trace_instruction_info().get_is_system_memory_barrier()) {
         pipe_reg->m_num_cycles_to_stall_SM = m_config->num_cycles_to_stall_SM_at_system_memory_barrier;
-      }else if(m_config->is_trace_mode && pipe_reg->get_extra_trace_instruction_info().get_is_cta_memory_barrier()) {
+      }else if(m_config->is_trace_mode && pipe_reg->has_extra_trace_instruction_info() &&
+               pipe_reg->get_extra_trace_instruction_info().get_is_cta_memory_barrier()) {
         pipe_reg->m_num_cycles_to_stall_SM = m_config->num_cycles_to_stall_SM_at_cta_memory_barrier;
+      }else if(m_config->is_trace_mode &&
+               !pipe_reg->has_extra_trace_instruction_info()) {
+        fprintf(stderr,
+                "Trace memory-barrier issue requires trace instruction "
+                "metadata.\n");
+        abort();
       }
       m_physical_warp[warp_id]->set_membar();
     }
@@ -419,6 +433,12 @@ void SM::issue_warp(register_set_uniptr &pipe_reg_set, warp_inst_t *next_inst,
       }
     }
   } else {
+    if (!pipe_reg->has_extra_trace_instruction_info()) {
+      fprintf(stderr,
+              "Trace dependency-state issue requires trace instruction "
+              "metadata.\n");
+      abort();
+    }
     bool is_yield = pipe_reg
                         ->get_extra_trace_instruction_info()
                         .get_control_bits()
@@ -448,7 +468,8 @@ void SM::issue_warp(register_set_uniptr &pipe_reg_set, warp_inst_t *next_inst,
       search_func_addr_result search_result = get_gpu()->get_extra_trace_info().search_function_addr(call_address);
       if(search_result.m_has_been_traced) {
         m_physical_warp[warp_id]->push_function_call(search_result.m_unique_function_id, pipe_reg->get_active_mask());
-      }else if(pipe_reg->get_extra_trace_instruction_info().get_is_call_or_ret_with_relative()) {
+      }else if(pipe_reg->has_extra_trace_instruction_info() &&
+               pipe_reg->get_extra_trace_instruction_info().get_is_call_or_ret_with_relative()) {
         m_physical_warp[warp_id]->push_function_call(pipe_reg->unique_function_id, pipe_reg->get_active_mask());
       }else{
         assert(pipe_reg->next_traced_pc == (pipe_reg->pc + pipe_reg->isize) );

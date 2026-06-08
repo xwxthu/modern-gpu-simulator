@@ -107,6 +107,17 @@ void Scoreboard_reads::reserveRegisters(const class warp_inst_t* inst) {
 
 void Scoreboard_reads::reserveRegisters_remodeling(const class warp_inst_t* inst) {
   if(m_enabled) {
+    if (!inst->has_extra_trace_instruction_info()) {
+      if (m_is_trace_mode) {
+        fprintf(stderr,
+                "Trace remodeled WAR scoreboard requires trace instruction "
+                "metadata.\n");
+        abort();
+      }
+      reserveRegisters(inst);
+      return;
+    }
+
     std::set<int> regs_ins_reserve;
     unsigned int num_dsts = inst->get_extra_trace_instruction_info().get_num_destination_registers();
     for(unsigned int i = num_dsts; i < inst->get_extra_trace_instruction_info().get_num_operands(); i++) {
@@ -133,6 +144,17 @@ void Scoreboard_reads::reserveRegisters_remodeling(const class warp_inst_t* inst
 
 void Scoreboard_reads::releaseRegisters_remodeling(const class warp_inst_t* inst) {
   if(m_enabled) {
+    if (!inst->has_extra_trace_instruction_info()) {
+      if (m_is_trace_mode) {
+        fprintf(stderr,
+                "Trace remodeled WAR scoreboard requires trace instruction "
+                "metadata.\n");
+        abort();
+      }
+      releaseRegisters(inst);
+      return;
+    }
+
     std::set<int> regs_ins_reserve;
     unsigned int num_dsts = inst->get_extra_trace_instruction_info().get_num_destination_registers();
     for(unsigned int i = num_dsts; i < inst->get_extra_trace_instruction_info().get_num_operands(); i++) {
@@ -183,6 +205,16 @@ bool Scoreboard_reads::checkCollision(unsigned wid, const class inst_t* inst) co
 bool Scoreboard_reads::checkCollision_remodeling(unsigned wid, const class warp_inst_t* inst) const {
   if(m_enabled) {
     m_stats->num_scoreboard_reads_check_collision++;
+    if (!inst->has_extra_trace_instruction_info()) {
+      if (m_is_trace_mode) {
+        fprintf(stderr,
+                "Trace remodeled WAR scoreboard requires trace instruction "
+                "metadata.\n");
+        abort();
+      }
+      return checkCollision(wid, inst);
+    }
+
     // Check that the destination register of the new instruction is not pending to be read 
     std::set<int> inst_regs_out;
 

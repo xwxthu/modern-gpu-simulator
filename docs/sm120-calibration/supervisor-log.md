@@ -1033,3 +1033,59 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode trace metadata dereference in `Scoreboard::checkCollision_remodeling()`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `fc68f6fa3ec89d326ecc5d6584c0e2b9daff3dc9` (`fix: handle PTX-mode remodeled memory latencies`) recorded the PTX-mode memory latency handling fix.
+
+### 2026-06-09 06:39:09 CST
+
+Action:
+- Spawned S7 scoreboard PTX-mode trace-metadata worker `019ea961-6d87-7ee0-84fa-260333efd867`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode null trace metadata crash in `Scoreboard::checkCollision_remodeling()`.
+- Preserve trace-mode MICRO25/remodeled scoreboarding behavior and avoid disabling scoreboarding globally.
+
+### 2026-06-09 07:31:12 CST
+
+Action:
+- S7 scoreboard PTX-mode worker `019ea961-6d87-7ee0-84fa-260333efd867` completed `docs/sm120-calibration/worker-logs/worker-20260609-064749-s7-scoreboard-ptx.md`.
+- The worker reported a prompt-only blank-context internal reviewer verdict of `ACCEPT` after several CLI reviewer attempts failed or stalled before a usable verdict.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/abstract_hardware_model.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/functional_unit.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/register_file.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/register_file.h`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/scoreboard.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/scoreboard_reads.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-064749-s7-scoreboard-ptx.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-scoreboard-ptx-20260609-064749/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected accepted config/latest/generated scoped status was clean.
+
+Root cause:
+- PTX/performance simulation instructions do not carry enhanced trace instruction metadata, but the remodeled issue path called metadata-dependent scoreboard, register-file, functional-unit, barrier, and retirement helpers.
+- `Scoreboard::checkCollision_remodeling()` dereferenced missing trace metadata while checking operands.
+
+Partial result:
+- PTX instructions without enhanced trace metadata use classic scoreboard/register-file behavior where trace operand-use metadata is unavailable.
+- Trace-mode metadata-dependent paths remain preserved or stricter: missing trace metadata now aborts explicitly rather than silently degrading in assertion-disabled builds.
+- The previous `traced_instruction::get_num_operands(this=0x0)` scoreboard crash is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: `warp_inst_t::generate_mem_accesses()` assertion `m_per_scalar_thread_valid` at `abstract_hardware_model.cc:676`, reached from the remodeled issue path.
+
+Supervisor review:
+- Supervisor reviewer `019ea98f-2329-7942-8b2d-fe1d379005b8` returned `ACCEPT`.
+- Reviewer confirmed the implementation separates PTX/no-trace instructions from trace-enhanced metadata paths without disabling scoreboarding globally, preserves or tightens trace-mode contracts, avoids SM120/RTX5060-specific constants, and properly bounds the new memory-access validity blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode `m_per_scalar_thread_valid` assertion in `warp_inst_t::generate_mem_accesses()`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
