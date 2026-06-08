@@ -327,3 +327,44 @@ Supervisor review:
 Follow-up:
 - Marked S7 `In progress` in `overall-plan.md`, not complete.
 - Pending S7 work remains: real RTX5060 hardware characterization, RTX5060 tuner microbenchmark collection, local S5 parse review, local simulator smoke tests, real supplied-metrics correlation search, and promotion-gate review.
+
+Checkpoint:
+- Commit `252376a235cb984e6b7780da3b1888be021c61eb` (`docs: add SM120 S7 validation runbook`) recorded the S7 runbook and dry-run planner checkpoint.
+
+### 2026-06-08 23:12:05 CST
+
+Action:
+- Spawned S7 RTX5060 collection worker `019ea7bf-ef86-7032-a30a-deacf3a418ee`.
+
+Worker deliverables:
+- `docs/sm120-calibration/worker-logs/worker-20260608-231205-s7-rtx5060-collection.md`.
+- Local run evidence under ignored `artifacts/s7/rtx5060-s7-20260608-230140/`.
+- Local dry-run evidence under ignored `artifacts/logs/`.
+
+Worker validation:
+- Local RTX5060 dry-run planner passed.
+- Official-tool collector on `dsp5060` passed and recorded hardware characterization data locally.
+- CUDA 13.2 was found at `/usr/local/cuda-13.2`; `nvcc --list-gpu-code` includes `sm_120`.
+- Tuner build on `dsp5060` failed before `run_all.sh`.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Accepted config diff check was empty.
+
+Hardware characterization evidence:
+- GPU: `NVIDIA GeForce RTX 5060`.
+- Driver: `595.71.05`.
+- Compute capability: `12.0`.
+- UUID: `GPU-fd113d06-81ba-5c47-6fbe-fd8f1b99f80e`.
+- Observed clocks and memory state were recorded in the ignored S7 artifact manifest.
+
+Blocker:
+- Real tuner microbenchmark collection is blocked by a CUDA 13.2 build failure:
+  `l1_access_grain.cu(54): error: identifier "uint32_t" is undefined`.
+- `run_all.sh` was not run.
+- S5 parsing was skipped because no real microbenchmark output exists.
+- S6 real supplied-metrics parameter sweep and local simulator smoke remain pending.
+
+Supervisor review:
+- Supervisor reviewer `019ea7d7-45a8-7ca0-9a51-21e8d53ddcad` returned `ACCEPT`.
+- Reviewer confirmed the partial/blocked conclusion is supported, no full simulator ran on `dsp5060`, no main workspace was placed on `dsp5060`, and no accepted configs or `latest.yaml` were modified.
+- Low-severity reviewer finding: `artifacts/logs/` was not ignored. Added `artifacts/logs/` to `.gitignore`.

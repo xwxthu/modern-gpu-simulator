@@ -2,3 +2,4 @@
 simulator-remodeled/.venv/
 simulator-remodeled/util/hw_stats/device_info/
 artifacts/s7/
+artifacts/logs/
