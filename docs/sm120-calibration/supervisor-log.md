@@ -935,3 +935,53 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the null `traced_instruction` dereference in PTX-mode remodeled decode/predicate latency handling, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `e8dd5bc16ff9e7f04f532c248506a30134292f45` (`fix: handle PTX-mode remodeled fetch PCs`) recorded the PTX-mode remodeled fetch/function-id fix.
+
+### 2026-06-09 05:30:21 CST
+
+Action:
+- Spawned S7 predicate latency trace-metadata worker `019ea924-77b7-70a1-aa98-34b2bf31f3d7`.
+
+Scope:
+- Resolve or precisely bound the null `traced_instruction` dereference in `warp_inst_t::assign_predicate_latencies_if_needed()` called from remodeled `Subcore::single_decode()`.
+- Prefer a trace-mode/trace-metadata availability guard that preserves normal PTX decode semantics.
+
+### 2026-06-09 05:51:53 CST
+
+Action:
+- S7 predicate latency trace-metadata worker `019ea924-77b7-70a1-aa98-34b2bf31f3d7` completed `docs/sm120-calibration/worker-logs/worker-20260609-053213-s7-predicate-latency.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/abstract_hardware_model.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-053213-s7-predicate-latency.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-predicate-latency-20260609-053213/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected config/latest/generated scoped status was empty.
+
+Root cause:
+- `warp_inst_t::assign_predicate_latencies_if_needed()` unconditionally touched trace-enhanced instruction metadata during remodeled decode.
+- The local smoke is PTX/performance simulation mode, so normal PTX predecode already assigns instruction latency and no trace metadata is available.
+
+Partial result:
+- PTX mode now returns before trace-enhanced predicate latency metadata is accessed.
+- Trace mode still requires trace metadata and trace config before using predicate/SETP trace latency modeling.
+- The previous null `traced_instruction::get_contains_setp(this=0x0)` segmentation fault is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: assertion in `warp_inst_t::generate_mem_latencies()` at `simulator-remodeled/gpu-simulator/gpgpu-sim/src/abstract_hardware_model.cc:514`, because the trace-enhanced memory latency helper still asserts `shader_config.is_trace_mode` when called from PTX-mode remodeled decode.
+- Stderr still reports `libgomp: Invalid value for environment variable OMP_NUM_THREADS:`.
+
+Supervisor review:
+- Supervisor reviewer `019ea934-fb5e-7171-8334-aae66bc9f3b0` returned `ACCEPT`.
+- Reviewer confirmed the guard is narrow, PTX decode is not skipped globally, trace-mode predicate latency modeling remains strict, and the new memory-latency assertion blocker is properly bounded.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode call to trace-enhanced `generate_mem_latencies()`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.

@@ -444,13 +444,28 @@ void warp_inst_t::generate_tensor_core_latencies(gpgpu_sim *gpu) {
 
 void warp_inst_t::assign_predicate_latencies_if_needed(gpgpu_sim *gpu) {
   const shader_core_config &shader_config = gpu->get_config().get_gpgpu_sim_config();
-  // const trace_config &trace_config = gpu->ker
+  if (!shader_config.is_trace_mode) {
+    return;
+  }
+
+  if (!has_extra_trace_instruction_info()) {
+    assert(false &&
+           "Trace predicate latency modeling requires trace instruction metadata.");
+    return;
+  }
+
   const trace_config *trace_conf = gpu->gpgpu_ctx->the_gpgpusim->g_trace_config;
+  assert(trace_conf &&
+         "Trace predicate latency modeling requires a trace config.");
+  if (!trace_conf) {
+    return;
+  }
+
   if(op == op_type::PREDICATE_OP) {
     latency = trace_conf->get_int_latency();
     initiation_interval = trace_conf->get_int_init();
     latency_extra_predicate_op = shader_config.predicate_latency - latency - initiation_interval;
-  }else if(m_extra_trace_instruction_info->get_contains_setp()) {
+  }else if(get_extra_trace_instruction_info().get_contains_setp()) {
     latency_extra_predicate_op = shader_config.predicate_latency - latency - initiation_interval;
   }
 }

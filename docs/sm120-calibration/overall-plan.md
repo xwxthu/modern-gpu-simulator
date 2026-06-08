@@ -34,7 +34,7 @@ Make the modern simulator maintainable as:
 
 S7: Validate on RTX5060 and preserve RTX5070Ti compatibility.
 
-S0 through S6 are complete. S7 smoke bring-up is in progress. CUDA 13 runtime ABI, trace-driven runtime linking, runtime trace option registration, CUDA 13.1 `ptxas` parsing, runtime opcode-latency option lifetime, remodeled per-SM stats initialization, and PTX-mode remodeled fetch PC/function-id handling have been fixed for the observed local smoke. The current precise blocker is a null `traced_instruction` dereference in PTX-mode remodeled decode/predicate latency handling; real simulator metrics and real supplied-metrics correlation are still pending.
+S0 through S6 are complete. S7 smoke bring-up is in progress. CUDA 13 runtime ABI, trace-driven runtime linking, runtime trace option registration, CUDA 13.1 `ptxas` parsing, runtime opcode-latency option lifetime, remodeled per-SM stats initialization, PTX-mode remodeled fetch PC/function-id handling, and PTX-mode predicate-latency trace metadata guarding have been fixed for the observed local smoke. The current precise blocker is a PTX-mode call to trace-enhanced memory latency modeling in `warp_inst_t::generate_mem_latencies()`; real simulator metrics and real supplied-metrics correlation are still pending.
 
 ## Checkpoint Policy
 
