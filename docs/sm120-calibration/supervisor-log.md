@@ -985,3 +985,51 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode call to trace-enhanced `generate_mem_latencies()`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `65b3f4d76dce08f2fd0cf527fd35b32f2e75f01b` (`fix: guard trace predicate latency in PTX mode`) recorded the PTX-mode predicate-latency trace metadata guard.
+
+### 2026-06-09 05:53:32 CST
+
+Action:
+- Spawned S7 memory latency trace-metadata worker `019ea939-ad2a-7e23-94d5-2f2fe1bf4767`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode assertion in `warp_inst_t::generate_mem_latencies()`.
+- Prefer a trace-mode/trace-metadata availability guard that preserves normal PTX memory instruction latency semantics and trace-mode memory latency modeling.
+
+### 2026-06-09 06:34:34 CST
+
+Action:
+- S7 memory latency trace-metadata worker `019ea939-ad2a-7e23-94d5-2f2fe1bf4767` completed `docs/sm120-calibration/worker-logs/worker-20260609-055623-s7-memory-latency.md`.
+- The worker reported a blank-context internal reviewer verdict of `ACCEPT` after earlier reviewer CLI attempts failed or timed out before verdict.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/abstract_hardware_model.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-055623-s7-memory-latency.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-memory-latency-20260609-055623/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- `warp_inst_t::generate_mem_latencies()` asserted trace mode before trace-enhanced memory operand metadata access.
+- The local smoke is PTX/performance simulation mode, where normal PTX predecode already provides instruction latency and initiation interval and no enhanced trace metadata is available.
+
+Partial result:
+- PTX mode now initializes remodeled memory-latency state from existing PTX predecode values plus config-backed SM-side memory latency knobs.
+- Trace mode still uses the detailed trace-enhanced memory latency path and now asserts if required trace instruction metadata is missing.
+- The previous `shader_config.is_trace_mode` assertion in `generate_mem_latencies()` is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: null trace metadata dereference in `Scoreboard::checkCollision_remodeling()`, specifically `traced_instruction::get_num_operands(this=0x0)`, reached from `Subcore::issue()`.
+
+Supervisor review:
+- Supervisor reviewer `019ea95c-adbf-7de1-b2ba-6ab40109ddb8` returned `ACCEPT`.
+- Reviewer confirmed the PTX fallback is not SM120/RTX5060-specific, trace-mode detailed modeling is preserved, missing trace metadata is explicitly guarded before dereference, and the new scoreboard blocker is distinct and properly bounded.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode trace metadata dereference in `Scoreboard::checkCollision_remodeling()`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.

@@ -511,8 +511,36 @@ void warp_inst_t::generate_dp_latencies(gpgpu_sim *gpu) {
 void warp_inst_t::generate_mem_latencies(gpgpu_sim *gpu) {
   assert(is_load() || is_store());
   const shader_core_config &shader_config = gpu->get_config().get_gpgpu_sim_config();
-  assert(shader_config.is_trace_mode);
   m_num_cycles_per_intermediate_stage.resize(shader_config.memory_intermidiate_stages_subcore_unit, 0);
+  if (!shader_config.is_trace_mode) {
+    m_num_cycles_per_intermediate_stage[0] =
+        latency > 0 ? latency : initiation_interval;
+    if (m_num_cycles_per_intermediate_stage[0] == 0) {
+      m_num_cycles_per_intermediate_stage[0] = 1;
+    }
+    m_num_cycles_to_wait_to_free_WAR = initiation_interval > 0
+                                           ? initiation_interval
+                                           : m_num_cycles_per_intermediate_stage[0];
+    if (space.is_shared()) {
+      m_latency_of_mem_operation_at_sm_structure =
+          shader_config.memory_shared_memory_minimum_latency;
+    } else if (space.is_global() || space.is_local()) {
+      m_latency_of_mem_operation_at_sm_structure =
+          shader_config.memory_l1d_minimum_latency;
+    } else if (space.is_const()) {
+      m_latency_of_mem_operation_at_sm_structure =
+          shader_config.constant_cache_latency_at_sm_structure;
+    }
+    m_has_wb_from_sm_struct_to_subcore = true;
+    return;
+  }
+
+  if (!has_extra_trace_instruction_info()) {
+    assert(false &&
+           "Trace memory latency modeling requires trace instruction metadata.");
+    return;
+  }
+
   bool is_shared = space.is_shared();
   bool is_consider_global = space.is_global() || space.is_local();
   unsigned int total_byte_size_for_warp = data_size * warp_size();
