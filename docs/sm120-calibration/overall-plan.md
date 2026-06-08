@@ -26,15 +26,15 @@ Make the modern simulator maintainable as:
 | S3 | Complete | Modernize calibration prerequisites | Plan and implement CUDA 13.2 / SM120 microbenchmark build support, `.venv`, and hardware collection interface using official tools. |
 | S4 | Complete | Extend tuner/config generation | Update tuner templates and parsing so it can generate complete modern SM120 configs, including remodeled parameters. |
 | S5 | Complete | Add staged microbenchmark calibration | Add or adapt microbenchmarks and parsers for directly measurable parameters, with isolated tests where practical. |
-| S6 | Ready | Add targeted correlation search | Implement small, staged search for parameters not directly measurable, using simulator runs on the strong local server and hardware data from `dsp5060`. |
-| S7 | Not started | Validate on RTX5060 and preserve RTX5070Ti compatibility | Run smoke, calibration, and correlation checks; produce final configs/reports. |
+| S6 | Complete | Add targeted correlation search | Implement small, staged search for parameters not directly measurable, using simulator runs on the strong local server and hardware data from `dsp5060`. |
+| S7 | Ready | Validate on RTX5060 and preserve RTX5070Ti compatibility | Run smoke, calibration, and correlation checks; produce final configs/reports. |
 | S8 | Not started | Documentation and release checkpoint | Document workflow, limitations, reproduction commands, and checkpoint commits. |
 
 ## Current Active Stage
 
-S6: Add targeted correlation search.
+S7: Validate on RTX5060 and preserve RTX5070Ti compatibility.
 
-S0 through S5 are complete. S6 is ready to start.
+S0 through S6 are complete. S7 is ready to start.
 
 ## Checkpoint Policy
 

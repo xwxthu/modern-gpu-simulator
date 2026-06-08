@@ -1,0 +1,336 @@
+schema_version: 1
+schema_id: sm120_correlation_search_report_v1
+search_id: sm120-rtx5060-s6-synthetic-prefetch-l0
+gpu: RTX5060
+architecture: SM120
+status: draft_not_applied
+generated_at: '2026-06-08T13:56:32Z'
+fixture_only: true
+search_harness:
+  script: simulator-remodeled/util/tuner/search_sm120_correlation.py
+  script_sha256: fa46e956e64021db8373d444ef6b5ba8e2ef058b0d33de369eef8025da82b483
+  schema: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/sm120.schema.yaml
+  schema_sha256: d44fb1539e5b64fd042931992c630b5dbed0501a785f901e2f88665cf3d822f0
+  contract: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/correlation-search.schema.yaml
+  contract_sha256: 956e058a1c3175a501ea6f3d8a5f90ecd2efe1a538c855664324058c27f6c3f8
+  contract_schema_id: sm120_correlation_search_contract_v1
+repository:
+  root: /home/xiewx/accel-0608/modern-gpu-simulator
+  git_commit: a517d19b45148290e1aa711c576e27e00a9a7f0e
+source_manifest:
+  path: simulator-remodeled/util/tuner/testdata/sm120_correlation_search_fixture.yaml
+  sha256: a3f87fdb96fd336e82650b52b134f060f918deca1c9f2ced5fb6f5c6e635ed87
+base:
+  generated_config_alias: RTX5060_SM120_GEN
+  profile: bootstrap
+  gpgpusim_config: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/gpgpusim.config
+  trace_config: simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/trace.config
+  active_key_counts:
+    gpgpusim.config: 217
+    trace.config: 13
+summary:
+  evaluation_mode: fixture
+  candidate_strategy: cartesian_product
+  candidate_count: 4
+  parameter_count: 2
+  benchmark_count: 2
+  target_metric_count: 2
+  best_candidate_id: candidate_0002
+  best_score: 0.005667
+  planned_command_count: 2
+ranking_metric:
+  name: weighted_normalized_error
+  formula: sum(weight * abs(simulated - target) / max(abs(target), epsilon)) / sum(weight)
+  lower_is_better: true
+search_space:
+  stage: rf_prefetch_remodeled_parameters
+  max_candidates: 4
+  hard_candidate_limit: 64
+  parameters:
+  - file: gpgpusim.config
+    key: -latency_L0_to_L1
+    owner: calibration_result
+    stage: rf_prefetch_remodeled_parameters
+    provenance: correlation_search
+    base_value: '39'
+    values:
+    - '37'
+    - '39'
+    description: Small synthetic L0I latency sweep around bootstrap value 39.
+  - file: gpgpusim.config
+    key: -prefetch_per_stream_buffer_size
+    owner: calibration_result
+    stage: rf_prefetch_remodeled_parameters
+    provenance: correlation_search
+    base_value: '8'
+    values:
+    - '8'
+    - '10'
+    description: Small synthetic instruction-prefetch buffer-size sweep around bootstrap value 8.
+benchmark_cases:
+- id: prefetch_pointer_chase
+  suite: synthetic_fixture
+  benchmark: prefetch_pointer_chase
+  notes: Synthetic fixture case, no simulator run.
+- id: l0i_fetch_mix
+  suite: synthetic_fixture
+  benchmark: l0i_fetch_mix
+  notes: Synthetic fixture case, no simulator run.
+target_metrics:
+- benchmark: prefetch_pointer_chase
+  metric: cycles
+  target: 1000.0
+  weight: 1.0
+  epsilon: 1.0
+  normalization: target_abs_or_epsilon
+- benchmark: l0i_fetch_mix
+  metric: cycles
+  target: 500.0
+  weight: 2.0
+  epsilon: 1.0
+  normalization: target_abs_or_epsilon
+ranked_candidates:
+- rank: 1
+  candidate_id: candidate_0002
+  score: 0.005667
+  weighted_normalized_error: 0.005667
+  changed_key_count: 2
+  deltas:
+    gpgpusim.config:
+    - key: -latency_L0_to_L1
+      value: '37'
+      base_value: '39'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: true
+    - key: -prefetch_per_stream_buffer_size
+      value: '10'
+      base_value: '8'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: true
+    trace.config: []
+  metrics:
+    prefetch_pointer_chase:
+      cycles: 1005
+    l0i_fetch_mix:
+      cycles: 503
+  metric_errors:
+  - benchmark: prefetch_pointer_chase
+    metric: cycles
+    target: 1000.0
+    simulated: 1005.0
+    weight: 1.0
+    normalized_error: 0.005
+    weighted_error: 0.005
+  - benchmark: l0i_fetch_mix
+    metric: cycles
+    target: 500.0
+    simulated: 503.0
+    weight: 2.0
+    normalized_error: 0.006
+    weighted_error: 0.012
+- rank: 2
+  candidate_id: candidate_0001
+  score: 0.026667
+  weighted_normalized_error: 0.026667
+  changed_key_count: 1
+  deltas:
+    gpgpusim.config:
+    - key: -latency_L0_to_L1
+      value: '37'
+      base_value: '39'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: true
+    - key: -prefetch_per_stream_buffer_size
+      value: '8'
+      base_value: '8'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: false
+    trace.config: []
+  metrics:
+    prefetch_pointer_chase:
+      cycles: 1040
+    l0i_fetch_mix:
+      cycles: 510
+  metric_errors:
+  - benchmark: prefetch_pointer_chase
+    metric: cycles
+    target: 1000.0
+    simulated: 1040.0
+    weight: 1.0
+    normalized_error: 0.04
+    weighted_error: 0.04
+  - benchmark: l0i_fetch_mix
+    metric: cycles
+    target: 500.0
+    simulated: 510.0
+    weight: 2.0
+    normalized_error: 0.02
+    weighted_error: 0.04
+- rank: 3
+  candidate_id: candidate_0003
+  score: 0.031667
+  weighted_normalized_error: 0.031667
+  changed_key_count: 0
+  deltas:
+    gpgpusim.config:
+    - key: -latency_L0_to_L1
+      value: '39'
+      base_value: '39'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: false
+    - key: -prefetch_per_stream_buffer_size
+      value: '8'
+      base_value: '8'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: false
+    trace.config: []
+  metrics:
+    prefetch_pointer_chase:
+      cycles: 1015
+    l0i_fetch_mix:
+      cycles: 520
+  metric_errors:
+  - benchmark: prefetch_pointer_chase
+    metric: cycles
+    target: 1000.0
+    simulated: 1015.0
+    weight: 1.0
+    normalized_error: 0.015
+    weighted_error: 0.015
+  - benchmark: l0i_fetch_mix
+    metric: cycles
+    target: 500.0
+    simulated: 520.0
+    weight: 2.0
+    normalized_error: 0.04
+    weighted_error: 0.08
+- rank: 4
+  candidate_id: candidate_0004
+  score: 0.035
+  weighted_normalized_error: 0.035
+  changed_key_count: 1
+  deltas:
+    gpgpusim.config:
+    - key: -latency_L0_to_L1
+      value: '39'
+      base_value: '39'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: false
+    - key: -prefetch_per_stream_buffer_size
+      value: '10'
+      base_value: '8'
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      status: draft_not_applied
+      changed_from_base: true
+    trace.config: []
+  metrics:
+    prefetch_pointer_chase:
+      cycles: 995
+    l0i_fetch_mix:
+      cycles: 525
+  metric_errors:
+  - benchmark: prefetch_pointer_chase
+    metric: cycles
+    target: 1000.0
+    simulated: 995.0
+    weight: 1.0
+    normalized_error: 0.005
+    weighted_error: 0.005
+  - benchmark: l0i_fetch_mix
+    metric: cycles
+    target: 500.0
+    simulated: 525.0
+    weight: 2.0
+    normalized_error: 0.05
+    weighted_error: 0.1
+planned_simulator_commands:
+- rank: 1
+  candidate_id: candidate_0002
+  requires_manual_temporary_alias: true
+  temporary_extra_params_alias: S6CAND0001
+  temporary_config_yaml_snippet:
+    S6CAND0001:
+      extra_params: '-latency_L0_to_L1 37
+
+        -prefetch_per_stream_buffer_size 10'
+  command:
+  - python3
+  - simulator-remodeled/util/job_launching/run_simulations.py
+  - -B
+  - synthetic_fixture
+  - -C
+  - RTX5060_SM120_GEN-S6CAND0001
+  - -N
+  - s6-synthetic-candidate_0002
+  - -r
+  - sm120_s6_synthetic_plan
+  - -l
+  - local
+  - -n
+  command_string: python3 simulator-remodeled/util/job_launching/run_simulations.py -B synthetic_fixture -C RTX5060_SM120_GEN-S6CAND0001
+    -N s6-synthetic-candidate_0002 -r sm120_s6_synthetic_plan -l local -n
+  note: Plan only. The harness does not write define-standard-cfgs.yml or launch this command.
+- rank: 2
+  candidate_id: candidate_0001
+  requires_manual_temporary_alias: true
+  temporary_extra_params_alias: S6CAND0002
+  temporary_config_yaml_snippet:
+    S6CAND0002:
+      extra_params: '-latency_L0_to_L1 37
+
+        -prefetch_per_stream_buffer_size 8'
+  command:
+  - python3
+  - simulator-remodeled/util/job_launching/run_simulations.py
+  - -B
+  - synthetic_fixture
+  - -C
+  - RTX5060_SM120_GEN-S6CAND0002
+  - -N
+  - s6-synthetic-candidate_0001
+  - -r
+  - sm120_s6_synthetic_plan
+  - -l
+  - local
+  - -n
+  command_string: python3 simulator-remodeled/util/job_launching/run_simulations.py -B synthetic_fixture -C RTX5060_SM120_GEN-S6CAND0002
+    -N s6-synthetic-candidate_0001 -r sm120_s6_synthetic_plan -l local -n
+  note: Plan only. The harness does not write define-standard-cfgs.yml or launch this command.
+handoff:
+  s4_generator_status: bootstrap-current-flat only; S6 reports are not consumed automatically
+  result_policy: draft_not_applied
+  do_not_claim_calibrated: true
+  do_not_apply_automatically:
+  - flat SM120 tested configs
+  - S4 generated tested-cfgs outputs
+  - calibration-results/<GPU>/latest.yaml
+  next_step: After real simulator runs and reviewer approval, copy only selected owner-matched calibration_result entries
+    into a staged delta or latest.yaml in a later stage.
+limitations:
+- Synthetic fixture reports are only CI/local validation evidence.
+- The harness does not run simulator workloads.
+- The selected best candidate is a ranked draft, not an accepted hardware calibration.
+- Search is limited to explicitly bounded calibration_result keys in one S5/S6 stage.

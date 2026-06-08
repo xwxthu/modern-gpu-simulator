@@ -1,0 +1,96 @@
+schema_version: 1
+schema_id: sm120_correlation_search_manifest_v1
+search_id: sm120-rtx5060-s6-synthetic-prefetch-l0
+gpu: RTX5060
+architecture: SM120
+fixture_only: true
+description: >
+  Synthetic S6 fixture for local validation only. Values and metrics are not
+  RTX5060 measurements and must not be copied into calibration results.
+base:
+  generated_config_alias: RTX5060_SM120_GEN
+  profile: bootstrap
+  gpgpusim_config: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/gpgpusim.config
+  trace_config: simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/trace.config
+benchmark_cases:
+  - id: prefetch_pointer_chase
+    suite: synthetic_fixture
+    benchmark: prefetch_pointer_chase
+    notes: Synthetic fixture case, no simulator run.
+  - id: l0i_fetch_mix
+    suite: synthetic_fixture
+    benchmark: l0i_fetch_mix
+    notes: Synthetic fixture case, no simulator run.
+target_metrics:
+  - benchmark: prefetch_pointer_chase
+    metric: cycles
+    target: 1000
+    weight: 1.0
+    epsilon: 1.0
+  - benchmark: l0i_fetch_mix
+    metric: cycles
+    target: 500
+    weight: 2.0
+    epsilon: 1.0
+search:
+  stage: rf_prefetch_remodeled_parameters
+  candidate_strategy: cartesian_product
+  max_candidates: 4
+  parameters:
+    - file: gpgpusim.config
+      key: -latency_L0_to_L1
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      values: [37, 39]
+      description: Small synthetic L0I latency sweep around bootstrap value 39.
+    - file: gpgpusim.config
+      key: -prefetch_per_stream_buffer_size
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      values: [8, 10]
+      description: Small synthetic instruction-prefetch buffer-size sweep around bootstrap value 8.
+evaluation:
+  mode: fixture
+  notes: Fixture metrics are precomputed synthetic simulator-like outputs.
+  candidate_metrics:
+    - values:
+        -latency_L0_to_L1: 37
+        -prefetch_per_stream_buffer_size: 8
+      metrics:
+        prefetch_pointer_chase:
+          cycles: 1040
+        l0i_fetch_mix:
+          cycles: 510
+    - values:
+        -latency_L0_to_L1: 37
+        -prefetch_per_stream_buffer_size: 10
+      metrics:
+        prefetch_pointer_chase:
+          cycles: 1005
+        l0i_fetch_mix:
+          cycles: 503
+    - values:
+        -latency_L0_to_L1: 39
+        -prefetch_per_stream_buffer_size: 8
+      metrics:
+        prefetch_pointer_chase:
+          cycles: 1015
+        l0i_fetch_mix:
+          cycles: 520
+    - values:
+        -latency_L0_to_L1: 39
+        -prefetch_per_stream_buffer_size: 10
+      metrics:
+        prefetch_pointer_chase:
+          cycles: 995
+        l0i_fetch_mix:
+          cycles: 525
+planning:
+  base_config_alias: RTX5060_SM120_GEN
+  benchmark_list: synthetic_fixture
+  run_simulations: simulator-remodeled/util/job_launching/run_simulations.py
+  run_directory: sm120_s6_synthetic_plan
+  launcher: local
+  launch_name_prefix: s6-synthetic

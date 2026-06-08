@@ -1,0 +1,40 @@
+schema_version: 1
+schema_id: sm120_correlation_search_manifest_v1
+search_id: sm120-s6-invalid-unknown-key
+gpu: RTX5060
+architecture: SM120
+fixture_only: true
+base:
+  generated_config_alias: RTX5060_SM120_GEN
+  profile: bootstrap
+  gpgpusim_config: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/gpgpusim.config
+  trace_config: simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/trace.config
+benchmark_cases:
+  - id: synthetic_case
+    suite: synthetic_fixture
+    benchmark: synthetic_case
+target_metrics:
+  - benchmark: synthetic_case
+    metric: cycles
+    target: 100
+    weight: 1.0
+    epsilon: 1.0
+search:
+  stage: rf_prefetch_remodeled_parameters
+  candidate_strategy: cartesian_product
+  max_candidates: 1
+  parameters:
+    - file: gpgpusim.config
+      key: -s6_unknown_parameter
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      values: [1]
+evaluation:
+  mode: fixture
+  candidate_metrics:
+    - values:
+        -s6_unknown_parameter: 1
+      metrics:
+        synthetic_case:
+          cycles: 100

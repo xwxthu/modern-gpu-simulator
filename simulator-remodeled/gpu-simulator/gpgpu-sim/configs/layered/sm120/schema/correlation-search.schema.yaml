@@ -1,0 +1,99 @@
+schema_version: 1
+schema_id: sm120_correlation_search_contract_v1
+description: >
+  Contract for S6 targeted SM120 correlation-search manifests and draft
+  reports. The S6 harness ranks explicitly bounded candidate deltas for keys
+  that S5 leaves to correlation_search. Reports are not accepted calibration
+  results and are not consumed automatically by the S4 generator.
+
+manifest:
+  schema_id: sm120_correlation_search_manifest_v1
+  required_top_level_fields:
+    - schema_version
+    - schema_id
+    - search_id
+    - gpu
+    - architecture
+    - base
+    - benchmark_cases
+    - target_metrics
+    - search
+    - evaluation
+  status_policy: >
+    A manifest describes candidate space and either fixture metrics or supplied
+    simulator metrics. It must not request writes to flat tested configs, S4
+    generated configs, or calibration-results/<GPU>/latest.yaml.
+  base:
+    required_fields:
+      - generated_config_alias
+      - profile
+      - gpgpusim_config
+      - trace_config
+    path_policy: >
+      gpgpusim_config and trace_config must point at existing S4 generated
+      tested-cfgs files. S6 reads them only for active-key and base-value checks.
+  search:
+    required_fields:
+      - stage
+      - candidate_strategy
+      - max_candidates
+      - parameters
+    allowed_candidate_strategy: cartesian_product
+    hard_candidate_limit: 64
+    parameter_policy:
+      owner: calibration_result
+      provenance: correlation_search
+      stage: rf_prefetch_remodeled_parameters
+      bounds: >
+        Each parameter must provide an explicit non-empty values list or a
+        bounded start/stop/step range with max_values. The harness rejects
+        unknown keys, owner mismatches, stage mismatches, duplicate keys, and
+        expanded spaces larger than max_candidates.
+  evaluation:
+    modes:
+      fixture: Synthetic/local validation only.
+      supplied_metrics: Metrics from separately executed simulator runs.
+    candidate_metrics_policy: >
+      Metrics must cover every generated candidate exactly once. S6 MVP does not
+      run simulator workloads or parse simulator output directly.
+
+report:
+  schema_id: sm120_correlation_search_report_v1
+  required_top_level_fields:
+    - schema_version
+    - schema_id
+    - search_id
+    - gpu
+    - architecture
+    - status
+    - generated_at
+    - fixture_only
+    - search_harness
+    - repository
+    - source_manifest
+    - base
+    - summary
+    - ranking_metric
+    - search_space
+    - benchmark_cases
+    - target_metrics
+    - ranked_candidates
+    - planned_simulator_commands
+    - handoff
+    - limitations
+  status_values:
+    - draft_not_applied
+  ranking_metric:
+    name: weighted_normalized_error
+    formula: sum(weight * abs(simulated - target) / max(abs(target), epsilon)) / sum(weight)
+    lower_is_better: true
+  handoff_policy:
+    s4_generator_status: bootstrap-current-flat only.
+    do_not_claim_calibrated: true
+    do_not_apply_automatically:
+      - flat SM120 tested configs
+      - S4 generated tested-cfgs outputs
+      - calibration-results/<GPU>/latest.yaml
+    next_stage: >
+      Future S7 may review real supplied_metrics reports and copy only
+      owner-matched calibration_result entries into a staged delta or latest.yaml.

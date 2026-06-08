@@ -247,3 +247,41 @@ Follow-up:
 - Worker updated the unsupported-key documentation and reran blank-context reviewer rounds until Round 3 returned `ACCEPT`.
 - Second supervisor reviewer `019ea776-7af5-7bc3-9446-6ac1be7d45e3` returned `ACCEPT`.
 - Marked S5 complete and S6 ready to start in `overall-plan.md`.
+
+Checkpoint:
+- Commit `a517d1962eaef8b0e73172dd99c149b20ef58f39` (`feat: add staged SM120 microbenchmark parser`) recorded the S5 draft-parser deliverable.
+
+### 2026-06-08 21:56:32 CST
+
+Action:
+- Spawned S6 targeted-correlation-search worker `019ea77d-8d3c-7791-b821-53859905f854`.
+
+Worker deliverables:
+- `simulator-remodeled/util/tuner/search_sm120_correlation.py`
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/correlation-search.schema.yaml`
+- `simulator-remodeled/util/tuner/testdata/sm120_correlation_search_fixture.yaml`
+- `simulator-remodeled/util/tuner/testdata/sm120_correlation_search_fixture_report.yaml`
+- `simulator-remodeled/util/tuner/testdata/sm120_correlation_search_invalid_unknown_key.yaml`
+- `simulator-remodeled/util/tuner/testdata/sm120_correlation_search_invalid_unbounded.yaml`
+- `docs/sm120-calibration/s6-correlation-search.md`
+- `docs/sm120-calibration/worker-logs/worker-20260608-215632-s6-correlation.md`
+
+Worker validation:
+- Correlation-search harness Python syntax check.
+- Fixture report generation and byte-for-byte reproducibility against checked-in sample report.
+- Dry-run planned-command mode prints plan-only commands with `-n`.
+- Invalid unknown-key and unbounded-range manifests fail cleanly.
+- `generate_sm120_configs.py --check-only`.
+- `git diff --check`.
+- Flat SM120 configs, S4 generated configs, and `generate_sm120_configs.py` status remain clean.
+
+Supervisor review:
+- First supervisor reviewer `019ea796-93fc-7662-bb9e-b40077ac871b` returned `changes-needed`.
+- Required fix: `check_output_target()` protected SM120 layered subdirectories but allowed output directly under top-level `gpgpu-sim/configs/layered/sm120/`.
+
+Follow-up:
+- A focused S6 rework worker `019ea79a-c4e7-7572-a6a1-51b4619572fd` updated path protection to reject the entire SM120 layered source directory root and all child paths.
+- The rework added a negative test for `gpgpu-sim/configs/layered/sm120/s6-report.yaml`.
+- The worker updated the fixture report hash and S6 worker log, then reran blank-context reviewer rounds until Round 3 returned `ACCEPT`.
+- Second supervisor reviewer `019ea79f-9021-77f2-a9cd-9800e16712bb` returned `ACCEPT`.
+- Marked S6 complete and S7 ready to start in `overall-plan.md`.
