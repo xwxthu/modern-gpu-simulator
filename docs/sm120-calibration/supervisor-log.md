@@ -519,3 +519,42 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: debug why the local smoke job exits without moved logs or simulator metrics, rerun one local smoke after the debug fix, then generate real supplied-metrics correlation input only if real metrics exist.
+
+Checkpoint:
+- Commit `d313077c758707d0a8951cf2b0349db4a1e76633` (`docs: record S7 actual smoke attempt`) recorded the first actual local smoke attempt and its no-metrics partial result.
+
+### 2026-06-09 01:38:54 CST
+
+Action:
+- Spawned S7 local smoke debug worker `019ea840-b75e-7bd0-a22a-49e788506118`.
+
+Worker deliverables:
+- `simulator-remodeled/util/job_launching/procman.py`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-013854-s7-smoke-debug.md`.
+- Local debug evidence under ignored `artifacts/s7/s7-smoke-debug-20260609-013048/`.
+
+Root cause fixed:
+- The local procman manager was started as a normal child of `run_simulations.py`; in this execution environment it could die with the parent session before the job wrapper copied output.
+- `ProcMan.spawnProcMan()` now starts the manager in a new session with stdio redirected to `DEVNULL`.
+
+Worker validation:
+- Mini repro showed stale `RUNNING` state before the fix and `Nothing Active` after the detach fix.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched on `dsp-ubuntu`, not `dsp5060`.
+- The job reached `FUNC_TEST_PASSED`, moved `.o1/.e1` outputs into the run directory, and produced `result.txt` matching the provisioned gold file.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Accepted/generated config scoped status check was empty.
+
+Remaining blocker:
+- The smoke still produced no real simulator metrics.
+- Evidence indicates the CUDA 13.1 app loads system `/usr/local/cuda-13.1/lib64/libcudart.so.13` instead of the GPGPU-Sim runtime.
+- Current GPGPU-Sim runtime exposes only unversioned/older `libcudart.so` aliases through `libcudart.so.12.0` and lacks CUDA 13 symbol/version support such as `__cudaGetKernel@libcudart.so.13`.
+- No `supplied_metrics` manifest or S6 real ranking was created.
+
+Supervisor review:
+- Supervisor reviewer `019ea856-701c-7c42-a172-a050867e406f` returned `ACCEPT`.
+- Reviewer confirmed the procman fix is minimal, stale-state evidence supports the root cause, the new smoke reached `FUNC_TEST_PASSED`, no fake metrics were created, protected config/latest paths are clean, and the CUDA 13 runtime ABI blocker is supported by dynamic-link evidence.
+
+Follow-up:
+- Pending S7 work remains: add reviewed CUDA 13 `libcudart.so.13` ABI support to the GPGPU-Sim runtime, rebuild, rerun one local smoke, then generate real supplied-metrics correlation input only if real simulator metrics exist.

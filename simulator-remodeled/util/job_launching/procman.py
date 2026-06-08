@@ -173,7 +173,11 @@ class ProcMan:
             sys.exit("This ProcMan has already been started. No new spawning can occur.")
         shutil.copy(self.pickleFile, self.pickleFile + ".tmp")
         p = Popen([__file__,"-f", self.pickleFile + ".tmp", "-t", str(sleepTime)],
-            cwd=this_directory
+            cwd=this_directory,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True
         )
         print("ProcMan spawned [pid={0}]".format(p.pid))
 
