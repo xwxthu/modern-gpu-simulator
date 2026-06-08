@@ -35,6 +35,8 @@
 #include "ptx_ir.h"
 class ptx_recognizer;
 typedef void *yyscan_t;
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <map>
 #include <set>
@@ -119,6 +121,140 @@ cudaGetParameterBufferV2_init_perWarp, cudaGetParameterBufferV2_perKernel, \
 cudaLaunchDeviceV2_init_perWarp, cudaLaunchDevicV2_perKernel>"
                          "Default 7200,8000,100,12000,1600",
                          "7200,8000,100,12000,1600");
+}
+
+namespace {
+
+const unsigned kDefaultIntLatency[6] = {1, 1, 19, 25, 145, 32};
+const unsigned kDefaultIntInitiation[6] = {1, 1, 4, 4, 32, 4};
+
+bool has_only_trailing_space(const char *s) {
+  while (*s) {
+    if (*s != ' ' && *s != '\t' && *s != '\n' && *s != '\r') return false;
+    ++s;
+  }
+  return true;
+}
+
+const char *skip_spaces(const char *s) {
+  while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') ++s;
+  return s;
+}
+
+bool parse_unsigned_token(const char **value, unsigned *out) {
+  const char *start = skip_spaces(*value);
+  if (*start < '0' || *start > '9') return false;
+
+  errno = 0;
+  char *end = NULL;
+  unsigned long parsed = strtoul(start, &end, 10);
+  if (errno != 0 || end == start || parsed > UINT_MAX) return false;
+
+  *out = (unsigned)parsed;
+  *value = skip_spaces(end);
+  return true;
+}
+
+bool try_parse_unsigned_csv(const char *value, unsigned *out, unsigned count) {
+  if (!value) return false;
+
+  const char *cursor = value;
+  for (unsigned i = 0; i < count; ++i) {
+    if (!parse_unsigned_token(&cursor, &out[i])) return false;
+    if (i + 1 < count) {
+      if (*cursor != ',') return false;
+      ++cursor;
+    }
+  }
+
+  return has_only_trailing_space(cursor);
+}
+
+void parse_unsigned_csv_or_die(const char *option, const char *value,
+                               unsigned *out, unsigned count,
+                               const char *expected) {
+  if (try_parse_unsigned_csv(value, out, count)) return;
+
+  fprintf(stderr,
+          "\n\nGPGPU-Sim ** ERROR: Invalid value for %s: '%s'. Expected %s.\n",
+          option, value ? value : "NULL", expected);
+  exit(1);
+}
+
+void parse_int_opcode_csv_or_die(const char *option, const char *value,
+                                 unsigned *out, const unsigned defaults[6],
+                                 const char *expected) {
+  if (try_parse_unsigned_csv(value, out, 6)) return;
+
+  unsigned parsed_legacy[5] = {};
+  if (try_parse_unsigned_csv(value, parsed_legacy, 5)) {
+    for (unsigned i = 0; i < 5; ++i) out[i] = parsed_legacy[i];
+    out[5] = defaults[5];
+    return;
+  }
+
+  fprintf(stderr,
+          "\n\nGPGPU-Sim ** ERROR: Invalid value for %s: '%s'. Expected %s.\n",
+          option, value ? value : "NULL", expected);
+  exit(1);
+}
+
+}  // namespace
+
+void cuda_sim::parse_opcode_latency_options(unsigned int_latency[6],
+                                            unsigned fp_latency[5],
+                                            unsigned dp_latency[5],
+                                            unsigned *sfu_latency,
+                                            unsigned *tensor_latency) const {
+  parse_int_opcode_csv_or_die(
+      "-ptx_opcode_latency_int", opcode_latency_int, int_latency,
+      kDefaultIntLatency,
+      "six comma-separated unsigned integers <ADD,MAX,MUL,MAD,DIV,SHFL>; "
+      "legacy five-field values omit SHFL and use the default SHFL latency");
+  parse_unsigned_csv_or_die(
+      "-ptx_opcode_latency_fp", opcode_latency_fp, fp_latency, 5,
+      "five comma-separated unsigned integers <ADD,MAX,MUL,MAD,DIV>");
+  parse_unsigned_csv_or_die(
+      "-ptx_opcode_latency_dp", opcode_latency_dp, dp_latency, 5,
+      "five comma-separated unsigned integers <ADD,MAX,MUL,MAD,DIV>");
+  parse_unsigned_csv_or_die("-ptx_opcode_latency_sfu", opcode_latency_sfu,
+                            sfu_latency, 1, "one unsigned integer");
+  parse_unsigned_csv_or_die("-ptx_opcode_latency_tesnor",
+                            opcode_latency_tensor, tensor_latency, 1,
+                            "one unsigned integer");
+}
+
+void cuda_sim::parse_opcode_initiation_options(unsigned int_init[6],
+                                               unsigned fp_init[5],
+                                               unsigned dp_init[5],
+                                               unsigned *sfu_init,
+                                               unsigned *tensor_init) const {
+  parse_int_opcode_csv_or_die(
+      "-ptx_opcode_initiation_int", opcode_initiation_int, int_init,
+      kDefaultIntInitiation,
+      "six comma-separated unsigned integers <ADD,MAX,MUL,MAD,DIV,SHFL>; "
+      "legacy five-field values omit SHFL and use the default SHFL initiation");
+  parse_unsigned_csv_or_die(
+      "-ptx_opcode_initiation_fp", opcode_initiation_fp, fp_init, 5,
+      "five comma-separated unsigned integers <ADD,MAX,MUL,MAD,DIV>");
+  parse_unsigned_csv_or_die(
+      "-ptx_opcode_initiation_dp", opcode_initiation_dp, dp_init, 5,
+      "five comma-separated unsigned integers <ADD,MAX,MUL,MAD,DIV>");
+  parse_unsigned_csv_or_die("-ptx_opcode_initiation_sfu",
+                            opcode_initiation_sfu, sfu_init, 1,
+                            "one unsigned integer");
+  parse_unsigned_csv_or_die("-ptx_opcode_initiation_tensor",
+                            opcode_initiation_tensor, tensor_init, 1,
+                            "one unsigned integer");
+}
+
+void cuda_sim::parse_cdp_latency_options(unsigned cdp_latency_values[5]) const {
+  parse_unsigned_csv_or_die(
+      "-cdp_latency", cdp_latency_str, cdp_latency_values, 5,
+      "five comma-separated unsigned integers "
+      "<cudaStreamCreateWithFlags,cudaGetParameterBufferV2_init_perWarp,"
+      "cudaGetParameterBufferV2_perKernel,cudaLaunchDeviceV2_init_perWarp,"
+      "cudaLaunchDeviceV2_perKernel>");
 }
 
 void gpgpu_t::gpgpu_ptx_sim_bindNameToTexture(
@@ -762,32 +898,12 @@ void ptx_instruction::set_opcode_and_latency() {
    * [4] DIV
    * [5] SHFL
    */
-  sscanf(gpgpu_ctx->func_sim->opcode_latency_int, "%u,%u,%u,%u,%u,%u",
-         &int_latency[0], &int_latency[1], &int_latency[2], &int_latency[3],
-         &int_latency[4], &int_latency[5]);
-  sscanf(gpgpu_ctx->func_sim->opcode_latency_fp, "%u,%u,%u,%u,%u",
-         &fp_latency[0], &fp_latency[1], &fp_latency[2], &fp_latency[3],
-         &fp_latency[4]);
-  sscanf(gpgpu_ctx->func_sim->opcode_latency_dp, "%u,%u,%u,%u,%u",
-         &dp_latency[0], &dp_latency[1], &dp_latency[2], &dp_latency[3],
-         &dp_latency[4]);
-  sscanf(gpgpu_ctx->func_sim->opcode_latency_sfu, "%u", &sfu_latency);
-  sscanf(gpgpu_ctx->func_sim->opcode_latency_tensor, "%u", &tensor_latency);
-  sscanf(gpgpu_ctx->func_sim->opcode_initiation_int, "%u,%u,%u,%u,%u,%u",
-         &int_init[0], &int_init[1], &int_init[2], &int_init[3], &int_init[4],
-         &int_init[5]);
-  sscanf(gpgpu_ctx->func_sim->opcode_initiation_fp, "%u,%u,%u,%u,%u",
-         &fp_init[0], &fp_init[1], &fp_init[2], &fp_init[3], &fp_init[4]);
-  sscanf(gpgpu_ctx->func_sim->opcode_initiation_dp, "%u,%u,%u,%u,%u",
-         &dp_init[0], &dp_init[1], &dp_init[2], &dp_init[3], &dp_init[4]);
-  sscanf(gpgpu_ctx->func_sim->opcode_initiation_sfu, "%u", &sfu_init);
-  sscanf(gpgpu_ctx->func_sim->opcode_initiation_tensor, "%u", &tensor_init);
-  sscanf(gpgpu_ctx->func_sim->cdp_latency_str, "%u,%u,%u,%u,%u",
-         &gpgpu_ctx->func_sim->cdp_latency[0],
-         &gpgpu_ctx->func_sim->cdp_latency[1],
-         &gpgpu_ctx->func_sim->cdp_latency[2],
-         &gpgpu_ctx->func_sim->cdp_latency[3],
-         &gpgpu_ctx->func_sim->cdp_latency[4]);
+  gpgpu_ctx->func_sim->parse_opcode_latency_options(
+      int_latency, fp_latency, dp_latency, &sfu_latency, &tensor_latency);
+  gpgpu_ctx->func_sim->parse_opcode_initiation_options(
+      int_init, fp_init, dp_init, &sfu_init, &tensor_init);
+  gpgpu_ctx->func_sim->parse_cdp_latency_options(
+      gpgpu_ctx->func_sim->cdp_latency);
 
   if (!m_operands.empty()) {
     std::vector<operand_info>::iterator it;

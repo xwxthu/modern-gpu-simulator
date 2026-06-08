@@ -179,6 +179,17 @@ class cuda_sim {
   class gpgpu_context *gpgpu_ctx;
   // global functions
   void ptx_opcocde_latency_options(option_parser_t opp);
+  void parse_opcode_latency_options(unsigned int_latency[6],
+                                    unsigned fp_latency[5],
+                                    unsigned dp_latency[5],
+                                    unsigned *sfu_latency,
+                                    unsigned *tensor_latency) const;
+  void parse_opcode_initiation_options(unsigned int_init[6],
+                                       unsigned fp_init[5],
+                                       unsigned dp_init[5],
+                                       unsigned *sfu_init,
+                                       unsigned *tensor_init) const;
+  void parse_cdp_latency_options(unsigned cdp_latency_values[5]) const;
   void gpgpu_cuda_ptx_sim_main_func(kernel_info_t &kernel, bool openCL = false);
   int gpgpu_opencl_ptx_sim_main_func(kernel_info_t *grid);
   void init_inst_classification_stat();

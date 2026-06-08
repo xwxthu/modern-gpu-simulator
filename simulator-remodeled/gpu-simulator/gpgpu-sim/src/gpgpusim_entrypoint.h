@@ -33,6 +33,7 @@
 #include <semaphore.h>
 #include <time.h>
 #include "abstract_hardware_model.h"
+#include "option_parser.h"
 
 // extern time_t g_simulation_starttime;
 class gpgpu_context;
@@ -50,6 +51,7 @@ class GPGPUsim_ctx {
     g_trace_config_owned = false;
     g_the_gpu = NULL;
     g_stream_manager = NULL;
+    g_runtime_config_opp = NULL;
     the_cude_device = NULL;
     the_context = NULL;
     gpgpu_ctx = ctx;
@@ -70,6 +72,7 @@ class GPGPUsim_ctx {
   bool g_trace_config_owned;
   class gpgpu_sim *g_the_gpu;
   class stream_manager *g_stream_manager;
+  option_parser_t g_runtime_config_opp;
 
   struct _cuda_device_id *the_cude_device;
   struct CUctx_st *the_context;

@@ -171,6 +171,10 @@ void *gpgpu_sim_thread_concurrent(void *ctx_ptr) {
 }
 
 GPGPUsim_ctx::~GPGPUsim_ctx() {
+    if (g_runtime_config_opp) {
+      option_parser_destroy(g_runtime_config_opp);
+      g_runtime_config_opp = nullptr;
+    }
     if (g_the_gpu_config) {
       delete g_the_gpu_config;
       g_the_gpu_config = nullptr;
@@ -220,7 +224,11 @@ gpgpu_sim *gpgpu_context::gpgpu_ptx_sim_init_perf() {
   print_splash();
   func_sim->read_sim_environment_variables();
   ptx_parser->read_parser_environment_variables();
+  if (the_gpgpusim->g_runtime_config_opp) {
+    option_parser_destroy(the_gpgpusim->g_runtime_config_opp);
+  }
   option_parser_t opp = option_parser_create();
+  the_gpgpusim->g_runtime_config_opp = opp;
 
   ptx_reg_options(opp);
   func_sim->ptx_opcocde_latency_options(opp);
@@ -260,7 +268,6 @@ gpgpu_sim *gpgpu_context::gpgpu_ptx_sim_init_perf() {
   sem_init(&(the_gpgpusim->g_sim_signal_start), 0, 0);
   sem_init(&(the_gpgpusim->g_sim_signal_finish), 0, 0);
   sem_init(&(the_gpgpusim->g_sim_signal_exit), 0, 0);
-  option_parser_destroy(opp);
   return the_gpgpusim->g_the_gpu;
 }
 

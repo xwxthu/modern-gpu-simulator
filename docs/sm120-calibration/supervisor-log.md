@@ -780,3 +780,58 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: debug and fix or precisely bound the `ptx_instruction::set_opcode_and_latency()` segmentation fault, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `9822684d61f285337e74a6d9b431f928d26482a9` (`fix: parse CUDA 13 ptxas compile time lines`) recorded the CUDA 13.1 compile-time informational-line parser fix and bounded the next opcode-latency segmentation fault.
+
+### 2026-06-09 04:00:32 CST
+
+Action:
+- Spawned S7 opcode latency segmentation fault worker `019ea8d2-5296-7831-8c98-2dbfab0fa91c`.
+
+Scope:
+- Resolve or precisely bound the segmentation fault in `ptx_instruction::set_opcode_and_latency()` at `cuda-sim.cc:768`.
+- Verify whether the root cause is option registration/default/parse ownership, malformed/null opcode latency strings, or another initialization issue on the CUDA runtime path.
+
+### 2026-06-09 04:40:20 CST
+
+Action:
+- S7 opcode latency segmentation fault worker `019ea8d2-5296-7831-8c98-2dbfab0fa91c` completed `docs/sm120-calibration/worker-logs/worker-20260609-040030-s7-opcode-latency.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/cuda-sim.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/cuda-sim.h`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpusim_entrypoint.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpusim_entrypoint.h`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-040030-s7-opcode-latency.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-opcode-latency-20260609-040030/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected config/latest/generated scoped status was empty.
+
+Root cause:
+- The CUDA runtime path destroyed its temporary `option_parser_t` after parsing `gpgpusim.config`.
+- `OPT_CSTR` option values were owned by that parser, so opcode latency/initiation pointers later became null and `set_opcode_and_latency()` called `sscanf(NULL, ...)`.
+
+Partial result:
+- The runtime now keeps the parser alive for `GPGPUsim_ctx` lifetime, and opcode latency/initiation/CDP latency parsing uses shared validated helpers.
+- The previous `ptx_instruction::set_opcode_and_latency()` crash is resolved for the local smoke.
+- The smoke advanced through PTX predecode and kernel stream push.
+- The smoke still produced no real simulator metrics.
+- New blocker: segmentation fault in `Subcore::issue(SM*)` at `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc:514`.
+- Evidence shows `m_sm_stats.m_stats_map["total_num_cycles_issue_stage_stall_no_valid_instruction"]` exists as an empty/null `shared_ptr`.
+- Stderr still reports `libgomp: Invalid value for environment variable OMP_NUM_THREADS:`.
+
+Supervisor review:
+- Supervisor reviewer `019ea8f3-4ad6-7c81-ab80-27987948832c` returned `ACCEPT`.
+- Reviewer confirmed parser lifetime ownership is clean, standalone trace path behavior remains compatible, shared parsing helpers preserve existing semantics and legacy integer latency/initiation support, and the new stats-map blocker is properly bounded.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the remodeled issue-stage stats registration/null-counter blocker in `Subcore::issue(SM*)`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
