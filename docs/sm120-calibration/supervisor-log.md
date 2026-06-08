@@ -105,3 +105,32 @@ Follow-up:
 - Returned low-severity fixes to the worker.
 - Worker updated the S1 log accordingly.
 - Marked S1 complete and S2 ready to start in `overall-plan.md`.
+
+Checkpoint:
+- Commit `841066382f610876adf9f94ca1a0e49e579e5b11` (`docs: audit SM120 calibration surface`) recorded the S1 audit deliverable.
+
+### 2026-06-08 18:06:40 CST
+
+Action:
+- Spawned S2 config-layering worker `019ea6b0-6f02-71e0-aad3-78aca1febf69`.
+
+Worker deliverables:
+- `docs/sm120-calibration/config-layering-design.md`
+- `docs/sm120-calibration/worker-logs/worker-20260608-181124-s2-config-layering.md`
+
+Worker internal review:
+- Round 1 blank-context reviewer verdict: accept.
+- After supervisor rework request, Round 2 blank-context reviewer verdict: accept.
+
+Supervisor review:
+- First supervisor reviewer `019ea6bc-d888-7871-86c6-1cb03239d7a8` returned `changes-needed`.
+- Required fixes:
+  - Active-key ownership/profile policy for launch timing, L0I timing, instruction prefetch, and custom OMP scheduler controls.
+  - Generator failure if an active option lacks schema owner/profile/provenance policy.
+  - Bootstrap golden-diff behavior for implicit defaults such as omitted `-power_simulation_enabled 0`.
+  - `extra_params` provenance bypass handling.
+
+Follow-up:
+- Worker completed rework and second internal review.
+- Second supervisor reviewer `019ea6c6-010c-7521-8642-96a709309b32` returned `accept`.
+- Marked S2 complete and S3 ready to start in `overall-plan.md`.
