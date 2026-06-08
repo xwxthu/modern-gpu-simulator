@@ -34,7 +34,7 @@ Make the modern simulator maintainable as:
 
 S7: Validate on RTX5060 and preserve RTX5070Ti compatibility.
 
-S0 through S6 are complete. S7 first-step validation runbook is under review/checkpoint; real RTX5060 hardware collection, local smoke tests, and real supplied-metrics correlation are still pending.
+S0 through S6 are complete. S7 smoke bring-up is in progress. CUDA 13 runtime ABI and trace-driven runtime linking have been fixed enough for the local smoke to reach GPGPU-Sim config parsing. The current precise blocker is missing trace-driven `trace_config` option registration on the CUDA runtime initialization path; real simulator metrics and real supplied-metrics correlation are still pending.
 
 ## Checkpoint Policy
 

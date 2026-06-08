@@ -42,6 +42,24 @@ endif
 
 BUILD_ROOT?=$(shell pwd)
 export TRACE?=1
+ACCELSIM_CONFIG ?= $(if $(filter 1,$(DEBUG)),debug,release)
+ACCELSIM_ROOT ?= $(abspath ..)
+TRACE_RUNTIME_OBJ_DIR = $(ACCELSIM_ROOT)/build/$(ACCELSIM_CONFIG)
+TRACE_DRIVEN_SRCS = $(wildcard $(ACCELSIM_ROOT)/trace-driven/*.cc)
+TRACE_PARSER_SRCS = $(wildcard $(ACCELSIM_ROOT)/trace-parser/*.cc)
+TRACE_DRIVEN_OBJS = $(patsubst $(ACCELSIM_ROOT)/trace-driven/%.cc,$(TRACE_RUNTIME_OBJ_DIR)/%.o,$(TRACE_DRIVEN_SRCS))
+TRACE_PARSER_OBJS = $(patsubst $(ACCELSIM_ROOT)/trace-parser/%.cc,$(TRACE_RUNTIME_OBJ_DIR)/%.o,$(TRACE_PARSER_SRCS))
+TRACES_ENHANCED_DIR = $(abspath $(ACCELSIM_ROOT)/../util/traces_enhanced)
+TRACES_ENHANCED_SRCS = $(wildcard $(TRACES_ENHANCED_DIR)/src/*.cc)
+TRACES_ENHANCED_OBJS = $(patsubst $(TRACES_ENHANCED_DIR)/src/%.cc,$(TRACES_ENHANCED_DIR)/obj/%.o,$(TRACES_ENHANCED_SRCS))
+TRACES_ENHANCED_PROTO_FILES = $(wildcard $(TRACES_ENHANCED_DIR)/dynamic_trace/*.proto)
+TRACES_ENHANCED_PROTOCOL_BUFFER_OBJS = $(patsubst $(TRACES_ENHANCED_DIR)/dynamic_trace/%.proto,$(TRACES_ENHANCED_DIR)/pb_trace/obj/%.pb.o,$(TRACES_ENHANCED_PROTO_FILES))
+TRACE_RUNTIME_OBJS =
+TRACE_RUNTIME_LIBS =
+ifeq ($(TRACE),1)
+TRACE_RUNTIME_OBJS = $(TRACE_DRIVEN_OBJS) $(TRACE_PARSER_OBJS) $(TRACES_ENHANCED_OBJS) $(TRACES_ENHANCED_PROTOCOL_BUFFER_OBJS)
+TRACE_RUNTIME_LIBS = -lprotobuf
+endif
 
 NVCC_PATH=$(shell which nvcc)
 ifneq ($(shell which nvcc), "")
@@ -58,6 +76,9 @@ endif
 $(shell mkdir -p $(SIM_OBJ_FILES_DIR)/libcuda && echo "const char *g_gpgpusim_build_string=\"$(GPGPUSIM_BUILD)\";" > $(SIM_OBJ_FILES_DIR)/detailed_version)
 
 LIBS = cuda-sim gpgpu-sim_uarch $(INTERSIM) gpgpusimlib
+ifeq ($(TRACE),1)
+	LIBS += trace_runtime_support
+endif
 CUDART_SONAME = libcudart.so
 ifeq ($(shell test 0$(CUDART_VERSION) -ge 13000 && echo 1),1)
 CUDART_SONAME = libcudart.so.13
@@ -147,7 +168,7 @@ no_opencl_support:
 	@echo "Warning: gpgpu-sim is building without opencl support. Make sure NVOPENCL_LIBDIR and NVOPENCL_INCDIR are set"
 
 $(SIM_LIB_DIR)/libcudart.so: makedirs $(LIBS) cudalib
-	g++ -lm -lz -lGL -pthread -fopenmp -shared -Wl,-soname,$(CUDART_SONAME) -Wl,--version-script=linux-so-version.txt\
+	g++ -shared -Wl,-soname,$(CUDART_SONAME) -Wl,--version-script=linux-so-version.txt\
 			$(SIM_OBJ_FILES_DIR)/libcuda/*.o \
 			$(SIM_OBJ_FILES_DIR)/cuda-sim/*.o \
 			$(SIM_OBJ_FILES_DIR)/cuda-sim/decuda_pred_table/*.o \
@@ -156,7 +177,9 @@ $(SIM_LIB_DIR)/libcudart.so: makedirs $(LIBS) cudalib
 			$(SIM_OBJ_FILES_DIR)/fusedMemory/*.o \
 			$(SIM_OBJ_FILES_DIR)/$(INTERSIM)/*.o \
 			$(SIM_OBJ_FILES_DIR)/*.o \
+			$(TRACE_RUNTIME_OBJS) \
 			$(MCPAT) \
+			-lm -lz -lGL -pthread -fopenmp $(TRACE_RUNTIME_LIBS) \
 			-o $(SIM_LIB_DIR)/libcudart.so
 	if [ ! -f $(SIM_LIB_DIR)/libcudart.so.2 ]; then ln -s libcudart.so $(SIM_LIB_DIR)/libcudart.so.2; fi
 	if [ ! -f $(SIM_LIB_DIR)/libcudart.so.3 ]; then ln -s libcudart.so $(SIM_LIB_DIR)/libcudart.so.3; fi
@@ -240,6 +263,15 @@ gpgpusimlib: makedirs cuda-sim gpgpu-sim_uarch $(INTERSIM)
 	$(MAKE) -C ./src/ depend
 	$(MAKE) -C ./src/
 
+.PHONY: trace_runtime_support
+trace_runtime_support: makedirs
+	mkdir -p $(TRACE_RUNTIME_OBJ_DIR)
+	$(MAKE) "DEBUG=$(DEBUG)" -C $(TRACES_ENHANCED_DIR)
+	$(MAKE) "ACCELSIM_CONFIG=$(ACCELSIM_CONFIG)" "DEBUG=$(DEBUG)" -C $(ACCELSIM_ROOT)/trace-driven depend
+	$(MAKE) "ACCELSIM_CONFIG=$(ACCELSIM_CONFIG)" "DEBUG=$(DEBUG)" -C $(ACCELSIM_ROOT)/trace-driven
+	$(MAKE) "ACCELSIM_CONFIG=$(ACCELSIM_CONFIG)" "DEBUG=$(DEBUG)" -C $(ACCELSIM_ROOT)/trace-parser depend
+	$(MAKE) "ACCELSIM_CONFIG=$(ACCELSIM_CONFIG)" "DEBUG=$(DEBUG)" -C $(ACCELSIM_ROOT)/trace-parser
+
 opencllib: makedirs cuda-sim
 	$(MAKE) -C ./libopencl/ depend
 	$(MAKE) -C ./libopencl/
@@ -288,4 +320,3 @@ cleangpgpusim: cleandocs
 		./cuobjdump_to_ptxplus/lex.ptx_.c ./cuobjdump_to_ptxplus/ptx.output ./cuobjdump_to_ptxplus/ptx.tab.h cuobjdump_to_ptxplus/ptx.tab.h \
 		./cuobjdump_to_ptxplus/sass_lexer.cc ./cuobjdump_to_ptxplus/sass_parser.cc ./cuobjdump_to_ptxplus/sass_parser.hh \
 		./cuobjdump_to_ptxplus/ptx.tab.cc ./cuobjdump_to_ptxplus/*.output
-

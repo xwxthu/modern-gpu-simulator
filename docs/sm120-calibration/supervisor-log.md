@@ -598,3 +598,40 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: link the required trace-driven/remodeling objects into the runtime or otherwise resolve `_ZTV16trace_shd_warp_t`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `4a32e4c9486ce807978bec5f46017d80aee3ff79` (`fix: add CUDA 13 cudart ABI support`) recorded the CUDA 13 runtime ABI fixes and bounded the next trace-driven runtime link blocker.
+
+### 2026-06-09 02:56:03 CST
+
+Action:
+- S7 trace runtime link worker `019ea87e-4940-7961-aed7-4f436885a8b8` completed `docs/sm120-calibration/worker-logs/worker-20260609-023311-s7-trace-link.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/Makefile`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-023311-s7-trace-link.md`.
+- Local link/smoke evidence under ignored `artifacts/s7/s7-trace-link-20260609-023311/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime after linking existing trace-driven, trace-parser, enhanced trace, and protobuf object outputs into `libcudart.so` when `TRACE=1`.
+- Rebuilt `libcudart.so.13` retained `SONAME libcudart.so.13`, emitted `DT_NEEDED` for zlib/protobuf, and passed `ldd -r`.
+- Setup-only local smoke planning passed and copied runtime also passed `ldd -r`.
+- Exactly one local smoke job was launched.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Accepted/generated config scoped status check was empty.
+
+Partial result:
+- The previous `_ZTV16trace_shd_warp_t` runtime loader blocker is resolved.
+- The smoke reached GPGPU-Sim startup and PTX simulation mode output.
+- The smoke still produced no real simulator metrics.
+- New blocker: config parsing fails with `GPGPU-Sim ** ERROR: Unknown Option: '-is_extra_traces_enabled'`.
+- Evidence points to the CUDA runtime entry path registering PTX, interconnect, and `gpgpu_sim_config` options but not registering trace-driven `trace_config` options before parsing `gpgpusim.config`.
+
+Supervisor review:
+- Supervisor reviewer `019ea891-0f9c-7292-9df8-e78a01b555cf` returned `ACCEPT`.
+- Reviewer confirmed the Makefile change is scoped to trace runtime link inputs, link ordering is correct, the previous loader blocker is resolved by evidence, and the new option-registration blocker is properly bounded rather than hidden.
+
+Follow-up:
+- Pending S7 work remains: add a reviewed runtime initialization path for trace-driven `trace_config` option registration, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
