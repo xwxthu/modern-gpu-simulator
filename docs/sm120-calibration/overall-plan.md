@@ -34,7 +34,7 @@ Make the modern simulator maintainable as:
 
 S7: Validate on RTX5060 and preserve RTX5070Ti compatibility.
 
-S0 through S6 are complete. S7 smoke bring-up is in progress. CUDA 13 runtime ABI, trace-driven runtime linking, and runtime trace option registration have been fixed enough for the local smoke to pass config parsing and reach PTX/ptxas resource parsing. The current precise blocker is CUDA 13.1 `ptxas` resource-output syntax containing `used 1 barriers`; real simulator metrics and real supplied-metrics correlation are still pending.
+S0 through S6 are complete. S7 smoke bring-up is in progress. CUDA 13 runtime ABI, trace-driven runtime linking, runtime trace option registration, and CUDA 13.1 `ptxas` barrier resource parsing have been fixed. The current precise blocker is CUDA 13.1 `ptxas` informational syntax `Compile time = ... ms`; real simulator metrics and real supplied-metrics correlation are still pending.
 
 ## Checkpoint Policy
 

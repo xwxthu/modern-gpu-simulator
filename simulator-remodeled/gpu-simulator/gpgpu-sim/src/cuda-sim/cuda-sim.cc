@@ -2531,6 +2531,7 @@ void clear_ptxinfo() {
   g_ptxinfo.smem = 0;
   g_ptxinfo.cmem = 0;
   g_ptxinfo.gmem = 0;
+  g_ptxinfo.barriers = 0;
   g_ptxinfo.ptx_version = 0;
   g_ptxinfo.sm_target = 0;
 }

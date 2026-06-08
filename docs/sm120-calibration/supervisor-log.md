@@ -683,3 +683,53 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: update the PTX/ptxas resource-output parser for CUDA 13.1 output syntax, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `06fd88c053e95d5b9486612f02e557699d084ce9` (`fix: register trace config on cudart path`) recorded the runtime trace option registration fix and bounded the next CUDA 13.1 `ptxas` parser blocker.
+
+### 2026-06-09 03:17:57 CST
+
+Action:
+- Spawned S7 CUDA 13.1 `ptxas` resource parser worker `019ea8ab-7a47-7700-a045-aaf7e101a7f3`.
+
+Scope:
+- Resolve or precisely bound parsing of `ptxas info    : Used 28 registers, used 1 barriers, 400 bytes cmem[0], 8 bytes cmem[2]`.
+- Prefer a compatibility fix in the PTX/ptxas resource parser that preserves older `ptxas` output behavior and uses the existing barrier resource data model if appropriate.
+
+### 2026-06-09 03:34:55 CST
+
+Action:
+- S7 CUDA 13.1 `ptxas` resource parser worker `019ea8ab-7a47-7700-a045-aaf7e101a7f3` completed `docs/sm120-calibration/worker-logs/worker-20260609-031826-s7-ptxas-parser.md`.
+- The worker reported one blank-context internal reviewer round with verdict `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/ptxinfo.l`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/ptxinfo.y`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/cuda-sim.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-031826-s7-ptxas-parser.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-ptxas-parser-20260609-031826/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime and regenerated the `ptxinfo` parser.
+- Verified the existing parser conflict count was unchanged from the base.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+- Protected config/latest/generated scoped status was empty.
+- Final procman state was `Nothing Active`.
+
+Partial result:
+- The previous CUDA 13.1 `ptxas` parser blocker on `used 1 barriers` is resolved.
+- The parser consumed `ptxas info    : Used 28 registers, used 1 barriers, 400 bytes cmem[0], 8 bytes cmem[2]`.
+- Smoke evidence shows `GPGPU-Sim PTX: Kernel ... : regs=28, lmem=0, smem=0, cmem=408`.
+- The smoke still produced no real simulator metrics.
+- New blocker: parser fails on `ptxas info    : Compile time = 2.998 ms`.
+- Stderr still reports `libgomp: Invalid value for environment variable OMP_NUM_THREADS:`.
+
+Supervisor review:
+- Supervisor reviewer `019ea8b8-c615-7082-a11b-5f93a7fc88aa` returned `ACCEPT`.
+- Reviewer confirmed the parser change is scoped, preserves existing register/memory/cmem-bank forms, uses the existing barrier model, resets barrier state, and properly bounds the new compile-time parser blocker.
+
+Follow-up:
+- Pending S7 work remains: update the PTX/ptxas parser to accept CUDA 13.1 `Compile time = ... ms` informational lines, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.

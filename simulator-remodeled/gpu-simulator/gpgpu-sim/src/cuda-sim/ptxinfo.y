@@ -49,6 +49,7 @@ typedef void * yyscan_t;
 %token FUNC
 %token USED
 %token REGS
+%token BARRIERS
 %token BYTES
 %token LMEM
 %token SMEM
@@ -81,6 +82,7 @@ typedef void * yyscan_t;
 	void yyerror(yyscan_t yyscanner, ptxinfo_data* ptxinfo, const char* msg);
 	void ptxinfo_function(const char *fname );
 	void ptxinfo_regs( unsigned nregs );
+	void ptxinfo_barriers( unsigned barriers );
 	void ptxinfo_lmem( unsigned declared, unsigned system );
 	void ptxinfo_gmem( unsigned declared, unsigned system );
 	void ptxinfo_smem( unsigned declared, unsigned system );
@@ -119,6 +121,7 @@ gmem_info: INT_OPERAND BYTES GMEM
 	;
 
 info: 	  USED INT_OPERAND REGS { ptxinfo_regs($2); }
+	| USED INT_OPERAND BARRIERS { ptxinfo_barriers($2); }
 	| tuple LMEM { ptxinfo_lmem(g_declared,g_system); }
 	| tuple SMEM { ptxinfo_smem(g_declared,g_system); }
 	| INT_OPERAND BYTES CMEM LEFT_SQUARE_BRACKET INT_OPERAND RIGHT_SQUARE_BRACKET { ptxinfo_cmem($1,$5); }
@@ -127,6 +130,7 @@ info: 	  USED INT_OPERAND REGS { ptxinfo_regs($2); }
 	| INT_OPERAND BYTES SMEM { ptxinfo_smem($1,0); }
 	| INT_OPERAND BYTES CMEM { ptxinfo_cmem($1,0); }
 	| INT_OPERAND REGS { ptxinfo_regs($1); }
+	| INT_OPERAND BARRIERS { ptxinfo_barriers($1); }
 	| INT_OPERAND TEXTURES {}
 	;
 
@@ -137,5 +141,4 @@ duplicate:	FUNCTION QUOTE IDENTIFIER QUOTE { ptxinfo_dup_type($1); }
 	;
 
 %%
-
 
