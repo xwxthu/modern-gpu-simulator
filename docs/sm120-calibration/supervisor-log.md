@@ -485,3 +485,37 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: reviewed Rodinia data provisioning for `./data/result-4096.txt`, then one intentional local smoke run, followed by real supplied-metrics correlation if smoke metrics are available.
+
+Checkpoint:
+- Commit `287ead489912718dbc3b3c93c656060800107d03` (`fix: support CUDA 13 local smoke setup`) recorded the local CUDA 13 build-prerequisite fixes and setup-only smoke success.
+
+### 2026-06-09 01:08:04 CST
+
+Action:
+- Spawned S7 actual local smoke worker `019ea829-81a4-75f0-9e54-e46328c22921`.
+
+Worker deliverables:
+- `docs/sm120-calibration/worker-logs/worker-20260609-010804-s7-actual-smoke.md`.
+- Local run evidence under ignored `artifacts/s7/s7-actual-smoke-20260609-005843/`.
+
+Worker validation:
+- Provisioned Rodinia backprop `result-4096.txt` locally from a native backprop run and recorded SHA256.
+- Reran local setup-only smoke planning with `run_simulations.py ... -n`; setup-only passed.
+- Launched exactly one local smoke job for `rodinia_2.0-ft:backprop-rodinia-2.0-ft:0` using `RTX5060_SM120_GEN`.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Accepted/generated config scoped status check was empty.
+
+Partial result:
+- The actual local smoke job did not complete and produced no real simulator metrics.
+- No `gpu_tot_sim_cycle`, simulation time, simulator exit marker, or functional PASS/FAIL was found.
+- No real `supplied_metrics` manifest or S6 ranking report was created.
+- Procman left stale `RUNNING` state for a dead PID; worker archived the stale state evidence and cleaned it. Post-cleanup procman status was `Nothing Active`.
+- No simulator job ran on `dsp5060`.
+
+Supervisor review:
+- Supervisor reviewer `019ea83c-3eae-7810-b795-55415fad0d98` returned `ACCEPT`.
+- Reviewer confirmed data provisioning is reasonable, exactly one local job was queued, no fake metrics were created, artifact hashes verify, stale procman state was cleaned, and protected config/latest paths are clean.
+
+Follow-up:
+- Pending S7 work remains: debug why the local smoke job exits without moved logs or simulator metrics, rerun one local smoke after the debug fix, then generate real supplied-metrics correlation input only if real metrics exist.
