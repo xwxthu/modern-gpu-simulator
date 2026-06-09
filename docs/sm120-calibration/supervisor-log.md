@@ -2183,3 +2183,50 @@ Supervisor review:
 Follow-up:
 - S7 remains in progress.
 - Promotion gate remains closed. Remaining work includes broader RTX5060/RTX5070Ti validation, deciding whether to run a multi-candidate bounded S6 search, collecting more robust/repeated hardware targets, and promotion-gate review before any accepted config or `calibration-results/latest` update.
+
+### 2026-06-10 03:13:20 CST
+
+Action:
+- Confirmed repository state after checkpoint `df5898c` on branch `dev-5060`; tracked worktree was clean.
+- Began S7 bounded parameter sweep design work.
+- Spawned fresh blank-context worker `019eadb4-6873-7f23-8ecd-16621731b886`.
+
+Scope:
+- Advance from the single-candidate baseline toward a reviewed bounded multi-candidate sweep.
+- Keep the work plan-only unless local simulator execution is clearly low-risk and well-bounded.
+- Use only simulator-comparable CUDA `_time_ms` targets.
+- Do not fabricate missing candidate metrics, do not run simulator workloads on `dsp5060`, and do not promote configs or `calibration-results/latest`.
+
+### 2026-06-10 03:22:00 CST
+
+Action:
+- S7 bounded sweep worker `019eadb4-6873-7f23-8ecd-16621731b886` completed `docs/sm120-calibration/worker-logs/worker-20260610-024829-s7-bounded-sweep.md`.
+- Worker added design document `docs/sm120-calibration/s7-bounded-parameter-sweep-design.md`.
+- Worker created ignored plan artifacts under `artifacts/s7/s7-bounded-sweep-20260610-024829/`.
+- Worker reported internal reviewer Round 1 verdict of `ACCEPT`.
+- Spawned independent supervisor reviewer `019eadc8-2d6f-77e0-a5cd-9225c83ba280`.
+
+Bounded sweep design:
+- Selected a four-candidate cartesian sweep:
+  `-latency_L0_to_L1` values `[37, 39]` and
+  `-prefetch_per_stream_buffer_size` values `[8, 10]`.
+- Both keys are active in generated `SM120_RTX5060/gpgpusim.config`, schema-owned by `calibration_result`, and listed in S5/S6 stage `rf_prefetch_remodeled_parameters`.
+- Target metrics remain the four simulator-comparable CUDA `_time_ms` metrics used by the S7 baseline.
+- The draft S6 manifest is intentionally non-runnable because only the job `486` baseline candidate metrics exist; three candidate signatures are missing.
+- No new local simulator jobs were run. The worker judged execution as a separate step because job `486` already recorded substantial simulator runtime and three additional candidates would be nontrivial.
+
+Validation:
+- `git diff --check` passed.
+- `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only` passed.
+- Protected config/latest scoped `git status --short` check was empty.
+- `python3 simulator-remodeled/util/job_launching/procman.py -p` reported `Nothing Active`.
+- Expected S6 dry-run rejection confirmed: the draft manifest fails because `evaluation candidate_metrics` is missing three generated candidates.
+- `git check-ignore -v` confirmed bounded-sweep artifacts are ignored under `artifacts/s7/`.
+
+Supervisor review:
+- Independent supervisor reviewer `019eadc8-2d6f-77e0-a5cd-9225c83ba280` returned `ACCEPT`.
+- Reviewer confirmed the four-candidate sweep is bounded and schema/stage-map justified, the artifacts remain plan-only/non-runnable, no missing metrics are fabricated, target metrics are limited to the four comparable CUDA `_time_ms` metrics, ProcMan is clean, no simulator/procman/S7 job is running on `dsp5060`, protected config/latest paths are clean, and generated artifacts are ignored.
+
+Follow-up:
+- S7 remains in progress.
+- Promotion gate remains closed. The next possible step is a separate execution worker for the three missing local simulator candidate metrics, with setup-only review before any actual simulator run.
