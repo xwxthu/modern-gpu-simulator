@@ -1439,3 +1439,44 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX functional PC mismatch assertion in `ptx_thread_info::ptx_exec_inst()`.
+
+### 2026-06-09 13:12:59 CST
+
+Action:
+- S7 PTX functional PC worker `019eaa98-80ee-7a92-8865-b9041f03be36` completed `docs/sm120-calibration/worker-logs/worker-20260609-123740-s7-ptx-functional-pc.md`.
+- The worker reported a fresh read-only internal reviewer verdict of `ACCEPT` after an initial CLI invocation error and one `CHANGES_NEEDED` round.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/abstract_hardware_model.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/ibuffer_remodeled.cc`.
+- `docs/sm120-calibration/overall-plan.md`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-123740-s7-ptx-functional-pc.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-ptx-functional-pc-20260609-122555/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed, including the final rerun.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- Remodeled `simt_stack::update()` was an empty imported stub while PTX-mode `SM::issue_warp()` still called `updateSIMTStack()` after functional execution.
+- After a divergent branch at PTX PC `0x2458`, functional lanes advanced to the immediate postdominator at `0x24a0`, but the timing model still fetched and issued stale fall-through PC `0x2460` with the old active mask.
+
+Partial result:
+- Restored the standard post-dominator SIMT-stack update logic so PTX mode consumes per-lane functional next PCs and updates divergence/reconvergence state.
+- Added a PTX-only stale IBuffer head check before remodeled issue: if the decoded head PC no longer matches the SIMT-stack top PC, the warp next PC is reset to the SIMT top and that warp's IBuffer is flushed.
+- Fixed `IBuffer_Remodeled::flush(false)` so PTX mode no longer unconditionally casts the warp to `trace_shd_warp_t`.
+- Trace mode remains guarded by the existing `is_trace_mode` checks.
+- The previous `ptx_thread_info::ptx_exec_inst()` `pc == inst.pc` assertion is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: `barrier_set_t::warp_reaches_barrier()` asserts `bar_id != (unsigned)-1` at `shader.cc:3867`; focused evidence shows `bar_type = SYNC` and timing-side `bar_id = 4294967295` after reaching a `bar.sync 0` reconvergence region.
+
+Supervisor review:
+- Supervisor reviewer `019eaac6-9c27-7183-a68f-7ab03ffdd89e` returned `ACCEPT`.
+- Reviewer confirmed the SIMT-stack update has the standard GPGPU-Sim pdom update shape, stale IBuffer flushing is PTX-scoped, `flush(false)` avoids the trace-only cast in PTX mode, no config/latest/generated outputs or metrics were changed, and the barrier metadata assertion is a separate downstream blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound PTX `bar.sync` barrier id/count metadata propagation into the dynamic timing `warp_inst_t` before remodeled barrier handling.

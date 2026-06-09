@@ -405,12 +405,21 @@ void Subcore::issue(SM *shared_sm) {
           c_warp->get_IBuffer_remodeled()->is_next_valid();
 
       if (is_valid_inst_in_the_warp) {
-        is_valid_inst = true;
-
         bool use_traditional_scoreboarding = !c_warp->get_kernel_info()->is_captured_from_binary || m_config->is_remodeling_scoreboarding_enabled || !m_config->is_trace_mode;
 
         warp_inst_t *pI = c_warp->get_IBuffer_remodeled()->next_inst();
         assert(pI != nullptr);
+
+        if(!m_config->is_trace_mode) {
+          unsigned pc, rpc;
+          shared_sm->get_pdom_stack_top_info(sm_warp_id, pI, &pc, &rpc);
+          if(pc != pI->pc) {
+            c_warp->set_next_pc(pc);
+            c_warp->get_IBuffer_remodeled()->flush(false);
+            continue;
+          }
+        }
+        is_valid_inst = true;
 
         bool are_traditional_scoreaboards_ready = true;
         bool is_stall_counter_0 = true;

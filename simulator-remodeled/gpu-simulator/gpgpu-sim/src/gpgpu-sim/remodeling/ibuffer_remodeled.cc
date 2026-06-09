@@ -169,7 +169,6 @@ void IBuffer_Remodeled::flush(bool reset_pc_to_0) {
     m_num_entries = 0;
     m_is_init_next_pc = false;
     m_is_ret_reached = false;
-    m_next_pc_to_fetch_request = reset_pc_to_0 ? 0 : static_cast<trace_shd_warp_t*>(m_shd_warp)->get_pc();
     if(reset_pc_to_0) {
         m_next_pc_to_fetch_request = 0;
     }else {

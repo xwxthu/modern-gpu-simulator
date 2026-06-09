@@ -1447,6 +1447,130 @@ void simt_stack::print_checkpoint(FILE *fout) const {
 void simt_stack::update(simt_mask_t &thread_done, addr_vector_t &next_pc, 
                         address_type recvg_pc, op_type next_inst_op,
                         unsigned next_inst_size, address_type next_inst_pc) {
+  assert(m_stack.size() > 0);
+  assert(next_pc.size() == m_warp_size);
+
+  simt_mask_t top_active_mask = m_stack.back().m_active_mask;
+  address_type top_recvg_pc = m_stack.back().m_recvg_pc;
+  address_type top_pc = m_stack.back().m_pc;
+  stack_entry_type top_type = m_stack.back().m_type;
+  assert(top_pc == next_inst_pc);
+  assert(top_active_mask.any());
+
+  const address_type null_pc = -1;
+  bool warp_diverged = false;
+  address_type new_recvg_pc = null_pc;
+  unsigned num_divergent_paths = 0;
+
+  std::map<address_type, simt_mask_t> divergent_paths;
+  while (top_active_mask.any()) {
+    address_type tmp_next_pc = null_pc;
+    simt_mask_t tmp_active_mask;
+    for (int i = m_warp_size - 1; i >= 0; i--) {
+      if (top_active_mask.test(i)) {
+        if (thread_done.test(i)) {
+          top_active_mask.reset(i);
+        } else if (tmp_next_pc == null_pc) {
+          tmp_next_pc = next_pc[i];
+          tmp_active_mask.set(i);
+          top_active_mask.reset(i);
+        } else if (tmp_next_pc == next_pc[i]) {
+          tmp_active_mask.set(i);
+          top_active_mask.reset(i);
+        }
+      }
+    }
+
+    if (tmp_next_pc == null_pc) {
+      assert(!top_active_mask.any());
+      continue;
+    }
+
+    divergent_paths[tmp_next_pc] = tmp_active_mask;
+    num_divergent_paths++;
+  }
+
+  address_type not_taken_pc = next_inst_pc + next_inst_size;
+  assert(num_divergent_paths <= 2);
+  for (unsigned i = 0; i < num_divergent_paths; i++) {
+    address_type tmp_next_pc = null_pc;
+    simt_mask_t tmp_active_mask;
+    tmp_active_mask.reset();
+    if (divergent_paths.find(not_taken_pc) != divergent_paths.end()) {
+      assert(i == 0);
+      tmp_next_pc = not_taken_pc;
+      tmp_active_mask = divergent_paths[tmp_next_pc];
+      divergent_paths.erase(tmp_next_pc);
+    } else {
+      std::map<address_type, simt_mask_t>::iterator it =
+          divergent_paths.begin();
+      tmp_next_pc = it->first;
+      tmp_active_mask = divergent_paths[tmp_next_pc];
+      divergent_paths.erase(tmp_next_pc);
+    }
+
+    if (next_inst_op == CALL_OPS) {
+      assert(num_divergent_paths == 1);
+
+      simt_stack_entry new_stack_entry;
+      new_stack_entry.m_pc = tmp_next_pc;
+      new_stack_entry.m_active_mask = tmp_active_mask;
+      new_stack_entry.m_branch_div_cycle =
+          m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle;
+      new_stack_entry.m_type = STACK_ENTRY_TYPE_CALL;
+      m_stack.push_back(new_stack_entry);
+      return;
+    } else if (next_inst_op == RET_OPS && top_type == STACK_ENTRY_TYPE_CALL) {
+      assert(num_divergent_paths == 1);
+      m_stack.pop_back();
+
+      assert(m_stack.size() > 0);
+      m_stack.back().m_pc = tmp_next_pc;
+      if (tmp_next_pc == m_stack.back().m_recvg_pc &&
+          m_stack.back().m_type != STACK_ENTRY_TYPE_CALL) {
+        assert(m_stack.back().m_type == STACK_ENTRY_TYPE_NORMAL);
+        m_stack.pop_back();
+      }
+      return;
+    }
+
+    if (tmp_next_pc == top_recvg_pc && (top_type != STACK_ENTRY_TYPE_CALL)) {
+      continue;
+    }
+
+    if ((num_divergent_paths > 1) && !warp_diverged) {
+      warp_diverged = true;
+      new_recvg_pc = recvg_pc;
+      if (new_recvg_pc != top_recvg_pc) {
+        m_stack.back().m_pc = new_recvg_pc;
+        m_stack.back().m_branch_div_cycle =
+            m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle;
+
+        m_stack.push_back(simt_stack_entry());
+      }
+    }
+
+    if (warp_diverged && tmp_next_pc == new_recvg_pc) {
+      continue;
+    }
+
+    m_stack.back().m_pc = tmp_next_pc;
+    m_stack.back().m_active_mask = tmp_active_mask;
+    if (warp_diverged) {
+      m_stack.back().m_calldepth = 0;
+      m_stack.back().m_recvg_pc = new_recvg_pc;
+    } else {
+      m_stack.back().m_recvg_pc = top_recvg_pc;
+    }
+
+    m_stack.push_back(simt_stack_entry());
+  }
+  assert(m_stack.size() > 0);
+  m_stack.pop_back();
+
+  if (warp_diverged) {
+    m_gpu->gpgpu_ctx->stats->ptx_file_line_stats_add_warp_divergence(top_pc, 1);
+  }
 }
 
 void core_t::execute_warp_inst_t(warp_inst_t &inst, unsigned warpId) {
