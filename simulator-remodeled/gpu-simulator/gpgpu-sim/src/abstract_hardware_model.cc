@@ -421,22 +421,45 @@ bool warp_inst_t::sm_shared_wb_consumed(bool can_do_wb_this_cycle, unsigned int 
 }
 
 void warp_inst_t::get_tensor_core_instruction_info() {
+  if (!has_extra_trace_instruction_info()) {
+    fprintf(stderr,
+            "Trace tensor-core latency modeling requires trace instruction "
+            "metadata.\n");
+    abort();
+  }
   this->get_extra_trace_instruction_info().set_tensor_core_instruction_info();
 }
 
 void warp_inst_t::generate_tensor_core_latencies(gpgpu_sim *gpu) {
-  assert(get_extra_trace_instruction_info().get_tensor_core_instruction_info().is_set);
-  unsigned int number_of_elements = get_extra_trace_instruction_info().get_tensor_core_instruction_info().size_m * get_extra_trace_instruction_info().get_tensor_core_instruction_info().size_n * get_extra_trace_instruction_info().get_tensor_core_instruction_info().size_k;
-  assert(number_of_elements > 0);
-  assert(get_extra_trace_instruction_info().get_tensor_core_instruction_info().operand_bit_size > 0);
   const shader_core_config &shader_config = gpu->get_config().get_gpgpu_sim_config();
-  unsigned int number_of_cycles = number_of_elements * get_extra_trace_instruction_info().get_tensor_core_instruction_info().operand_bit_size / shader_config.tensor_rate_per_cycle;
-  if(get_extra_trace_instruction_info().get_tensor_core_instruction_info().is_sparse) {
+  if (!shader_config.is_trace_mode) {
+    m_num_cycles_to_wait_to_free_WAR = latency + initiation_interval;
+    return;
+  }
+
+  if (!has_extra_trace_instruction_info()) {
+    fprintf(stderr,
+            "Trace tensor-core latency modeling requires trace instruction "
+            "metadata.\n");
+    abort();
+  }
+
+  const auto &tensor_info =
+      get_extra_trace_instruction_info().get_tensor_core_instruction_info();
+  assert(tensor_info.is_set);
+  unsigned int number_of_elements =
+      tensor_info.size_m * tensor_info.size_n * tensor_info.size_k;
+  assert(number_of_elements > 0);
+  assert(tensor_info.operand_bit_size > 0);
+  unsigned int number_of_cycles =
+      number_of_elements * tensor_info.operand_bit_size /
+      shader_config.tensor_rate_per_cycle;
+  if(tensor_info.is_sparse) {
     number_of_cycles = number_of_cycles / 2;
   } 
   initiation_interval = number_of_cycles / 2;
   latency = number_of_cycles - initiation_interval;
-  if(get_extra_trace_instruction_info().get_tensor_core_instruction_info().is_16816_fp32_1688_fp32) {
+  if(tensor_info.is_16816_fp32_1688_fp32) {
     initiation_interval += gpu->get_config().get_gpgpu_sim_config().tensor_extra_latency_16816_fp32_1688_fp32;
     latency += gpu->get_config().get_gpgpu_sim_config().tensor_extra_latency_16816_fp32_1688_fp32;
   }
@@ -490,7 +513,46 @@ void warp_inst_t::generate_other_mem_ops_latencies(gpgpu_sim *gpu) {
 
 void warp_inst_t::generate_dp_latencies(gpgpu_sim *gpu) {
   const shader_core_config &shader_config = gpu->get_config().get_gpgpu_sim_config();
+  if (shader_config.dp_shared_intermidiate_stages == 0) {
+    fprintf(stderr,
+            "DP latency modeling requires at least one shared-DP "
+            "intermediate stage.\n");
+    abort();
+  }
   m_num_cycles_per_intermediate_stage.resize(shader_config.dp_shared_intermidiate_stages, 1);
+  if (!shader_config.is_trace_mode) {
+    unsigned int link_transfer_size =
+        shader_config.memory_subcore_link_to_sm_byte_size / 2;
+    if (link_transfer_size == 0) {
+      fprintf(stderr,
+              "PTX DP latency fallback requires a nonzero subcore-to-SM "
+              "link width.\n");
+      abort();
+    }
+    unsigned int cycles_per_source_reg =
+        (warp_size() * 8) / link_transfer_size;
+    if (cycles_per_source_reg == 0) {
+      cycles_per_source_reg = 1;
+    }
+    unsigned int num_cycles_transfer_operands =
+        std::max(1u, incount * cycles_per_source_reg);
+    if (!m_num_cycles_per_intermediate_stage.empty()) {
+      m_num_cycles_per_intermediate_stage
+          [m_num_cycles_per_intermediate_stage.size() - 1] =
+              1 + num_cycles_transfer_operands;
+    }
+    m_num_cycles_to_wait_to_free_WAR =
+        shader_config.dp_shared_intermidiate_stages +
+        num_cycles_transfer_operands - 2;
+    return;
+  }
+
+  if (!has_extra_trace_instruction_info()) {
+    fprintf(stderr,
+            "Trace DP latency modeling requires trace instruction metadata.\n");
+    abort();
+  }
+
   unsigned int num_cycles_transfer_operands = 0;
   unsigned int first_read_operand = get_extra_trace_instruction_info().get_num_destination_registers();
   for(unsigned int i = first_read_operand; i < get_extra_trace_instruction_info().get_num_operands(); i++){

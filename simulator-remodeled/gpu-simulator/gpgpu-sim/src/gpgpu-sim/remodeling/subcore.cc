@@ -920,7 +920,7 @@ void Subcore::single_decode(SM *shared_sm, warp_inst_t *pI,
     pI->assign_predicate_latencies_if_needed(m_sm->get_gpu());
     warp->inc_inst_in_pipeline();
     pI->set_unique_inst_id(warp->m_last_unique_inst_id);
-    if(pI->is_tensor_core_op()) {
+    if(m_config->is_trace_mode && pI->is_tensor_core_op()) {
       pI->get_tensor_core_instruction_info();
     }
     warp->m_last_unique_inst_id++;

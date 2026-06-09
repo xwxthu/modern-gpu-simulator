@@ -1645,3 +1645,46 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode DP decode-latency path that dereferences missing trace-enhanced instruction metadata in `warp_inst_t::generate_dp_latencies()`.
+
+### 2026-06-09 17:29:08 CST
+
+Action:
+- S7 DP latency worker `019eab8f-a2cd-7301-a392-c457e3fe89fb` completed `docs/sm120-calibration/worker-logs/worker-20260609-164753-s7-dp-latency.md`.
+- The worker reported a fresh blank-context read-only reviewer verdict of `ACCEPT` in reviewer round 2. Round 1 did not produce a formal verdict and was not counted.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/abstract_hardware_model.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-164753-s7-dp-latency.md`.
+- Local evidence under ignored `artifacts/s7/s7-dp-latency-20260609-164753/`.
+
+Worker validation:
+- `git diff --check` passed.
+- `generate_sm120_configs.py --check-only` passed.
+- Local CUDA 13.1 release GPGPU-Sim runtime rebuild passed.
+- Setup-only local PTX smoke planning passed.
+- Exactly one local PTX smoke was launched after rebuild. It reached first-kernel performance simulation and SM binding, and the previous `traced_instruction::get_num_destination_registers(this=0x0)` DP-latency crash was not reproduced before the bounded run was stopped.
+
+Root cause:
+- Remodeled decode-latency generation unconditionally used enhanced trace instruction metadata in `warp_inst_t::generate_dp_latencies()`.
+- The same PTX/trace boundary also existed around tensor-core trace metadata preparation and tensor latency generation.
+- PTX/performance-mode instructions have PTX predecode timing and operand metadata but no enhanced trace instruction metadata, so an assertion-disabled build dereferenced an empty trace-metadata pointer.
+
+Partial result:
+- PTX mode now avoids enhanced trace metadata in DP/tensor decode-latency setup.
+- PTX DP latency setup uses PTX-predecoded source-register count plus existing config-backed shared-DP stage and subcore-to-SM link parameters.
+- PTX tensor latency setup preserves existing PTX predecode latency/initiation values for the remodeled fixed-latency path.
+- Trace mode still requires enhanced trace metadata for detailed DP/tensor latency modeling and fails explicitly if the required metadata is absent.
+- `Subcore::single_decode()` prepares tensor-core trace metadata only in trace mode.
+- No generated configs, latest aliases, accepted calibration results, or metrics artifacts were promoted.
+
+Remaining issue:
+- The bounded local PTX smoke is not a full smoke pass. It reached first-kernel execution and SM binding but did not produce first-kernel metrics within the worker's bounded wait.
+- The remaining S7 issue is now a long-running or stalled first-kernel local PTX smoke before metrics, not a reproduced DP trace-metadata SIGSEGV.
+
+Supervisor review:
+- Independent supervisor reviewer `019eabb2-d577-7610-89b1-79fc066f9b8a` returned `ACCEPT`.
+- Reviewer confirmed the root cause is supported, the fix is scoped to the PTX/trace metadata boundary, PTX fallback uses existing PTX/config information rather than device-specific constants, trace mode remains strict, and the bounded smoke evidence is not overstated as calibration/correlation.
+
+Follow-up:
+- Pending S7 work remains: triage why the local PTX smoke reaches first-kernel performance simulation but does not produce first-kernel metrics within a bounded wait.
