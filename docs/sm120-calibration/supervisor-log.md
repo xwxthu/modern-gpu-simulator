@@ -1563,3 +1563,43 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX file-line stats concurrency crash in `ptx_file_line_stats_add_exec_count()`.
+
+### 2026-06-09 15:09:55 CST
+
+Action:
+- S7 PTX stats concurrency worker `019eab1a-1a77-7f91-8323-833e38080eeb` completed `docs/sm120-calibration/worker-logs/worker-20260609-144109-s7-ptx-stats-concurrency.md`.
+- The worker reported a fresh blank-context read-only internal reviewer verdict of `ACCEPT` after one CLI invocation error and a rerun.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/ptx-stats.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-144109-s7-ptx-stats-concurrency.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-ptx-stats-concurrency-20260609-144109/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local PTX smoke job was launched.
+
+Root cause:
+- `ptx_file_line_stats_tracker` is a process-global unordered-map-like tracker.
+- Multiple OpenMP worker threads can execute PTX instructions concurrently and call source-line stats update paths, including `ptx_file_line_stats_add_exec_count()` from `ptx_thread_info::ptx_exec_inst()`.
+- The previous implementation inserted and mutated the global tracker without external synchronization, matching the focused SIGSEGV in `_Hashtable::_M_insert_bucket_begin()`.
+
+Partial result:
+- Added a mutex around the global `ptx_file_line_stats_tracker`.
+- Guarded all direct tracker mutation paths for exec count, latency, DRAM traffic, shared/global memory stats, exposed latency, and warp divergence.
+- Guarded final tracker iteration in `ptx_file_line_stats_write_file()`.
+- PTX source-line stats remain enabled; no stats call was skipped or disabled.
+- The previous `ptx_file_line_stats_add_exec_count()` / unordered-map insertion SIGSEGV is resolved for the local smoke.
+- Prior `Subcore::single_decode()` `pI->valid()`, `bar_id != (unsigned)-1`, and `pc == inst.pc` blockers did not regress.
+- The smoke still produced no real simulator metrics.
+- New blocker: `shd_warp_t::pop_function_call(active_mask_t)` asserts `!m_function_call_stack.empty()` at `shader.h:221`; focused stack reaches `set_done_exit()`, `SM::check_if_warp_has_finished_executing_and_can_be_reclaim()`, and `Subcore::fetch()`.
+
+Supervisor review:
+- Supervisor reviewer `019eab34-e380-7c20-958e-40f283e4d81f` returned `ACCEPT`.
+- Reviewer confirmed all direct tracker mutation and iteration paths are guarded, this is a root-cause concurrency repair rather than a stats skip, PTX file-line stats remain enabled and called, no recursive lock or obvious deadlock path was introduced by the diff, trace/remodeled behavior outside the stats tracker is unaffected, no config/latest/calibration-result/metrics outputs were changed, and the new call-stack assertion is separately bounded.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX/remodeled function-call-stack assertion in `shd_warp_t::pop_function_call()`.
