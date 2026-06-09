@@ -2023,3 +2023,52 @@ Follow-up:
 - S7 remains in progress.
 - Remaining unsupported keys: 11. The four schema-active unresolved keys still need additional hardware/benchmark evidence before S5 support, and the seven inactive legacy/trace keys remain deferred or rejected for the current flow.
 - Promotion gate remains closed pending real hardware target metrics, any required S6 supplied-metrics/ranked reports, and RTX5060/RTX5070Ti signoff.
+
+### 2026-06-10 00:35:00 CST
+
+Action:
+- Confirmed repository state after checkpoint `bd3826f` on branch `dev-5060`; tracked worktree was clean.
+- Began S7 Hardware Target Metrics MVP work.
+- Spawned fresh blank-context worker `019ead34-eee0-7400-84c6-8185b33b293a`.
+
+Scope:
+- Add a reviewed path for collecting or parsing real hardware target metrics for S7.
+- Keep the boundary clear between hardware target metrics and simulator smoke metrics.
+- Use `dsp5060` only for lightweight GPU-dependent native collection if needed; do not run simulator or place the main workspace there.
+- Do not create S6 ranked reports or promote configs unless real hardware targets and reviewed candidate simulator metrics exist.
+
+### 2026-06-10 01:05:00 CST
+
+Action:
+- S7 hardware target metrics worker `019ead34-eee0-7400-84c6-8185b33b293a` completed `docs/sm120-calibration/worker-logs/worker-20260610-003954-s7-hardware-target-metrics.md`.
+- Worker added reusable collector `simulator-remodeled/util/tuner/collect_sm120_hardware_metrics.py`.
+- Worker added checked-in runbook `docs/sm120-calibration/s7-hardware-target-metrics.md`.
+- Worker added fixture inputs under `simulator-remodeled/util/tuner/testdata/sm120_hardware_backprop_*`.
+- Worker reported internal reviewer Round 1 verdict of `ACCEPT`.
+- Spawned independent supervisor reviewer `019ead50-5153-7260-9c88-760a65ad51d7`.
+
+Real hardware target artifact:
+- Lightweight native collection ran on `dsp5060` / `dsplab5060`, not through the simulator.
+- Only a small native `backprop-rodinia-2.0-ft` binary and gold output were copied to `/tmp`; the main workspace was not placed on `dsp5060`.
+- Native `backprop_4096` reported `PASSED`.
+- Draft hardware target YAML:
+  `artifacts/s7/s7-hardware-target-20260610-003544/RTX5060-backprop-4096-hardware-target-draft.yaml`.
+- Non-runnable S6 scaffold:
+  `artifacts/s7/s7-hardware-target-20260610-003544/RTX5060-backprop-4096-s6-supplied-metrics-template.yaml`.
+- Recorded target metrics include native wall time `0.38 s`, Nsight Systems CUDA kernel total time `0.0112 ms`, `bpnn_layerforward_CUDA` total `0.002496 ms`, and `bpnn_adjust_weights_cuda` total `0.008704 ms`.
+
+Validation:
+- `git diff --check` passed.
+- Collector `--help`, `py_compile`, and fixture generation passed.
+- Simulator-marker negative test rejected `gpu_tot_sim_cycle` input as expected.
+- `generate_sm120_configs.py --check-only` passed.
+- Protected config/latest scoped status check was empty.
+- `dsp5060` no-simulator/no-main-workspace check passed.
+
+Supervisor review:
+- Independent supervisor reviewer `019ead50-5153-7260-9c88-760a65ad51d7` returned `ACCEPT`.
+- Reviewer confirmed the collector adds a real hardware target metrics path distinct from simulator smoke metrics, rejects simulator markers, protects config/calibration output paths, records credible lightweight native `dsp5060` provenance, leaves the S6 scaffold non-runnable, and does not modify accepted/generated/latest config or `calibration-results/latest` paths.
+
+Follow-up:
+- S7 remains in progress.
+- Pending work remains: produce reviewed candidate simulator metrics matching the hardware target metric names, convert the non-runnable scaffold into a valid S6 `supplied_metrics` manifest if a bounded search is required, generate/review an S6 ranked draft report, and complete promotion-gate signoff.

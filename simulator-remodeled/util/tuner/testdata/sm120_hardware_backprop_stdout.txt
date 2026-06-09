@@ -1,0 +1,9 @@
+Random number generator seed: 7
+Input layer size : 4096
+Starting training kernel
+Performing GPU computation
+checksum = 0x1234abcd
+Result stored in result.txt
+
+PASSED
+Training done

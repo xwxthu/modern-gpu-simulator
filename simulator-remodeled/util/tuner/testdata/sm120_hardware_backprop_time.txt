@@ -1,0 +1,5 @@
+MGS_HW_TIME_wall_seconds=0.123
+MGS_HW_TIME_user_seconds=0.031
+MGS_HW_TIME_sys_seconds=0.010
+MGS_HW_TIME_max_rss_kbytes=23144
+MGS_HW_TIME_exit_status=0
