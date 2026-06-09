@@ -2072,3 +2072,58 @@ Supervisor review:
 Follow-up:
 - S7 remains in progress.
 - Pending work remains: produce reviewed candidate simulator metrics matching the hardware target metric names, convert the non-runnable scaffold into a valid S6 `supplied_metrics` manifest if a bounded search is required, generate/review an S6 ranked draft report, and complete promotion-gate signoff.
+
+### 2026-06-10 01:07:24 CST
+
+Action:
+- Resumed after an unexpected interruption.
+- Per resume rule, reread the top-level requirements in this log, `docs/sm120-calibration/overall-plan.md`, and the latest worker log `docs/sm120-calibration/worker-logs/worker-20260610-003954-s7-hardware-target-metrics.md`.
+- Confirmed current repository state: branch `dev-5060`, commit `d184039`, tracked worktree clean.
+
+Current phase:
+- S7 validation and calibration closure remains active.
+- In standard terms, the next work item is validation data reduction and calibration input preparation: ingest local simulator candidate metrics and bridge them to S6 `supplied_metrics` names compatible with the RTX5060 hardware target metrics.
+- This is not a reopening of the SM120 common-model/per-GPU-parameter boundary design; that boundary is already represented by S2/S4/S5/S6 and remains subject to later promotion-gate review.
+
+Next action:
+- Spawn a fresh blank-context worker for S7 simulator candidate metrics ingestion / S6 supplied-metrics bridge.
+- The worker must not fabricate metrics, must not use simulator smoke metrics as hardware target metrics, must not promote accepted/generated/latest configs, and must keep any artifact output ignored under `artifacts/`.
+
+### 2026-06-10 02:10:35 CST
+
+Action:
+- S7 simulator metrics bridge worker `019ead5b-30ff-7051-9f4c-877bc880119b` completed `docs/sm120-calibration/worker-logs/worker-20260610-012643-s7-sim-metrics-bridge.md`.
+- Worker added draft-only bridge `simulator-remodeled/util/tuner/ingest_sm120_simulator_candidate_metrics.py`.
+- Worker added focused unit tests and fixtures under `simulator-remodeled/util/tuner/`.
+- Worker added runbook `docs/sm120-calibration/s7-simulator-candidate-metrics-bridge.md` and updated `docs/sm120-calibration/s6-correlation-search.md`.
+- Worker reported internal reviewer Round 3 verdict of `ACCEPT`.
+- Spawned independent supervisor reviewer `019ead8d-f328-7233-a8d5-928cc2dd0654`.
+
+Bridge result:
+- The bridge parses local simulator stdout plus the run `gpgpusim.config`.
+- It maps per-kernel simulator cycles into CUDA-kernel timing candidate metrics using the configured core clock from `-gpgpu_clock_domains`.
+- It marks outputs as simulator candidate metrics, not hardware target metrics.
+- It refuses to fabricate `native_wall_time_seconds`.
+- It emits a runnable S6 `supplied_metrics` manifest only when `--reviewed` is supplied, the candidate metrics cover the bounded search space exactly, every target metric has a numeric candidate value, and the existing S6 validation path accepts the manifest.
+- Otherwise it emits a non-runnable bridge scaffold with explicit blockers.
+
+Job `486` result:
+- Job `486` can now be reduced into ignored draft simulator candidate metrics.
+- The job `486` S6 bridge scaffold remains intentionally non-runnable because the hardware template still includes `native_wall_time_seconds`, lacks reviewed bounded search parameters, and has `template_not_runnable` status.
+- No real S6 ranked report was generated from job `486`.
+
+Supervisor validation:
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest simulator-remodeled/util/tuner/test_ingest_sm120_simulator_candidate_metrics.py` passed with 6 tests.
+- `git diff --check` passed.
+- `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only` passed.
+- Protected config/latest scoped `git status --short` check was empty.
+- Supervisor fixture bridge generation into `/tmp` passed.
+- Supervisor fixture S6 scorer run into `/tmp` passed.
+
+Supervisor review:
+- Independent supervisor reviewer `019ead8d-f328-7233-a8d5-928cc2dd0654` returned `ACCEPT`.
+- Reviewer confirmed the worker met the goal, job `486` remains simulator candidate evidence only, hardware target and simulator candidate metrics remain separate, `native_wall_time_seconds` is not derived or accepted from loaded candidate artifacts, runnable-manifest gating is strong enough, fixture tests cover meaningful positive and negative cases, and protected accepted/generated/latest paths are unchanged.
+
+Follow-up:
+- S7 remains in progress.
+- Promotion gate remains closed. Real supplied-metrics correlation is still not complete; the next work is to define reviewed bounded search parameters and target-metric inclusion policy, then run any required local candidate simulations and generate a reviewed real S6 ranked draft report.

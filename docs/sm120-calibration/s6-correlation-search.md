@@ -64,8 +64,18 @@ S6 currently supports two evaluation modes:
 - `supplied_metrics`: metrics from simulator runs performed outside this
   harness.
 
-The harness does not parse simulator output yet. Future S7 can add a reviewed
-ingestion step for real run directories.
+The harness itself does not run or parse simulator workloads. S7 now provides a
+separate draft-only ingestion bridge for local simulator artifacts:
+
+```bash
+python3 simulator-remodeled/util/tuner/ingest_sm120_simulator_candidate_metrics.py --help
+```
+
+The bridge can convert per-kernel simulator cycles into candidate metrics with
+the same CUDA-kernel timing names used by the S7 hardware target collector. It
+does not fabricate native wall time, does not treat simulator metrics as
+hardware targets, and emits a non-runnable scaffold unless reviewed search
+parameters and candidate metrics are complete.
 
 ## Report Semantics
 

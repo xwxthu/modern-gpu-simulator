@@ -1,0 +1,19 @@
+GPGPU-Sim PTX: pushing kernel '_Z22bpnn_layerforward_CUDAPfS_S_S_ii' to stream 0, gridDim= (1,256,1) blockDim = (16,16,1)
+Destroy streams for kernel 1: size 0
+kernel_name = _Z22bpnn_layerforward_CUDAPfS_S_S_ii
+kernel_launch_uid = 1
+gpu_sim_cycle = 132000
+gpu_sim_insn = 4169728
+gpu_tot_sim_cycle = 132000
+gpu_tot_sim_insn = 4169728
+gpgpu_simulation_time = 0 days, 0 hrs, 0 min, 2 sec (2 sec)
+GPGPU-Sim PTX: pushing kernel '_Z24bpnn_adjust_weights_cudaPfiS_iS_S_' to stream 0, gridDim= (1,256,1) blockDim = (16,16,1)
+Destroy streams for kernel 2: size 0
+kernel_name = _Z24bpnn_adjust_weights_cudaPfiS_iS_S_
+kernel_launch_uid = 2
+gpu_sim_cycle = 66000
+gpu_sim_insn = 3866944
+gpu_tot_sim_cycle = 198000
+gpu_tot_sim_insn = 8036672
+gpgpu_simulation_time = 0 days, 0 hrs, 0 min, 4 sec (4 sec)
+PASSED

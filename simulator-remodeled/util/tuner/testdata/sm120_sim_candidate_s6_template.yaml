@@ -1,0 +1,60 @@
+schema_version: 1
+schema_id: sm120_correlation_search_manifest_v1
+search_id: sm120-sim-candidate-bridge-fixture
+gpu: RTX5060
+architecture: SM120
+status: draft_not_applied
+fixture_only: true
+description: >
+  Synthetic supplied_metrics bridge fixture. The simulator metrics are local
+  fixture values and are not RTX5060 hardware target data.
+base:
+  generated_config_alias: RTX5060_SM120_GEN
+  profile: bootstrap
+  gpgpusim_config: simulator-remodeled/gpu-simulator/gpgpu-sim/configs/generated/tested-cfgs/SM120_RTX5060/gpgpusim.config
+  trace_config: simulator-remodeled/gpu-simulator/configs/generated/tested-cfgs/SM120_RTX5060/trace.config
+benchmark_cases:
+  - id: backprop_4096
+    suite: rodinia_2.0-ft
+    benchmark: backprop-rodinia-2.0-ft
+    benchmark_selector: rodinia_2.0-ft:backprop-rodinia-2.0-ft:0
+    notes: Synthetic bridge fixture, no real simulator run.
+target_metrics:
+  - benchmark: backprop_4096
+    metric: cuda_kernel_total_time_ms
+    target: 0.150
+    weight: 1.0
+    epsilon: 0.001
+  - benchmark: backprop_4096
+    metric: cuda_kernel_avg_time_ms
+    target: 0.075
+    weight: 1.0
+    epsilon: 0.001
+  - benchmark: backprop_4096
+    metric: cuda_kernel_bpnn_layerforward_cuda_total_time_ms
+    target: 0.100
+    weight: 1.0
+    epsilon: 0.001
+  - benchmark: backprop_4096
+    metric: cuda_kernel_bpnn_adjust_weights_cuda_total_time_ms
+    target: 0.050
+    weight: 1.0
+    epsilon: 0.001
+search:
+  stage: rf_prefetch_remodeled_parameters
+  candidate_strategy: cartesian_product
+  max_candidates: 1
+  parameters:
+    - file: gpgpusim.config
+      key: -latency_L0_to_L1
+      owner: calibration_result
+      stage: rf_prefetch_remodeled_parameters
+      provenance: correlation_search
+      values: [39]
+      description: Single-candidate bridge fixture using the generated RTX5060 bootstrap value.
+evaluation:
+  mode: supplied_metrics
+  candidate_metrics: []
+  template_note: Filled by ingest_sm120_simulator_candidate_metrics.py in fixture validation.
+handoff:
+  do_not_claim_calibrated: true
