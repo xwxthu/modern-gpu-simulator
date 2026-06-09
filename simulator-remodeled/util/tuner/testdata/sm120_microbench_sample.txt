@@ -2,11 +2,13 @@ running ./system_config microbenchmark
 Device Name = Synthetic SM120 Fixture
 
 //Accel_Sim config:
+-gpgpu_ptx_force_max_capability 120
 -gpgpu_compute_capability_major 12
 -gpgpu_compute_capability_minor 0
 -gpgpu_n_clusters 30
 -gpgpu_n_cores_per_cluster 1
 -gpgpu_clock_domains 2640:2640:2640:14000
+-gpgpu_coalesce_arch 120
 /////////////////////////////////
 running ./config_int microbenchmark
 int32 latency = 4.10 (clk)

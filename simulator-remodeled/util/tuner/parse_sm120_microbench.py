@@ -68,6 +68,7 @@ STAGES: dict[str, dict[str, Any]] = {
         "expected_source_types": ["system_config", "microbenchmark"],
         "output_target": "base_or_gpu_overlay_candidate",
         "keys": [
+            "-gpgpu_ptx_force_max_capability",
             "-gpgpu_compute_capability_major",
             "-gpgpu_compute_capability_minor",
             "-gpgpu_n_clusters",
@@ -81,6 +82,7 @@ STAGES: dict[str, dict[str, Any]] = {
             "-gpgpu_shmem_size",
             "-gpgpu_shmem_sizeDefault",
             "-gpgpu_shmem_per_block",
+            "-gpgpu_coalesce_arch",
         ],
     },
     "system_core_config_microbench": {

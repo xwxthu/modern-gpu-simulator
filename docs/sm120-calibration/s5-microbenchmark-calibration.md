@@ -15,7 +15,7 @@ This is not a completed RTX 5060 calibration. Parser output remains
 
 | Stage | Input | Output | Candidate keys | Provenance |
 | --- | --- | --- | --- | --- |
-| `official_device_query_facts` | Tuner `system_config` output, or official facts already converted to config-style lines | Candidate `SM120_BASE` or per-GPU overlay facts | Compute capability, SM count, clock domains, register/shared-memory limits | `source_type: system_config` preferred; record host, command, input SHA256, benchmark, line |
+| `official_device_query_facts` | Tuner `system_config` output, or official facts already converted to config-style lines | Candidate `SM120_BASE` or per-GPU overlay facts | Compute capability, forced PTX max capability, coalescing architecture, SM count, clock domains, register/shared-memory limits | `source_type: system_config` preferred; record host, command, input SHA256, benchmark, line |
 | `system_core_config_microbench` | Tuner `core_config`, `config_int`, `config_fpu`, `config_dpu`, `config_sfu`, `config_tensor` output | Candidate SM120 common facts or calibration-result opcode deltas | Unit counts, issue widths, `-ptx_opcode_*`, tensor keys | `source_type: microbenchmark`; record input SHA256, benchmark, line |
 | `memory_l2_l1_config_microbench` | Tuner L1/L2/memory/shared-memory config output | Candidate GPU overlay facts or calibration-result memory/cache deltas | `-gpgpu_cache:dl1`, `-gpgpu_cache:dl2`, banks, memory partitions, DRAM timing | `source_type: microbenchmark` or `system_config`; record input SHA256, benchmark, line |
 | `trace_latency_groups` | Tuner trace latency/initiation lines or reviewed trace measurements | Candidate `trace.config` calibration-result deltas | `-trace_opcode_latency_initiation_*`, specialized trace groups | `source_type: microbenchmark`; record input SHA256, benchmark, line |
@@ -75,9 +75,20 @@ The checked-in sample output is synthetic and intentionally small:
 - `simulator-remodeled/util/tuner/testdata/sm120_microbench_sample.txt`
 - `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/samples/RTX5060-microbench-draft.yaml`
 
-The sample draft includes one unsupported key, `-gpgpu_l1_latency`, because the
-S5 MVP stage map intentionally does not support that legacy tuner key yet. This
-proves the unsupported-key path without claiming any real RTX 5060 measurement.
+The sample draft covers the low-risk `official_device_query_facts` support path
+for `-gpgpu_ptx_force_max_capability` and `-gpgpu_coalesce_arch`. It still
+includes one unsupported key, `-gpgpu_l1_latency`, because the S5 MVP stage map
+intentionally does not support that legacy tuner key. This proves both the new
+supported path and the unsupported-key path without claiming any real RTX 5060
+measurement.
+
+On 2026-06-10, a local parse rerun of the real RTX5060 `run_all.sh` output from
+`artifacts/s7/rtx5060-s7-tuner-buildfix-20260608-233545/` produced a draft with
+`76` parsed lines, `65` supported lines, `11` unsupported lines, and `65`
+derived-delta keys. The two newly supported low-risk facts remain
+`draft_not_applied`, are assigned to `official_device_query_facts`, and use the
+schema-driven `sm120_base` owner and `base/SM120_BASE.yaml` target layer. The
+other 11 unsupported keys remain unsupported pending the S7 dispositions.
 
 ## dsp5060 Collection-Only Workflow
 

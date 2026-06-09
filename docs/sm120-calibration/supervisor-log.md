@@ -1977,3 +1977,49 @@ Supervisor review:
 Follow-up:
 - S7 remains in progress.
 - Pending work remains: decide whether to implement future S5 support for the two low-risk active keys, gather additional hardware/benchmark evidence for the four active unresolved keys if needed, create real hardware target metrics and S6 supplied-metrics/ranked reports if correlation is required, and perform promotion-gate review.
+
+### 2026-06-10 00:05:00 CST
+
+Action:
+- Confirmed repository state after checkpoint `82cd0d5` on branch `dev-5060`; tracked worktree was clean.
+- Began S7 S5 low-risk stage-map support for the two active keys identified by the unsupported-key disposition.
+- Spawned fresh blank-context worker `019ead1a-e23e-7ef3-a2b0-a7435c068999`.
+
+Scope:
+- Add S5 parser/stage-map support only for `-gpgpu_ptx_force_max_capability` and `-gpgpu_coalesce_arch`.
+- Keep owner/target-layer assignment schema-driven and not RTX5060-specific.
+- Re-run the real RTX5060 S5 parse and expect the unsupported count to drop from 13 to 11 while preserving `draft_not_applied`.
+- Do not support the other 11 unsupported keys, do not run simulator or `dsp5060`, and do not promote accepted/generated/latest configs or calibration results.
+
+### 2026-06-10 00:27:00 CST
+
+Action:
+- S7 S5 low-risk stage-map worker `019ead1a-e23e-7ef3-a2b0-a7435c068999` completed `docs/sm120-calibration/worker-logs/worker-20260610-000252-s7-s5-lowrisk-keys.md`.
+- Worker added S5 parser/stage-map support only for `-gpgpu_ptx_force_max_capability` and `-gpgpu_coalesce_arch`.
+- Worker reported internal reviewer Round 1 verdict of `ACCEPT`.
+- Spawned independent supervisor reviewer `019ead2c-01a6-7293-8588-25254920cc22`.
+
+Worker deliverables:
+- `simulator-remodeled/util/tuner/parse_sm120_microbench.py`
+- `simulator-remodeled/util/tuner/testdata/sm120_microbench_sample.txt`
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/calibration-results/samples/RTX5060-microbench-draft.yaml`
+- `docs/sm120-calibration/s5-microbenchmark-calibration.md`
+- `docs/sm120-calibration/s7-unsupported-s5-keys-20260609.md`
+- `docs/sm120-calibration/overall-plan.md`
+- `docs/sm120-calibration/worker-logs/worker-20260610-000252-s7-s5-lowrisk-keys.md`
+
+Validation:
+- `git diff --check` passed.
+- Real RTX5060 parse rerun passed with `76` parsed, `65` supported, `11` unsupported, `65` derived-delta keys, `status: draft_not_applied`, and `handoff.do_not_claim_calibrated: true`.
+- Sample fixture/golden reproducibility passed; sample now has `14` parsed, `13` supported, `1` unsupported, with `-gpgpu_l1_latency` still preserving the unsupported-key negative path.
+- `generate_sm120_configs.py --check-only` passed.
+- Protected config/latest scoped status check was empty.
+
+Supervisor review:
+- Independent supervisor reviewer `019ead2c-01a6-7293-8588-25254920cc22` returned `ACCEPT`.
+- Reviewer confirmed support is limited to the two requested keys, both are under `official_device_query_facts`, owner/target-layer assignment remains schema-driven, no RTX5060 hardcode was added, docs avoid calibration/correlation/promotion overclaims, and accepted/generated/latest config paths are clean.
+
+Follow-up:
+- S7 remains in progress.
+- Remaining unsupported keys: 11. The four schema-active unresolved keys still need additional hardware/benchmark evidence before S5 support, and the seven inactive legacy/trace keys remain deferred or rejected for the current flow.
+- Promotion gate remains closed pending real hardware target metrics, any required S6 supplied-metrics/ranked reports, and RTX5060/RTX5070Ti signoff.

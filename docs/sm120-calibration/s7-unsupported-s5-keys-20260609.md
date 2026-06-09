@@ -19,6 +19,16 @@ The draft remains `draft_not_applied` and has
 accepted configs, generated configs, flat tested configs, or
 `calibration-results/<GPU>/latest.yaml`.
 
+Update on 2026-06-10: S5 stage-map support was added only for the two
+low-risk active `sm120_base` facts, `-gpgpu_ptx_force_max_capability` and
+`-gpgpu_coalesce_arch`. A local parser rerun of the same real RTX5060 raw
+output wrote `/tmp/RTX5060-real-microbench-draft-lowrisk.yaml` and produced
+`76` parsed lines, `65` supported lines, `11` unsupported lines, and `65`
+derived-delta keys. The rerun draft remains `status: draft_not_applied` with
+`handoff.do_not_claim_calibrated: true`. No accepted configs, generated
+configs, flat tested configs, or `calibration-results/<GPU>/latest.yaml` were
+updated.
+
 ## Method
 
 For each unsupported key, this review checked:
@@ -40,24 +50,26 @@ that S6 search contract as-is.
 
 | Category | Count | Keys |
 | --- | ---: | --- |
-| Schema-active, low-risk future S5 stage-map candidates | 2 | `-gpgpu_ptx_force_max_capability`, `-gpgpu_coalesce_arch` |
+| Schema-active, low-risk S5 stage-map support added on 2026-06-10 | 2 | `-gpgpu_ptx_force_max_capability`, `-gpgpu_coalesce_arch` |
 | Schema-active, but needs further hardware or benchmark evidence before S5 support | 4 | `-gpgpu_kernel_launch_latency`, `-gpgpu_shmem_option`, `-gpgpu_unified_l1d_size`, `-icnt_flit_size` |
 | Not schema-active; explicit legacy or inactive current-flow deferral | 7 | `-gpgpu_l1_latency`, `-gpgpu_num_dp_units`, `-gpgpu_smem_latency`, `-specialized_unit_3`, `-specialized_unit_4`, `-trace_opcode_latency_initiation_spec_op_3`, `-trace_opcode_latency_initiation_spec_op_4` |
 | Current S6 MVP candidates | 0 | None |
 
-No parser or stage-map change was made in this task. The schema-active keys are
-not automatically safe to promote from this single draft because some values
-come from tuner bootstrap constants or from a launch-latency benchmark that
-warns the value can be higher than the real event-based latency. Keeping the
-real draft's unsupported summary unchanged is the safer gate behavior until the
-follow-up evidence is reviewed.
+Only the two low-risk active `sm120_base` facts were added to the S5 stage map.
+They are not automatically safe to promote from this single draft; the rerun
+only records draft-only support and leaves the promotion gate closed. The other
+schema-active keys are not supported because some values come from tuner
+bootstrap constants or from a launch-latency benchmark that warns the value can
+be higher than the real event-based latency. The remaining 11 keys stay in the
+unsupported summary until the follow-up evidence or explicit deferral is
+reviewed.
 
 ## Decision Matrix
 
 | Key | Extend S5 stage/parser support? | Leave to S6 supplied-metrics/correlation? | Explicit deferral or rejection? | Needs more hardware/benchmark evidence? |
 | --- | --- | --- | --- | --- |
-| `-gpgpu_ptx_force_max_capability` | Later, yes; low-risk active `sm120_base` fact | No | No | No beyond existing compute-capability evidence |
-| `-gpgpu_coalesce_arch` | Later, yes; low-risk active `sm120_base` fact | No | No | No beyond existing compute-capability evidence |
+| `-gpgpu_ptx_force_max_capability` | Yes; supported on 2026-06-10 as a low-risk active `sm120_base` fact | No | No | No beyond existing compute-capability evidence |
+| `-gpgpu_coalesce_arch` | Yes; supported on 2026-06-10 as a low-risk active `sm120_base` fact | No | No | No beyond existing compute-capability evidence |
 | `-gpgpu_kernel_launch_latency` | Not yet | Not current S6 MVP; possible future launch-timing search if S6 is extended | No | Yes; current raw benchmark warns the value can be high |
 | `-gpgpu_shmem_option` | Not yet | No | No | Yes; separate device fact, policy, and tuner bootstrap logic first |
 | `-gpgpu_unified_l1d_size` | Not yet | No | No | Yes; current value is from tuner `hw_def` bootstrap constant |
@@ -74,8 +86,8 @@ follow-up evidence is reviewed.
 
 | Key | Value | File | Source | Schema active key | Current owner/provenance | Disposition |
 | --- | --- | --- | --- | --- | --- | --- |
-| `-gpgpu_ptx_force_max_capability` | `120` | `gpgpusim.config` | `core_config`, line 103 | Yes | `sm120_base`; current base provenance is `manual_arch_model` in `base/SM120_BASE.yaml` | Future S5 stage-map candidate under `official_device_query_facts`. It is derived from compute capability 12.0, which is also emitted by `system_config` lines 409-410. Do not use S6. No code change in this task to avoid changing the reviewed draft summary. |
-| `-gpgpu_coalesce_arch` | `120` | `gpgpusim.config` | `core_config`, line 107 | Yes | `sm120_base`; current base provenance is `manual_arch_model` in `base/SM120_BASE.yaml` | Future S5 stage-map candidate under `official_device_query_facts`. It is derived from the same device capability as the supported compute-capability keys. Do not use S6. No code change in this task. |
+| `-gpgpu_ptx_force_max_capability` | `120` | `gpgpusim.config` | `core_config`, line 103 | Yes | `sm120_base`; current base provenance is `manual_arch_model` in `base/SM120_BASE.yaml` | Supported by the S5 stage map on 2026-06-10 under `official_device_query_facts`. It is derived from compute capability 12.0, which is also emitted by `system_config` lines 409-410. Do not use S6. Draft-only: no accepted config or `latest.yaml` update. |
+| `-gpgpu_coalesce_arch` | `120` | `gpgpusim.config` | `core_config`, line 107 | Yes | `sm120_base`; current base provenance is `manual_arch_model` in `base/SM120_BASE.yaml` | Supported by the S5 stage map on 2026-06-10 under `official_device_query_facts`. It is derived from the same device capability as the supported compute-capability keys. Do not use S6. Draft-only: no accepted config or `latest.yaml` update. |
 | `-gpgpu_kernel_launch_latency` | `168622` | `gpgpusim.config` | `kernel_lat`, line 148 | Yes | `calibration_result`; current RTX5060 bootstrap provenance is `inherited_from_5070ti` with replacement stage `S5` in `calibration-results/RTX5060/bootstrap-current-flat.yaml` | Needs further hardware or benchmark evidence before S5 support. The raw benchmark itself says the reported latency can be higher than real and points to event-based measurement. Current S6 MVP cannot search it because it is not in the RF/prefetch remodeled stage. Future work should use a reviewed modern CUDA/Nsight timing method or extend S6 with a launch-timing search contract. |
 | `-gpgpu_shmem_option` | `0,8,16,32,64,100` | `gpgpusim.config` | `l1_config`, line 194 | Yes | `calibration_result`; current RTX5060 bootstrap provenance is `inherited_from_5070ti` with replacement stage `S5` | Needs further review before S5 support. The value includes the real shared-memory-per-SM size, but the tuner constructs the option from fixed `SHMEM_ADAPTIVE_OPTION` logic plus device properties. It should be promoted only after cross-checking official shared-memory facts and deciding whether this remains `calibration_result` or should be split from architecture policy. Not a current S6 MVP key. |
 | `-gpgpu_unified_l1d_size` | `128` | `gpgpusim.config` | `l1_config`, line 195 | Yes | `sm120_base`; current base provenance is `manual_arch_model` | Needs further L1 hardware or benchmark evidence before S5 support. The tuner value is seeded from `L1_SIZE` in the SM120 `hw_def`, and the raw `l1_associativity` run only reports CSV output, not a parsed reviewed value in the S5 draft. Do not promote from this line alone. Not a current S6 MVP key. |
@@ -90,11 +102,11 @@ follow-up evidence is reviewed.
 
 ## Follow-Up Actions
 
-1. If S5 parser support is extended, start with
+1. S5 parser support has been extended only for
    `-gpgpu_ptx_force_max_capability` and `-gpgpu_coalesce_arch`, because they
    are active `sm120_base` keys derived from reviewed compute capability facts.
-   Add focused fixture reproducibility and a negative or unsupported-key check
-   when doing that patch.
+   Fixture reproducibility now covers those keys while preserving an unsupported
+   legacy negative path.
 2. For `-gpgpu_kernel_launch_latency`, collect a modern event-based or otherwise
    reviewed launch-latency measurement before mapping the raw `kernel_lat`
    output into `calibration_result`.
@@ -108,7 +120,8 @@ follow-up evidence is reviewed.
 ## Promotion Gate Impact
 
 This disposition closes the unsupported-key review gap at the documentation
-level only. It does not calibrate RTX5060, does not complete S6 correlation,
+level for the original 13 keys and records the later low-risk S5 support for
+two of them. It does not calibrate RTX5060, does not complete S6 correlation,
 and does not promote any S5 draft values. The S7 promotion gate remains closed
 until real hardware target metrics, any required S6 supplied-metrics reports,
 and promotion-scope RTX5060/RTX5070Ti review are complete.
