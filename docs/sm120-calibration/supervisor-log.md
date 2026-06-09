@@ -1603,3 +1603,45 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX/remodeled function-call-stack assertion in `shd_warp_t::pop_function_call()`.
+
+### 2026-06-09 16:42:45 CST
+
+Action:
+- Replacement S7 function-call-stack worker `019eab77-40cf-7e43-9f39-9b826fcef9dc` completed `docs/sm120-calibration/worker-logs/worker-20260609-160932-s7-function-call-stack.md`.
+- The worker took over the dirty worktree left by interrupted replacement workers and verified the inherited two-file code change.
+- The worker reported a fresh blank-context read-only reviewer verdict of `ACCEPT` in reviewer round 4. Earlier reviewer attempts were recorded as invalid or unusable and were not counted.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.h`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-160932-s7-function-call-stack.md`.
+- Reused and replacement evidence under ignored `artifacts/s7/s7-function-call-stack-20260609-160932/`.
+
+Worker validation:
+- `git diff --check` passed.
+- `generate_sm120_configs.py --check-only` passed.
+- The post-fix smoke evidence was reused rather than relaunched because the behavioral code state was unchanged except for an explanatory comment and worker/reviewer documentation.
+- The reused smoke evidence no longer shows the old `pop_function_call()` empty-stack assertion and advanced to first-kernel metrics before hitting a downstream SIGSEGV.
+
+Root cause:
+- PTX/performance mode does not seed or maintain the remodeled trace/SASS function-call stack.
+- The remodeled PTX warp-reclaim path was still calling `shd_warp_t::set_done_exit()`, which is the trace/SASS done-exit path and pops that stack.
+- The original core showed `m_config->is_trace_mode == false`, an empty function-call stack, and the abort path through `SM::check_if_warp_has_finished_executing_and_can_be_reclaim()`.
+
+Partial result:
+- Trace mode still calls `warp->set_done_exit()` and therefore keeps the original function-call-stack pop path.
+- PTX mode now calls `warp->set_done_exit_for_ptx_reclaim()`, which asserts `m_function_call_stack.empty()` and marks the warp done without weakening `pop_function_call()`.
+- Warp reclaim cleanup is still executed; the fix does not skip reclaim, convert empty pop into a no-op, or remove the existing assertion.
+- The previous `shd_warp_t::pop_function_call(active_mask_t)` assertion is resolved for the reused local smoke.
+- The smoke still did not complete the full workload. It produced first-kernel metric lines, then hit a new downstream PTX/remodeled decode-latency SIGSEGV in kernel 2.
+
+New blocker:
+- `traced_instruction::get_num_destination_registers(this=0x0)` is reached from `warp_inst_t::generate_dp_latencies()` and `Subcore::single_decode()`.
+- Focused state shows `m_config->is_trace_mode == false`, `pI->pc == 10120`, `pI->isize == 8`, `pI->op == DP_OP`, `pI->sp_op == DP___OP`, `pI->m_decoded == true`, and an empty `m_extra_trace_instruction_info`.
+
+Supervisor review:
+- Independent supervisor reviewer `019eab87-db56-7051-9679-11be52b50816` returned `ACCEPT`.
+- Reviewer confirmed the root cause is supported by code and old core evidence, trace mode remains on the original call-stack path, PTX mode preserves a useful empty-stack invariant, validation evidence is honest, and no config/latest/generated/calibration-result/metrics promotion was present.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode DP decode-latency path that dereferences missing trace-enhanced instruction metadata in `warp_inst_t::generate_dp_latencies()`.

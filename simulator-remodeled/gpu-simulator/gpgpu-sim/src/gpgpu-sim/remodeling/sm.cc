@@ -537,7 +537,12 @@ void SM::check_if_warp_has_finished_executing_and_can_be_reclaim(
       }
     }
     if (did_exit) {
-      warp->set_done_exit();
+      if (m_config->is_trace_mode) {
+        warp->set_done_exit();
+      } else {
+        // PTX mode does not populate the trace/SASS function-call stack.
+        warp->set_done_exit_for_ptx_reclaim();
+      }
       warp->get_dependency_state()->reset();
     }
     unsigned int m_subcore_id = warp_id %  m_num_subcores;

@@ -236,7 +236,12 @@ class shd_warp_t {
 
   bool done_exit() const { return m_done_exit; }
 
-  void set_done_exit() { 
+  void set_done_exit_for_ptx_reclaim() {
+    assert(m_function_call_stack.empty());
+    m_done_exit = true;
+  }
+
+  void set_done_exit() {
     pop_function_call(m_active_threads);
     m_done_exit = true;
   }
