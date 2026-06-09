@@ -697,7 +697,7 @@ void ldst_unit_sm::issue(register_set_uniptr &reg_set, unsigned int icnt_id) {
         m_coalescing_stats_l1d->registerInst(gpu_cycle,  inst.get());
       }else if(inst->space.get_type() == shared_space) {
         m_coalescing_stats_sharedmem->registerInst(gpu_cycle, inst.get());
-      }else if(inst->space.get_type() == const_space) {
+      }else if(inst->space.is_const()) {
         m_coalescing_stats_const->registerInst(gpu_cycle, inst.get());
       }
     }
@@ -927,7 +927,7 @@ void ldst_unit_sm::cycle() {
         inserted_acc = true;
         m_access_queue_to_shmem.push(acc_candidate);
       }
-    }else if(acc_candidate->get_space() == const_space) {
+    }else if(acc_candidate->get_space().is_const()) {
        if(!m_access_queue_to_l1c.full()) {
         inserted_acc = true;
         m_access_queue_to_l1c.push(acc_candidate);
@@ -1805,7 +1805,7 @@ mem_access_t* PendingRequestTable::get_next_processed_access(unsigned int id) {
       if(res_acc->is_l1d_bypass()) {
         // it goes directly to l2
         m_ldst_unit_sm->get_SM()->m_sm_stats.m_stats_map["gpgpu_n_directly_to_l2_coalescing_conflicts"]->increment_with_integer(1);
-      }else if(res_acc->get_space() == const_space) {
+      }else if(res_acc->get_space().is_const()) {
         // It goes to constant cache
         m_ldst_unit_sm->get_SM()->m_sm_stats.m_stats_map["gpgpu_n_cmem_coalescing_conflicts"]->increment_with_integer(1);
       }else if((res_acc->get_space() == tex_space ) || (res_acc->get_space() == surf_space )) {

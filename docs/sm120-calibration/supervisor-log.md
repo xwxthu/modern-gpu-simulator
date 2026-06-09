@@ -1239,3 +1239,52 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode LD/ST queue-routing `Invalid access type` abort for `param_space_kernel` accesses classified as `CONST_ACC_R`.
+
+Checkpoint:
+- Commit `5a3b6b937caa637dba7dad1864e850179291211e` (`fix: guard LDST trace metadata in PTX mode`) recorded the PTX-mode LD/ST trace metadata separation fix.
+
+### 2026-06-09 09:23:10 CST
+
+Action:
+- Spawned S7 parameter constant routing worker `019ea9f9-36ca-77f3-acb4-57ea898f18d1`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode LD/ST queue-routing `Invalid access type` abort for `param_space_kernel` accesses classified as `CONST_ACC_R`.
+- Route parameter constant reads consistently with existing constant-read semantics; do not suppress invalid-access errors blindly.
+
+### 2026-06-09 09:46:36 CST
+
+Action:
+- S7 parameter constant routing worker `019ea9f9-36ca-77f3-acb4-57ea898f18d1` completed `docs/sm120-calibration/worker-logs/worker-20260609-092504-s7-param-const-routing.md`.
+- The worker reported a bounded fresh blank-context internal reviewer verdict of `ACCEPT` after one stalled read-only reviewer attempt.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/ldst_unit_sm.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-092504-s7-param-const-routing.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-param-const-routing-20260609-092504/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- PTX memory coalescing classifies both `const_space` and `param_space_kernel` as `CONST_ACC_R`, and `memory_space_t::is_const()` includes both.
+- Remodeled LD/ST queue routing only tested literal `const_space`, so `param_space_kernel` constant reads fell through to the invalid-access abort.
+
+Partial result:
+- Replaced literal `const_space` checks with `space.is_const()` for constant coalescing stats, L1C queue routing, and constant coalescing-conflict stats.
+- The invalid-access abort remains intact for genuinely unsupported spaces.
+- The previous `Error: Invalid access type` abort is resolved for the local smoke.
+- The `param_space_kernel` / `CONST_ACC_R` access now reaches `ldst_unit_sm::dispatch_to_memory_access_queue_l1Ccache()`.
+- The smoke still produced no real simulator metrics.
+- New blocker: SIGSEGV in L1C dispatch because `inst->m_latency_of_mem_operation_at_sm_structure == 0`, causing `constant_cache_l1_latency_queue[inst_latency - 1]` to underflow to index `4294967295`.
+
+Supervisor review:
+- Supervisor reviewer `019eaa0c-d96f-78c0-8f24-5035fd36b2c0` returned `ACCEPT`.
+- Reviewer confirmed `is_const()` covers exactly `const_space` and `param_space_kernel`, matches `CONST_ACC_R` classification, does not misroute global/local/shared/texture/surface paths, changes no config/latest/generated outputs, and properly bounds the new L1C latency underflow blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode constant-memory latency underflow in `ldst_unit_sm::dispatch_to_memory_access_queue_l1Ccache()`.
