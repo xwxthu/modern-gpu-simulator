@@ -904,6 +904,8 @@ void Subcore::single_decode(SM *shared_sm, warp_inst_t *pI,
                             unsigned int sm_warp_id,
                             unsigned int subcore_warp_id, shd_warp_t *warp) {
   if (pI) {
+    assert(pI->valid());
+    assert(pI->pc == ibuffer_entry.m_pc);
     assign_instruction_warp_id(pI, subcore_warp_id, sm_warp_id);
     generate_fixed_latency_constant_accesses(pI);
     pI->assign_predicate_latencies_if_needed(m_sm->get_gpu());
@@ -932,6 +934,9 @@ void Subcore::single_decode(SM *shared_sm, warp_inst_t *pI,
     
     ibuffer_entry.m_inst = pI;
     assert(ibuffer_entry.m_inst->pc == ibuffer_entry.m_pc);
+    if(!m_config->is_trace_mode) {
+      warp->get_IBuffer_remodeled()->set_next_pc_after_decode(pI->pc, pI->isize);
+    }
     if ((pI->oprnd_type == INT_OP) ||
         (pI->oprnd_type == UN_OP)) {  // these counters get added up in
                                       // mcPat to compute scheduler power

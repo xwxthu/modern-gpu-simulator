@@ -160,6 +160,8 @@ class IBuffer_Remodeled {
    */
   void remove_entry(address_type pc);
 
+  void set_next_pc_after_decode(address_type decoded_pc, unsigned inst_size);
+
    /**
     * @brief Get the next pc to issue
     * 

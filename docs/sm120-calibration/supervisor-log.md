@@ -1337,3 +1337,55 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode IBuffer PC mismatch assertion in `Subcore::single_decode()`.
+
+Checkpoint:
+- Commit `d75fb941c33f60c9b26451fa12a19d7daf3fae96` (`fix: regenerate PTX memory latency after execution`) recorded the PTX-mode post-execution memory latency regeneration fix.
+
+### 2026-06-09 10:37:01 CST
+
+Action:
+- Spawned S7 IBuffer PC worker `019eaa3b-bc3e-7422-8c6e-0248775bce1d`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode IBuffer PC mismatch assertion in `Subcore::single_decode()`.
+- Preserve the PC/instruction invariant; do not remove or weaken the assertion.
+
+### 2026-06-09 11:27:21 CST
+
+Action:
+- S7 IBuffer PC worker `019eaa3b-bc3e-7422-8c6e-0248775bce1d` completed `docs/sm120-calibration/worker-logs/worker-20260609-110231-s7-ibuffer-pc.md`.
+- The worker reported a bounded blank-context internal reviewer verdict of `ACCEPT` after one CLI invocation error and one timeout.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/ibuffer_remodeled.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/ibuffer_remodeled.h`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-110231-s7-ibuffer-pc.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-ibuffer-pc-20260609-104918/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- PTX-mode `IBuffer_Remodeled` reused the trace/SASS fixed-width fetch reservation model.
+- It reserved `fetch_decode_width` entries and advanced by fixed 16-byte strides before PTX decode knew the instruction size, but PTX instruction size comes from decoded `pI->isize`.
+
+Partial result:
+- PTX mode now reserves one unresolved entry per fetch request and refuses another fetch while unresolved invalid entries exist.
+- After successful PTX decode, the IBuffer cursor advances to `decoded_pc + inst_size`.
+- Trace mode still uses `fetch_decode_width` and fixed 16-byte reservation behavior.
+- The original `ibuffer_entry.m_inst->pc == ibuffer_entry.m_pc` assertion is preserved, with an added earlier decode-time PC assertion.
+- The previous IBuffer PC mismatch assertion is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: `Subcore::get_fu()` aborts with `ERROR. EXECUTION PIPELINE FOR THIS INSTRUCTION NOT IMPLEMENTED` for decoded PTX instruction `pc=0x2420`, `isize=8`, `op=ALU_OP`, `sp_op=INT__OP`, `op_pipe=UNKOWN_OP`, `oprnd_type=INT_OP`, and `memory_op=no_memory_op`.
+
+Supervisor review:
+- Supervisor reviewer `019eaa69-2cae-7812-a98c-790b4572bb71` returned `ACCEPT`.
+- Reviewer confirmed the fix removes fixed-width PTX fetch assumptions, preserves trace-mode reservation behavior, preserves the PC assertion, disables no scoreboard/fetch/decode checks, changes no config/latest/generated outputs, and properly bounds the new PTX ALU pipeline-classification blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX `ALU_OP` / `INT__OP` instruction whose `op_pipe` remains `UNKOWN_OP` and therefore has no implemented execution pipeline in `Subcore::get_fu()`.
