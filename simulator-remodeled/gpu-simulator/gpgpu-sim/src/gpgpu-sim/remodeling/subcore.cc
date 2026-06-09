@@ -780,6 +780,7 @@ void Subcore::issue_warp(SM *shared_sm, register_set_uniptr &dispatch_latch, war
                          const active_mask_t &active_mask, unsigned sm_warp_id,
                          functional_unit* fu, bool is_fixed_latency_inst,
                          bool use_traditional_scoreboarding, bool has_dst_reg, TraceEnhancedOperandType dst_result_queue_type) {
+  assert(pI->warp_id() == sm_warp_id);
   pI->set_fu_assigned(fu);
   manage_instruction_operand_stats(shared_sm, pI);
   shared_sm->issue_warp(dispatch_latch, pI, active_mask, sm_warp_id, m_subcore_id, use_traditional_scoreboarding);
@@ -991,7 +992,11 @@ warp_inst_t *Subcore::get_next_inst(SM *shared_sm, unsigned int warp_id, address
         m_warps_of_subcore[warp_id]);
     return m_trace_warp->get_next_trace_inst(pc);
   } else {
-    return shared_sm->get_gpu()->gpgpu_ctx->ptx_fetch_inst(pc);
+    warp_inst_t *static_inst =
+        shared_sm->get_gpu()->gpgpu_ctx->ptx_fetch_inst(pc);
+    // Remodeled IBuffer entries own and mutate their instructions; clone the
+    // canonical PTX instruction so coalesced decodes cannot share warp state.
+    return static_inst ? new warp_inst_t(*static_inst) : nullptr;
   }
 }
 

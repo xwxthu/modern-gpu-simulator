@@ -1138,3 +1138,52 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode `Scoreboard::reserveRegister()` abort caused by the mismatch between the issuing `sm_warp_id` and the instruction's stored warp id during reissue/scoreboard reservation.
+
+Checkpoint:
+- Commit `e02786e96e817169cc4d3bee5602e2f8b6254124` (`fix: restore PTX memory address execution`) recorded the PTX-mode memory address execution fix.
+
+### 2026-06-09 08:08:40 CST
+
+Action:
+- Spawned S7 scoreboard reserve warp-id worker `019ea9b3-922f-7b92-b1f4-824799e201dc`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode `Scoreboard::reserveRegister()` abort caused by a mismatch between the issuing `sm_warp_id` and the instruction's stored warp id.
+- Preserve scoreboard correctness; do not disable reserve checks or ignore warp-id mismatches.
+
+### 2026-06-09 08:43:19 CST
+
+Action:
+- S7 scoreboard reserve warp-id worker `019ea9b3-922f-7b92-b1f4-824799e201dc` completed `docs/sm120-calibration/worker-logs/worker-20260609-082450-s7-scoreboard-reserve.md`.
+- The worker reported a prompt-only blank-context internal reviewer verdict of `ACCEPT` after one stalled read-only reviewer attempt.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-082450-s7-scoreboard-reserve.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-scoreboard-reserve-20260609-081120/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- In PTX mode, remodeled decode stored the canonical `ptx_fetch_inst(pc)` pointer in each per-warp IBuffer entry.
+- Multiple warps at the same PC could share the same mutable static instruction object, and later decodes could overwrite the shared instruction's warp fields before an earlier IBuffer entry was issued.
+
+Partial result:
+- PTX-mode `Subcore::get_next_inst()` now clones the canonical PTX timing instruction into a heap-owned `warp_inst_t` for each remodeled IBuffer entry.
+- The issue path now asserts `pI->warp_id() == sm_warp_id` before forwarding to `SM::issue_warp()`.
+- Trace-mode fetch remains unchanged.
+- The previous `Scoreboard::reserveRegister()` warp-id mismatch abort is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: `PendingRequestTable::get_next_processed_access()` in `ldst_unit_sm.cc` unconditionally dereferences enhanced trace metadata through `traced_instruction::get_control_bits(this=0x0)` on a PTX-mode memory instruction.
+
+Supervisor review:
+- Supervisor reviewer `019ea9d2-2007-7501-8ede-55274166a0c2` returned `ACCEPT`.
+- Reviewer confirmed the change is a real decoded-instruction ownership fix, preserves scoreboard correctness, leaves trace-mode fetch unchanged, changes no config/latest/generated outputs, and properly bounds the new LD/ST memory-pipeline trace metadata blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode trace metadata null dereference in `PendingRequestTable::get_next_processed_access()` / `ldst_unit_sm.cc`.
