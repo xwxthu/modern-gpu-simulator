@@ -848,6 +848,83 @@ void ptx_instruction::set_mul_div_or_other_archop(){
   }
 }
 
+void ptx_instruction::set_remaining_alu_pipeline_archop() {
+  if (op != ALU_OP) return;
+
+  if (get_opcode() == SETP_OP) {
+    op = PREDICATE_OP;
+    return;
+  }
+
+  switch (get_opcode()) {
+    case ABS_OP:
+    case AND_OP:
+    case ANDN_OP:
+    case BFE_OP:
+    case BFI_OP:
+    case BFIND_OP:
+    case BREV_OP:
+    case CLZ_OP:
+    case CNOT_OP:
+    case CVT_OP:
+    case CVTA_OP:
+    case DP4A_OP:
+    case ISSPACEP_OP:
+    case MOV_OP:
+    case NANDN_OP:
+    case NEG_OP:
+    case NORN_OP:
+    case NOT_OP:
+    case OR_OP:
+    case ORN_OP:
+    case POPC_OP:
+    case PRMT_OP:
+    case SAD_OP:
+    case SELP_OP:
+    case SET_OP:
+    case SHFL_OP:
+    case SHL_OP:
+    case SHR_OP:
+    case SLCT_OP:
+    case XOR_OP:
+      switch (sp_op) {
+        case FP__OP:
+        case FP_MUL_OP:
+        case FP_DIV_OP:
+          op = SP_OP;
+          break;
+        case DP___OP:
+        case DP_MUL_OP:
+        case DP_DIV_OP:
+          op = DP_OP;
+          break;
+        case FP_SQRT_OP:
+        case FP_LG_OP:
+        case FP_SIN_OP:
+        case FP_EXP_OP:
+          op = SFU_OP;
+          break;
+        case TENSOR__OP:
+          op = TENSOR_CORE_OP;
+          break;
+        case INT__OP:
+        case INT_MUL24_OP:
+        case INT_MUL32_OP:
+        case INT_MUL_OP:
+        case INT_DIV_OP:
+          op = INTP_OP;
+          break;
+        case OTHER_OP:
+        case TEX__OP:
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 void ptx_instruction::set_bar_type() {
   if (m_opcode == BAR_OP) {
     switch (m_barrier_op) {
@@ -1140,6 +1217,7 @@ void ptx_instruction::set_opcode_and_latency() {
   }
   set_fp_or_int_archop();
   set_mul_div_or_other_archop();
+  set_remaining_alu_pipeline_archop();
 }
 
 void ptx_thread_info::ptx_fetch_inst(inst_t &inst) const {

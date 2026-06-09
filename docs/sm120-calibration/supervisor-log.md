@@ -1389,3 +1389,53 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX `ALU_OP` / `INT__OP` instruction whose `op_pipe` remains `UNKOWN_OP` and therefore has no implemented execution pipeline in `Subcore::get_fu()`.
+
+Checkpoint:
+- Commit `a103a0ebd4d084ca55b378d99d9566878ca05b9a` (`fix: handle variable PTX instruction fetch PCs`) recorded the PTX-mode variable-size IBuffer fetch/decode fix.
+
+### 2026-06-09 11:30:29 CST
+
+Action:
+- Spawned S7 PTX ALU pipeline worker `019eaa6e-10d3-7bb2-ae5d-f9e11c5d234e`.
+
+Scope:
+- Resolve or precisely bound the PTX `ALU_OP` / `INT__OP` instruction whose `op_pipe` remained `UNKOWN_OP` and therefore had no implemented execution pipeline in `Subcore::get_fu()`.
+- Classify PTX scalar ALU operations before FU selection; do not map all unknown operations to a default pipeline.
+
+### 2026-06-09 12:14:19 CST
+
+Action:
+- S7 PTX ALU pipeline worker `019eaa6e-10d3-7bb2-ae5d-f9e11c5d234e` completed `docs/sm120-calibration/worker-logs/worker-20260609-120712-s7-ptx-alu-pipeline.md`.
+- The worker reported a bounded read-only internal reviewer verdict of `ACCEPT` after two CLI invocation errors and one timeout.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/cuda-sim.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/ptx_ir.h`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-120712-s7-ptx-alu-pipeline.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-ptx-alu-pipeline-20260609-113915/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- PTX `set_opcode_and_latency()` initialized some scalar instructions as generic `ALU_OP`.
+- Existing helpers classified many but not all scalar ALU instructions to concrete architectural op classes; remaining operations such as `mov`, shifts, converts, bitwise ops, set/select, and predicate set could remain `ALU_OP`.
+- Remodeled `Subcore::get_fu()` dispatches by `pI->op` and intentionally aborts on unimplemented generic `ALU_OP`.
+
+Partial result:
+- Added a PTX predecode helper that runs only while `op == ALU_OP` and maps explicit scalar ALU leftovers through existing `sp_op` metadata to concrete architectural classes: `INTP_OP`, `SP_OP`, `DP_OP`, `SFU_OP`, `TENSOR_CORE_OP`, or `PREDICATE_OP` for `SETP_OP`.
+- The fix does not modify `op_pipe` as a fallback and does not suppress `Subcore::get_fu()`'s abort.
+- The previous `ERROR. EXECUTION PIPELINE FOR THIS INSTRUCTION NOT IMPLEMENTED` abort is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: `ptx_thread_info::ptx_exec_inst()` asserts `pc == inst.pc` at `cuda-sim.cc:1968`; focused evidence shows issued instruction `pc = 0x2460`, `op = INTP_OP`, `sp_op = INT__OP`, and lane 1 functional PC `0x24a0`.
+
+Supervisor review:
+- Supervisor reviewer `019eaa92-b149-74b3-afff-ea912a0a6cb1` returned `ACCEPT`.
+- Reviewer confirmed the classifier is targeted, runs only for remaining generic `ALU_OP`, uses existing `sp_op` metadata, does not alter `op_pipe` or suppress FU aborts, changes no config/latest/generated outputs, and properly bounds the new PTX functional PC mismatch blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX functional PC mismatch assertion in `ptx_thread_info::ptx_exec_inst()`.
