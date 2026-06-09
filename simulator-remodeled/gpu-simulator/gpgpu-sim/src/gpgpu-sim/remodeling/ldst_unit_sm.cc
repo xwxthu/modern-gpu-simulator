@@ -29,6 +29,7 @@
 #include "ldst_unit_sm.h"
 #include <functional>
 #include <limits>
+#include <sstream>
 #include "../gpu-sim.h"
 #include "../shader.h"
 #include "../stat-tool.h"
@@ -1320,6 +1321,39 @@ void ldst_unit_sm::reset_coalescingHistory() {
 
 PendingRequestTable& ldst_unit_sm::get_prt() { return *m_prt; }
 
+void ldst_unit_sm::append_kernel_progress_debug_summary(
+    std::string &out) const {
+  std::ostringstream ss;
+  unsigned l1d_pre = 0;
+  unsigned l1d_post = 0;
+  for (unsigned i = 0; i < m_access_queue_to_l1d_preTLB.size(); i++) {
+    l1d_pre += m_access_queue_to_l1d_preTLB[i]->size();
+  }
+  for (unsigned i = 0; i < m_access_queue_to_l1d_postTLB.size(); i++) {
+    l1d_post += m_access_queue_to_l1d_postTLB[i]->size();
+  }
+  unsigned pending_wb = 0;
+  for (unsigned i = 0; i < m_pending_wbs_per_subcore.size(); i++) {
+    if (m_pending_wbs_per_subcore[i]) {
+      pending_wb++;
+    }
+  }
+  ss << ",mem_resp=" << m_response_fifo.size()
+     << ",mem_prt_active=" << m_prt->num_active_entries()
+     << ",mem_prt_proc=" << m_prt->num_pending_process_entries()
+     << ",mem_prt_free=" << m_prt->num_pending_free_entries()
+     << ",mem_prt_acc=" << m_prt->num_pending_accesses()
+     << ",mem_pending_wb=" << pending_wb
+     << ",mem_q={l1c=" << m_access_queue_to_l1c.size()
+     << ",l1t=" << m_access_queue_to_l1t.size()
+     << ",l1d_pre=" << l1d_pre
+     << ",l1d_post=" << l1d_post
+     << ",shmem=" << m_access_queue_to_shmem.size()
+     << ",bypass=" << m_access_queue_to_bypass_to_l2.size()
+     << ",misc=" << m_access_queue_to_miscellaneous.size() << "}";
+  out += ss.str();
+}
+
 unsigned int ldst_unit_sm::get_reserved_idx_icnt_to_shmem() {
   return m_reserved_idx_icnt_to_shmem;
 }
@@ -1434,6 +1468,34 @@ bool PendingRequestTable::is_full() {
 
 bool PendingRequestTable::is_empty() {
   return m_entries_id_free_list.size() == m_max_num_entries;
+}
+
+unsigned int PendingRequestTable::num_active_entries() const {
+  return m_max_num_entries - m_entries_id_free_list.size();
+}
+
+unsigned int PendingRequestTable::num_pending_process_entries() const {
+  return m_entries_id_pending_list_to_process.size() +
+         m_current_entries_id_being_processed.size() +
+         m_entries_id_finishing_processed.size();
+}
+
+unsigned int PendingRequestTable::num_pending_free_entries() const {
+  unsigned total = 0;
+  for (unsigned i = 0; i < m_entries_id_pending_list_to_free.size(); i++) {
+    total += m_entries_id_pending_list_to_free[i].size();
+  }
+  return total;
+}
+
+unsigned int PendingRequestTable::num_pending_accesses() const {
+  unsigned total = 0;
+  for (unsigned i = 0; i < m_entries.size(); i++) {
+    if (!m_entries[i].is_free()) {
+      total += m_entries[i].get_num_pending_accesses_to_solve();
+    }
+  }
+  return total;
 }
 
 bool PendingRequestTable::are_entries_to_pop_icnt_id(unsigned int icnt_id) {
@@ -1891,7 +1953,7 @@ bool AccessQueue::empty() {
   return m_accesses.empty();
 }
 
-unsigned int AccessQueue::size() {
+unsigned int AccessQueue::size() const {
   return m_accesses.size();
 }
 

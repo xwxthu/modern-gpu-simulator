@@ -4008,6 +4008,41 @@ bool barrier_set_t::warp_waiting_at_barrier(unsigned warp_id) const {
   return m_warp_at_barrier.test(warp_id);
 }
 
+void barrier_set_t::append_debug_summary(std::string &out) const {
+  unsigned active_cta = 0;
+  unsigned unreleased_ready = 0;
+  unsigned partial = 0;
+  const unsigned waiting_warps = (m_warp_active & m_warp_at_barrier).count();
+  std::ostringstream ss;
+  ss << ",bar_state={active_warps=" << m_warp_active.count()
+     << ",waiting_warps=" << waiting_warps;
+
+  for (cta_to_warp_t::const_iterator cta = m_cta_to_warps.begin();
+       cta != m_cta_to_warps.end(); ++cta) {
+    const warp_set_t active = cta->second & m_warp_active;
+    if (!active.any()) {
+      continue;
+    }
+    active_cta++;
+    for (unsigned bar_id = 0; bar_id < m_max_barriers_per_cta; bar_id++) {
+      const warp_set_t at_barrier = cta->second & m_bar_id_to_warps.at(bar_id);
+      if (!at_barrier.any()) {
+        continue;
+      }
+      if (at_barrier == active) {
+        unreleased_ready++;
+      } else {
+        partial++;
+      }
+    }
+  }
+
+  ss << ",active_cta=" << active_cta
+     << ",unreleased_ready=" << unreleased_ready
+     << ",partial=" << partial << "}";
+  out += ss.str();
+}
+
 void barrier_set_t::dump() {
   printf("barrier set information\n");
   printf("  m_max_cta_per_core = %u\n", m_max_cta_per_core);
@@ -4063,6 +4098,10 @@ bool shader_core_ctx::check_if_non_released_reduction_barrier(
 
 bool shader_core_ctx::warp_waiting_at_barrier(unsigned warp_id) const {
   return m_barriers.warp_waiting_at_barrier(warp_id);
+}
+
+void shader_core_ctx::append_barrier_debug_summary(std::string &out) const {
+  m_barriers.append_debug_summary(out);
 }
 
 bool shader_core_ctx::warp_waiting_at_mem_barrier(unsigned warp_id) {

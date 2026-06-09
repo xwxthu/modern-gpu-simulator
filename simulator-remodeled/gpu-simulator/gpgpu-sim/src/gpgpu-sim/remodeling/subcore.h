@@ -35,6 +35,7 @@
 #include <vector>
 #include <queue>
 #include <memory>
+#include <string>
 #include "../../constants.h"
 #include "../shader.h"
 #include "register_file.h"
@@ -46,6 +47,55 @@ class first_level_instruction_cache;
 
 class Subcore {
  public:
+  struct IssueDebugSnapshot {
+    void reset(unsigned long long cycle);
+    unsigned long long cycle = 0;
+    bool evaluated = false;
+    bool issued = false;
+    bool next_stage_available = true;
+    bool issue_port_busy = false;
+    bool valid_inst = false;
+    unsigned issue_port_busy_cycles = 0;
+    unsigned candidates = 0;
+    unsigned ready = 0;
+    unsigned simt_pc_mismatch = 0;
+    unsigned scoreboard_blocked = 0;
+    unsigned stall_blocked = 0;
+    unsigned waitbar_blocked = 0;
+    unsigned yield_blocked = 0;
+    unsigned cta_barrier_blocked = 0;
+    unsigned membar_blocked = 0;
+    unsigned gridbar_blocked = 0;
+    unsigned ldgdepbar_blocked = 0;
+    unsigned fu_blocked = 0;
+    unsigned resultq_blocked = 0;
+    unsigned l1c_blocked = 0;
+    unsigned greedy_l1c_hold = 0;
+    bool selected_valid = false;
+    unsigned selected_warp = 0;
+    unsigned selected_subcore_warp = 0;
+    address_type selected_pc = 0;
+    address_type selected_simt_pc = 0;
+    unsigned selected_op = 0;
+    unsigned selected_sp_op = 0;
+    unsigned selected_sb_writes = 0;
+    unsigned selected_sb_reads = 0;
+    unsigned selected_pipe = 0;
+    unsigned selected_ibuf = 0;
+    bool selected_ready = false;
+    bool selected_scoreboard_ready = true;
+    bool selected_stall_ready = true;
+    bool selected_waitbar_ready = true;
+    bool selected_yield_ready = true;
+    bool selected_cta_barrier = false;
+    bool selected_membar = false;
+    bool selected_gridbar = false;
+    bool selected_ldgdepbar_ready = true;
+    bool selected_fu_ready = true;
+    bool selected_resultq_ready = true;
+    bool selected_l1c_ready = true;
+  };
+
   Subcore(unsigned subcore_id, const shader_core_config *config,
           shader_core_stats *stats, SM * sm,
           register_set_uniptr *EX_DP_shared_sm_reception_latch,
@@ -89,6 +139,7 @@ class Subcore {
   void remove_interwarp_coalescing_dep_counter_at_decode_tracking(warp_inst_t * pI, unsigned sm_warp_id);
 
   bool is_subcore_with_problems_of_fordward_progress() const;
+  void append_kernel_progress_debug_summary(std::string &out) const;
 
  private:
   int m_num_active_warps_subcore;
@@ -147,6 +198,8 @@ class Subcore {
 
   Register_file *m_regular_rf;
   Register_file *m_uniform_rf;
+  IssueDebugSnapshot m_last_issue_debug;
+  bool m_kernel_progress_issue_debug_enabled;
 
   bool has_regular_fixed_latency_rf_result_queue_space();
   bool has_uniform_fixed_latency_rf_result_queue_space();

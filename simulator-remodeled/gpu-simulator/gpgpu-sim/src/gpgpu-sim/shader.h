@@ -1361,6 +1361,7 @@ class barrier_set_t {
   bool warp_waiting_at_barrier(unsigned warp_id) const;
 
   // debug
+  void append_debug_summary(std::string &out) const;
   void dump();
 
  private:
@@ -3073,6 +3074,7 @@ class shader_core_ctx : public core_t, public shader_core_ctx_wrapper {
 
   // accessors
   virtual bool warp_waiting_at_barrier(unsigned warp_id) const;
+  void append_barrier_debug_summary(std::string &out) const override;
   void get_pdom_stack_top_info(unsigned tid, unsigned *pc, unsigned *rpc) const;
   float get_current_occupancy(unsigned long long &active,
                               unsigned long long &total) const;

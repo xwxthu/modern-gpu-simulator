@@ -27,7 +27,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include <cassert>
+#include <cstdlib>
 #include <memory>
+#include <sstream>
 
 #include "subcore.h"
 #include "functional_unit.h"
@@ -45,6 +47,22 @@
 
 #include "../../../../../util/traces_enhanced/src/traced_instruction.h"
 
+
+namespace {
+
+bool kernel_progress_debug_env_enabled() {
+  const char *enabled_env = getenv("GPGPUSIM_KERNEL_PROGRESS_DEBUG");
+  return enabled_env && enabled_env[0] != '\0' && enabled_env[0] != '0';
+}
+
+}  // namespace
+
+
+void Subcore::IssueDebugSnapshot::reset(unsigned long long new_cycle) {
+  *this = IssueDebugSnapshot();
+  cycle = new_cycle;
+  evaluated = true;
+}
 
 
 Subcore::Subcore(unsigned subcore_id, const shader_core_config *config,
@@ -71,6 +89,7 @@ Subcore::Subcore(unsigned subcore_id, const shader_core_config *config,
   m_reserved_slots_uniform_fixed_latency_rf_write_queue = 0;
   m_num_active_warps_subcore = 0;
   m_is_next_stage_of_issue_busy = false;
+  m_kernel_progress_issue_debug_enabled = kernel_progress_debug_env_enabled();
 }
 
 Subcore::~Subcore() {
@@ -135,6 +154,53 @@ int Subcore::get_fixed_latency_result_queue_size() {
 
 bool Subcore::is_subcore_with_problems_of_fordward_progress() const {
   return m_is_next_stage_of_issue_busy;
+}
+
+void Subcore::append_kernel_progress_debug_summary(std::string &out) const {
+  const IssueDebugSnapshot &d = m_last_issue_debug;
+  std::ostringstream ss;
+  ss << " sc" << m_subcore_id << "{cyc=" << d.cycle
+     << ",eval=" << d.evaluated << ",issued=" << d.issued
+     << ",next=" << d.next_stage_available
+     << ",busy=" << d.issue_port_busy
+     << ",busy_left=" << d.issue_port_busy_cycles
+     << ",valid=" << d.valid_inst << ",cand=" << d.candidates
+     << ",ready=" << d.ready << ",pc_mis=" << d.simt_pc_mismatch
+     << ",blk={sb=" << d.scoreboard_blocked
+     << ",stall=" << d.stall_blocked
+     << ",waitbar=" << d.waitbar_blocked
+     << ",bar=" << d.cta_barrier_blocked
+     << ",membar=" << d.membar_blocked
+     << ",grid=" << d.gridbar_blocked
+     << ",ldgdep=" << d.ldgdepbar_blocked
+     << ",fu=" << d.fu_blocked
+     << ",resq=" << d.resultq_blocked
+     << ",l1c=" << d.l1c_blocked
+     << ",greedy_l1c=" << d.greedy_l1c_hold << "}";
+  if (d.selected_valid) {
+    ss << ",sel={w=" << d.selected_warp
+       << ",sw=" << d.selected_subcore_warp << ",pc=0x" << std::hex
+       << d.selected_pc << ",simt=0x" << d.selected_simt_pc << std::dec
+       << ",op=" << d.selected_op << ",sp=" << d.selected_sp_op
+       << ",ready=" << d.selected_ready
+       << ",sb=" << d.selected_scoreboard_ready
+       << ",stall=" << d.selected_stall_ready
+       << ",waitbar=" << d.selected_waitbar_ready
+       << ",yield=" << d.selected_yield_ready
+       << ",bar=" << d.selected_cta_barrier
+       << ",membar=" << d.selected_membar
+       << ",grid=" << d.selected_gridbar
+       << ",ldgdep=" << d.selected_ldgdepbar_ready
+       << ",fu=" << d.selected_fu_ready
+       << ",resq=" << d.selected_resultq_ready
+       << ",l1c=" << d.selected_l1c_ready
+       << ",sbw=" << d.selected_sb_writes
+       << ",sbr=" << d.selected_sb_reads
+       << ",pipe=" << d.selected_pipe
+       << ",ibuf=" << d.selected_ibuf << "}";
+  }
+  ss << "}";
+  out += ss.str();
 }
 
 
@@ -370,6 +436,10 @@ void Subcore::control_stage(SM *shared_sm) {
 }
 
 void Subcore::issue(SM *shared_sm) {
+  const bool collect_issue_debug = m_kernel_progress_issue_debug_enabled;
+  if (collect_issue_debug) {
+    m_last_issue_debug.reset(shared_sm->get_current_gpu_cycle());
+  }
   bool is_valid_inst =
       false;  // there was one warp with a valid instruction to issue
   bool is_issued_inst = false;  // Achieved to issue an instruction?
@@ -385,6 +455,11 @@ void Subcore::issue(SM *shared_sm) {
 
   modify_warp_state();
   if(m_num_pending_cycles_with_issue_port_busy > 0) {
+    if (collect_issue_debug) {
+      m_last_issue_debug.issue_port_busy = true;
+      m_last_issue_debug.issue_port_busy_cycles =
+          m_num_pending_cycles_with_issue_port_busy;
+    }
     m_num_pending_cycles_with_issue_port_busy--;
   }else if(m_ISSUE_CONTROL_latch.has_free()) {
     is_issue_port_busy = false;
@@ -414,12 +489,33 @@ void Subcore::issue(SM *shared_sm) {
           unsigned pc, rpc;
           shared_sm->get_pdom_stack_top_info(sm_warp_id, pI, &pc, &rpc);
           if(pc != pI->pc) {
+            if (collect_issue_debug) {
+              m_last_issue_debug.simt_pc_mismatch++;
+            }
+            if (collect_issue_debug && !m_last_issue_debug.selected_valid) {
+              m_last_issue_debug.selected_valid = true;
+              m_last_issue_debug.selected_warp = sm_warp_id;
+              m_last_issue_debug.selected_subcore_warp = subcore_warp_id;
+              m_last_issue_debug.selected_pc = pI->pc;
+              m_last_issue_debug.selected_simt_pc = pc;
+              m_last_issue_debug.selected_op = static_cast<unsigned>(pI->op);
+              m_last_issue_debug.selected_sp_op =
+                  static_cast<unsigned>(pI->sp_op);
+              m_last_issue_debug.selected_pipe =
+                  c_warp->debug_inst_in_pipeline();
+              m_last_issue_debug.selected_ibuf =
+                  c_warp->debug_ibuffer_count();
+            }
             c_warp->set_next_pc(pc);
             c_warp->get_IBuffer_remodeled()->flush(false);
             continue;
           }
         }
         is_valid_inst = true;
+        if (collect_issue_debug) {
+          m_last_issue_debug.valid_inst = true;
+          m_last_issue_debug.candidates++;
+        }
 
         bool are_traditional_scoreaboards_ready = true;
         bool is_stall_counter_0 = true;
@@ -441,6 +537,15 @@ void Subcore::issue(SM *shared_sm) {
         }
 
         bool is_not_warp_waiting_ldgdepbar = !is_waiting_ldgdepbar(pI, subcore_warp_id);
+        bool is_cta_barrier_waiting = false;
+        bool is_membar_waiting = false;
+        bool is_gridbar_waiting = false;
+        if (collect_issue_debug) {
+          is_cta_barrier_waiting =
+              shared_sm->warp_waiting_at_barrier(sm_warp_id);
+          is_membar_waiting = c_warp->get_membar();
+          is_gridbar_waiting = c_warp->get_gridbar();
+        }
         bool is_not_warp_waiting_in_programmer_barrier = !c_warp->waiting();
         functional_unit* fu = get_fu(pI);
         bool is_fu_available = true;;
@@ -490,7 +595,94 @@ void Subcore::issue(SM *shared_sm) {
         }
 
         bool is_inst_ready_to_issue = are_switch_warp_conditions_ready && is_l1c_ready;
+        if (collect_issue_debug &&
+            (!m_last_issue_debug.selected_valid || is_inst_ready_to_issue)) {
+          m_last_issue_debug.selected_valid = true;
+          m_last_issue_debug.selected_warp = sm_warp_id;
+          m_last_issue_debug.selected_subcore_warp = subcore_warp_id;
+          m_last_issue_debug.selected_pc = pI->pc;
+          if (!m_config->is_trace_mode) {
+            unsigned pc, rpc;
+            shared_sm->get_pdom_stack_top_info(sm_warp_id, pI, &pc, &rpc);
+            m_last_issue_debug.selected_simt_pc = pc;
+          } else {
+            m_last_issue_debug.selected_simt_pc = pI->pc;
+          }
+          m_last_issue_debug.selected_op = static_cast<unsigned>(pI->op);
+          m_last_issue_debug.selected_sp_op = static_cast<unsigned>(pI->sp_op);
+          m_last_issue_debug.selected_ready = is_inst_ready_to_issue;
+          m_last_issue_debug.selected_scoreboard_ready =
+              are_traditional_scoreaboards_ready;
+          m_last_issue_debug.selected_stall_ready = is_stall_counter_0;
+          m_last_issue_debug.selected_waitbar_ready = are_wait_barriers_ready;
+          m_last_issue_debug.selected_yield_ready = is_not_yield;
+          m_last_issue_debug.selected_cta_barrier =
+              !is_not_warp_waiting_in_programmer_barrier &&
+              is_cta_barrier_waiting;
+          m_last_issue_debug.selected_membar =
+              !is_not_warp_waiting_in_programmer_barrier &&
+              is_membar_waiting;
+          m_last_issue_debug.selected_gridbar =
+              !is_not_warp_waiting_in_programmer_barrier &&
+              is_gridbar_waiting;
+          m_last_issue_debug.selected_ldgdepbar_ready =
+              is_not_warp_waiting_ldgdepbar;
+          m_last_issue_debug.selected_fu_ready = is_fu_available;
+          m_last_issue_debug.selected_resultq_ready =
+              is_write_available_result_queue_for_fixed_latency_available;
+          m_last_issue_debug.selected_l1c_ready = is_l1c_ready;
+          m_last_issue_debug.selected_sb_writes =
+              shared_sm->get_scoreboard()->pendingWritesCount(sm_warp_id);
+          m_last_issue_debug.selected_sb_reads =
+              shared_sm->get_scoreboard_WAR()->pendingReadsCount(sm_warp_id);
+          m_last_issue_debug.selected_pipe =
+              c_warp->debug_inst_in_pipeline();
+          m_last_issue_debug.selected_ibuf = c_warp->debug_ibuffer_count();
+        }
+        if (collect_issue_debug) {
+          if (!are_traditional_scoreaboards_ready) {
+            m_last_issue_debug.scoreboard_blocked++;
+          }
+          if (!is_stall_counter_0) {
+            m_last_issue_debug.stall_blocked++;
+          }
+          if (!are_wait_barriers_ready) {
+            m_last_issue_debug.waitbar_blocked++;
+          }
+          if (!is_not_yield) {
+            m_last_issue_debug.yield_blocked++;
+          }
+          if (!is_not_warp_waiting_in_programmer_barrier) {
+            if (is_cta_barrier_waiting) {
+              m_last_issue_debug.cta_barrier_blocked++;
+            }
+            if (is_membar_waiting) {
+              m_last_issue_debug.membar_blocked++;
+            }
+            if (is_gridbar_waiting) {
+              m_last_issue_debug.gridbar_blocked++;
+            }
+          }
+          if (!is_not_warp_waiting_ldgdepbar) {
+            m_last_issue_debug.ldgdepbar_blocked++;
+          }
+          if (!is_fu_available) {
+            m_last_issue_debug.fu_blocked++;
+          }
+          if (!is_write_available_result_queue_for_fixed_latency_available) {
+            m_last_issue_debug.resultq_blocked++;
+          }
+          if (!is_l1c_ready) {
+            m_last_issue_debug.l1c_blocked++;
+            if (is_the_greedy_warp && !can_l1c_switch_warp) {
+              m_last_issue_debug.greedy_l1c_hold++;
+            }
+          }
+        }
         if (is_inst_ready_to_issue) {
+          if (collect_issue_debug) {
+            m_last_issue_debug.ready++;
+          }
           const active_mask_t &active_mask =
               shared_sm->get_active_mask(sm_warp_id, pI);
           assert(c_warp->inst_in_pipeline());
@@ -500,6 +692,9 @@ void Subcore::issue(SM *shared_sm) {
             remove_interwarp_coalescing_dep_counter_at_decode_tracking(pI, sm_warp_id);
           }
           issue_warp(shared_sm, m_ISSUE_CONTROL_latch, pI, active_mask, sm_warp_id, fu, is_fixed_latency_inst, use_traditional_scoreboarding, has_dst_regs, dst_type);
+          if (collect_issue_debug) {
+            m_last_issue_debug.issued = true;
+          }
           is_issued_inst = true;
           m_greedy_pointer_issue = subcore_warp_id;
           m_num_pending_cycles_constant_cache_misses_before_switch_to_other_warp = m_config->num_const_cache_cycle_misses_before_switch_to_other_warp;
@@ -542,6 +737,9 @@ void Subcore::issue(SM *shared_sm) {
     }
   }else {
     is_next_stage_availabe = false;
+  }
+  if (collect_issue_debug) {
+    m_last_issue_debug.next_stage_available = is_next_stage_availabe;
   }
 
   // Stats

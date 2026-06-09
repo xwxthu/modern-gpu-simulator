@@ -188,6 +188,10 @@ bool Scoreboard_reads::pendingReads(unsigned wid) const {
   return !reg_table[wid].empty();
 }
 
+unsigned Scoreboard_reads::pendingReadsCount(unsigned wid) const {
+  return reg_table[wid].size();
+}
+
 
 /**
  * Checks to see if destination register has conflicts with previous read registers .

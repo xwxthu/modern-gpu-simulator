@@ -87,6 +87,7 @@ class shader_core_ctx_wrapper {
 
   virtual bool warp_waiting_at_mem_barrier(unsigned warp_id) = 0;
   virtual bool warp_waiting_at_barrier(unsigned warp_id) const = 0;
+  virtual void append_barrier_debug_summary(std::string &out) const = 0;
   virtual bool warp_waiting_grid_barrier(unsigned warp_id) = 0;
   virtual void broadcast_barrier_reduction(unsigned cta_id, unsigned bar_id,
                                            warp_set_t warps) = 0;

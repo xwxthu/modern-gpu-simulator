@@ -34,6 +34,7 @@
 #include <memory>
 #include <deque>
 #include <functional>
+#include <string>
 
 #include "../stats.h"
 #include "../shader.h"
@@ -63,7 +64,7 @@ class AccessQueue {
     mem_access_t* front();
     bool empty();
     bool full();
-    unsigned int size();
+    unsigned int size() const;
 
   private:
     std::queue<mem_access_t*> m_accesses;
@@ -121,6 +122,10 @@ class PendingRequestTable {
 
     bool is_full();
     bool is_empty();
+    unsigned int num_active_entries() const;
+    unsigned int num_pending_process_entries() const;
+    unsigned int num_pending_free_entries() const;
+    unsigned int num_pending_accesses() const;
 
     bool are_entries_to_pop_icnt_id(unsigned int icnt_id);
     bool are_entries_to_process_coalescing();
@@ -250,6 +255,7 @@ class ldst_unit_sm : public functional_unit_shared_sm_part {
   void reset_coalescingHistory();
 
   PendingRequestTable& get_prt();
+  void append_kernel_progress_debug_summary(std::string &out) const;
 
   unsigned int get_reserved_idx_icnt_to_shmem();
 

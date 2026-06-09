@@ -47,6 +47,7 @@
 #include "../../../../../util/traces_enhanced/src/traced_operand.h"
 
 #include <sstream>
+#include <map>
 
 #define STRSIZE 1024
 
@@ -1153,6 +1154,10 @@ bool SM::warp_waiting_at_barrier(unsigned warp_id) const {
   return m_barriers.warp_waiting_at_barrier(warp_id);
 }
 
+void SM::append_barrier_debug_summary(std::string &out) const {
+  m_barriers.append_debug_summary(out);
+}
+
 bool SM::are_all_wait_barrier_ready(unsigned int warp_id) {
   std::vector<Wait_Barrier_Checking> wait_barriers_checking;
   for (unsigned int i = 0; i < m_config->num_wait_barriers_per_warp; i++) {
@@ -1588,6 +1593,11 @@ void SM::append_kernel_progress_debug_summary(std::string &out) const {
   unsigned gridbar = 0;
   unsigned imiss = 0;
   unsigned atomic = 0;
+  unsigned scoreboard_write_warps = 0;
+  unsigned scoreboard_read_warps = 0;
+  unsigned scoreboard_writes = 0;
+  unsigned scoreboard_reads = 0;
+  std::map<address_type, unsigned> pc_counts;
   const shd_warp_t *selected = NULL;
 
   for (unsigned w = 0; w < m_config->max_warps_per_shader; w++) {
@@ -1620,6 +1630,21 @@ void SM::append_kernel_progress_debug_summary(std::string &out) const {
     if (warp->is_atomic_pending()) {
       atomic++;
     }
+    unsigned pending_writes = m_scoreboard->pendingWritesCount(w);
+    unsigned pending_reads = m_scoreboard_WAR->pendingReadsCount(w);
+    if (pending_writes) {
+      scoreboard_write_warps++;
+      scoreboard_writes += pending_writes;
+    }
+    if (pending_reads) {
+      scoreboard_read_warps++;
+      scoreboard_reads += pending_reads;
+    }
+    if (warp->debug_is_active() || warp->inst_in_pipeline() ||
+        warp->debug_ibuffer_count() || warp_waiting_at_barrier(w) ||
+        warp->get_membar() || warp->get_gridbar()) {
+      pc_counts[warp->get_pc()]++;
+    }
   }
 
   std::ostringstream ss;
@@ -1635,6 +1660,10 @@ void SM::append_kernel_progress_debug_summary(std::string &out) const {
      << ",bar=" << cta_barrier << ",membar=" << membar
      << ",gridbar=" << gridbar << ",imiss=" << imiss
      << ",atomic=" << atomic
+     << ",sbw_warps=" << scoreboard_write_warps
+     << ",sbr_warps=" << scoreboard_read_warps
+     << ",sbw_regs=" << scoreboard_writes
+     << ",sbr_regs=" << scoreboard_reads
      << ",mem_normal=" << m_ldst_unit_shared_of_sm->m_current_num_normal_mem_inst
      << ",mem_shared=" << m_ldst_unit_shared_of_sm->m_current_num_shared_mem_inst;
   if (selected) {
@@ -1644,8 +1673,38 @@ void SM::append_kernel_progress_debug_summary(std::string &out) const {
        << ",pipe=" << selected->debug_inst_in_pipeline()
        << ",stores=" << selected->debug_store_count();
   }
+  std::vector<address_type> printed_pcs;
+  for (unsigned printed_pc = 0;
+       printed_pc < 4 && printed_pcs.size() < pc_counts.size();
+       printed_pc++) {
+    address_type best_pc = 0;
+    unsigned best_count = 0;
+    for (std::map<address_type, unsigned>::const_iterator it =
+             pc_counts.begin();
+         it != pc_counts.end(); ++it) {
+      bool already_printed = false;
+      for (unsigned i = 0; i < printed_pcs.size(); i++) {
+        already_printed = already_printed || printed_pcs[i] == it->first;
+      }
+      if (!already_printed && it->second > best_count) {
+        best_pc = it->first;
+        best_count = it->second;
+      }
+    }
+    if (best_count == 0) {
+      break;
+    }
+    printed_pcs.push_back(best_pc);
+    ss << ",pc" << printed_pc << "=0x" << std::hex << best_pc << std::dec
+       << ":" << best_count;
+  }
   ss << "}";
   out += ss.str();
+  append_barrier_debug_summary(out);
+  m_ldst_unit_shared_of_sm->append_kernel_progress_debug_summary(out);
+  for (unsigned i = 0; i < m_subcores.size(); i++) {
+    m_subcores[i]->append_kernel_progress_debug_summary(out);
+  }
 }
 
 // Stats Functions

@@ -306,3 +306,7 @@ bool Scoreboard::checkCollision(unsigned wid, const class inst_t* inst) const {
 bool Scoreboard::pendingWrites(unsigned wid) const {
   return !reg_table[wid].empty();
 }
+
+unsigned Scoreboard::pendingWritesCount(unsigned wid) const {
+  return reg_table[wid].size();
+}

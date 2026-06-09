@@ -1820,3 +1820,68 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: determine why kernel 2 makes extremely slow progress after all CTAs are resident, focusing on barrier-release bookkeeping, SIMT/reconvergence behavior near PC `0x2890`, scheduler issue/no-issue conditions, or memory-return/scoreboard latency in the post-barrier global load/store tail.
+
+### 2026-06-09 20:20:29 CST
+
+Action:
+- Resumed after an unexpected interruption.
+- Re-read `supervisor-log.md`, `overall-plan.md`, and the latest S7 kernel-progress worker log per the recovery rule.
+- Confirmed the current stage using standard terminology: S7 System Integration and Validation, specifically PTX-mode kernel-2 bottleneck attribution during local smoke bring-up.
+- Spawned fresh blank-context S7 attribution worker `019eac54-3a0e-77b0-8ddc-32e839eb078b`.
+
+Scope:
+- Determine why backprop kernel 2 makes extremely slow progress after all CTAs are resident.
+- Distinguish barrier-release bookkeeping, SIMT/reconvergence around PC `0x2890`, scheduler issue/no-issue state, and memory-return/scoreboard latency.
+- Keep diagnostics default-off and avoid config/latest/calibration promotion.
+
+### 2026-06-09 22:55:00 CST
+
+Action:
+- S7 kernel-2 attribution worker `019eac54-3a0e-77b0-8ddc-32e839eb078b` completed `docs/sm120-calibration/worker-logs/worker-20260609-211410-s7-kernel2-attribution.md`.
+- The worker reported an internal fresh blank-context read-only reviewer Round 2 verdict of `ACCEPT` after a Round 1 `CHANGES_NEEDED` rework.
+- Spawned independent supervisor reviewer `019eacc4-d611-7132-8ade-039c79de811f`.
+
+Worker deliverables:
+- Default-off kernel-progress attribution diagnostics in:
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/ldst_unit_sm.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/ldst_unit_sm.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/scoreboard.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/scoreboard.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/scoreboard_reads.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/scoreboard_reads.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader_core_wrapper.h`
+- Worker log:
+  `docs/sm120-calibration/worker-logs/worker-20260609-211410-s7-kernel2-attribution.md`.
+- Local evidence under ignored `artifacts/s7/s7-kernel2-attribution-20260609-211410/`.
+
+Validation:
+- `git diff --check` passed.
+- `generate_sm120_configs.py --check-only` passed.
+- Local GPGPU-Sim rebuild passed.
+- Setup-only local PTX smoke planning passed.
+- Supervisor-authorized second bounded local PTX smoke ran as ProcMan job `486`, reached the all-CTAs-resident target window, completed kernel 2, and reported `PASSED`.
+- Final ProcMan direct status reported `Nothing Active`.
+
+Attribution result:
+- Kernel 2 target window reached `next_cta=256`, `cta_completed_kernel=76`, `active_cta=180`.
+- Kernel 2 completed with `gpu_tot_sim_cycle = 45818` and `gpu_tot_sim_insn = 8036672`.
+- The sampled all-CTAs-resident slow window is dominated by CTA-barrier waiting / partial-barrier state around PC `0x2890`.
+- Scheduler state is no-issue because sampled candidates are not ready, with barrier blockers dominant.
+- Sampled evidence does not support a SIMT/reconvergence mismatch at PC `0x2890` (`pc_mis=0`).
+- Sampled evidence does not support a post-barrier memory-return/queue tail (`mem_resp=0`, `mem_prt_active=0`, sampled queues zero).
+- No speculative root-cause fix was made.
+
+Supervisor review:
+- Independent supervisor reviewer `019eacc4-d611-7132-8ade-039c79de811f` returned `ACCEPT`.
+- Reviewer confirmed the worker satisfied the attribution goal, the `Subcore::issue()` diagnostic state is env-gated, the global print path remains default-off through `GPGPUSIM_KERNEL_PROGRESS_DEBUG`, smoke evidence is honest, and no config/latest/calibration/correlation promotion was made.
+- Residual nonblocking risk: attribution is sampled with `SM_LIMIT=1`, so it narrows the bottleneck but does not prove a specific incorrect barrier-bookkeeping mutation.
+
+Follow-up:
+- S7 remains in progress.
+- Pending S7 work remains: turn the successful local PTX smoke into reviewed S7 validation evidence, prepare real supplied-metrics correlation inputs only from real metrics, run bounded correlation/promotion-gate review if appropriate, and preserve RTX5070Ti compatibility.
