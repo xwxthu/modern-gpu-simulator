@@ -1288,3 +1288,52 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode constant-memory latency underflow in `ldst_unit_sm::dispatch_to_memory_access_queue_l1Ccache()`.
+
+Checkpoint:
+- Commit `fbcca5b04017ed640dc7b5915d1f077cf3698c00` (`fix: route PTX parameter constants to L1C`) recorded the PTX-mode parameter constant routing fix.
+
+### 2026-06-09 09:50:16 CST
+
+Action:
+- Spawned S7 L1C latency worker `019eaa11-093a-7d93-82ed-8fe2879dedf1`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode L1C dispatch latency underflow for parameter constant accesses.
+- Preserve config-backed latency semantics; do not add a dispatch fallback or hard-coded latency.
+
+### 2026-06-09 10:32:09 CST
+
+Action:
+- S7 L1C latency worker `019eaa11-093a-7d93-82ed-8fe2879dedf1` completed `docs/sm120-calibration/worker-logs/worker-20260609-100045-s7-l1c-latency.md`.
+- The worker reported a bounded blank-context internal reviewer verdict of `ACCEPT` after two timed-out reviewer attempts.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-100045-s7-l1c-latency.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-l1c-latency-20260609-100045/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- Remodeled PTX decode generated memory latency metadata before functional PTX execution resolved `.param` / generic memory spaces.
+- Functional execution and access generation later produced `param_space_kernel` / `CONST_ACC_R`, but the SM-structure latency field remained at decode-time zero.
+
+Partial result:
+- PTX/non-trace memory operations now regenerate memory latency metadata after `execute_warp_inst_t(inst)` and before `inst.generate_mem_accesses()`.
+- This preserves the existing config-backed `space.is_const()` path for `param_space_kernel`.
+- Trace mode remains unchanged.
+- The previous `constant_cache_l1_latency_queue[inst_latency - 1]` underflow is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: `Subcore::single_decode()` asserts `ibuffer_entry.m_inst->pc == ibuffer_entry.m_pc` at `subcore.cc:934`; focused evidence records `sm_warp_id = 32`, `ibuffer_entry.m_pc = 48`, and `ibuffer_entry.m_valid = true`.
+
+Supervisor review:
+- Supervisor reviewer `019eaa34-65dc-7640-a2cd-67e18b72183f` returned `ACCEPT`.
+- Reviewer confirmed the fix is a root-cause PTX timing update after memory-space resolution, preserves trace-mode behavior, adds no dispatch fallback or config change, changes no config/latest/generated outputs, and properly bounds the new IBuffer PC mismatch blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode IBuffer PC mismatch assertion in `Subcore::single_decode()`.

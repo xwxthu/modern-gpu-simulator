@@ -506,6 +506,8 @@ void SM::func_exec_inst(warp_inst_t &inst) {
   } else {
     execute_warp_inst_t(inst);
     if (inst.is_load() || inst.is_store()) {
+      // Functional PTX execution resolves .param/generic memory spaces.
+      inst.generate_mem_latencies(m_gpu);
       inst.generate_mem_accesses();
     }
   }
