@@ -1725,3 +1725,43 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: run a bounded local PTX smoke past the observed second-kernel bind, either to second-kernel/full application completion or to a later captured crash/stall point.
+
+### 2026-06-09 19:08:44 CST
+
+Action:
+- S7 full-smoke boundary worker `019eabe4-ac2a-7f82-92f7-1d7d291bd1d3` completed `docs/sm120-calibration/worker-logs/worker-20260609-181955-s7-full-smoke.md`.
+- The worker reported a fresh read-only reviewer verdict of `ACCEPT` after an earlier invalid reviewer CLI invocation.
+
+Worker deliverables:
+- `docs/sm120-calibration/worker-logs/worker-20260609-181955-s7-full-smoke.md`.
+- Local evidence under ignored `artifacts/s7/s7-full-smoke-20260609-181955/`.
+
+Worker validation:
+- `git diff --check` passed.
+- `generate_sm120_configs.py --check-only` passed.
+- Setup-only local PTX smoke planning passed after sourcing the simulator environment.
+- Exactly one bounded local PTX smoke was launched as ProcMan job `483`.
+- Final ProcMan status showed `Nothing Active` after the timeout kill.
+
+Triage result:
+- The bounded full-smoke run did not complete.
+- It produced first-kernel metrics:
+  - `gpu_tot_sim_cycle = 7729`
+  - `gpu_tot_sim_insn = 4169728`
+  - `gpgpu_simulation_time = 0 days, 0 hrs, 7 min, 2 sec (422 sec)`
+- It launched and bound the second kernel `_Z24bpnn_adjust_weights_cudaPfiS_iS_S_`.
+- After second-kernel SM binding, it remained CPU-bound until the 30-minute wall-clock timeout.
+- No second-kernel metrics, functional result output, `PASSED`/`FAILED` line, crash, assertion, or stderr growth was captured.
+- GDB attach at timeout was blocked by ptrace/Yama policy, and `coredumpctl` found no visible coredumps.
+
+Caveat:
+- This is not a full PTX smoke pass.
+- No simulator code, generated configs, latest aliases, accepted calibration results, or metrics artifacts were promoted.
+- No code change was made because the worker did not prove a narrow root cause.
+
+Supervisor review:
+- Independent supervisor reviewer `019eac0f-58ab-7cd0-b94c-de01923bab03` returned `ACCEPT`.
+- Reviewer confirmed the conclusion is supported, exactly one real smoke job was used, no full-pass/calibration/correlation overclaim was made, and no speculative code change is required before committing the evidence.
+
+Follow-up:
+- Pending S7 work remains: focused triage of kernel-2 PTX performance-simulation internal progress after SM bind, using reviewable temporary instrumentation or debug-attach permissions to capture active CTA counts, completed CTA counts, per-SM active warp/barrier state, scheduler issue state, and selected warp PCs.
