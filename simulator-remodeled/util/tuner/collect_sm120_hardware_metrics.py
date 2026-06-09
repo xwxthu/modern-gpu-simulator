@@ -38,6 +38,9 @@ DEFAULT_TRACE_CONFIG = (
     "SM120_RTX5060/trace.config"
 )
 
+METRIC_ROLE_HARDWARE_CHARACTERIZATION = "hardware_characterization"
+METRIC_ROLE_SIMULATOR_COMPARABLE_CALIBRATION_TARGET = "simulator_comparable_calibration_target"
+METRIC_ROLE_EXCLUDED_NON_COMPARABLE = "excluded_non_comparable"
 TIME_PREFIX = "MGS_HW_TIME_"
 SIMULATOR_MARKERS = (
     "gpu_tot_sim_cycle",
@@ -340,24 +343,51 @@ def metric_unit(metric_name: str, explicit: str | None = None) -> str:
     return "count"
 
 
+def calibration_target_policy(metric_name: str, source: str) -> dict[str, Any]:
+    if source == "nsight_systems_cuda_gpu_kern_sum" and metric_name.endswith("_time_ms"):
+        return {
+            "metric_role": METRIC_ROLE_SIMULATOR_COMPARABLE_CALIBRATION_TARGET,
+            "include_in_s6_template": True,
+            "policy_reason": (
+                "CUDA kernel elapsed time can be compared with simulator per-kernel cycle-derived time."
+            ),
+        }
+    if metric_name.startswith("native_"):
+        return {
+            "metric_role": METRIC_ROLE_HARDWARE_CHARACTERIZATION,
+            "include_in_s6_template": False,
+            "policy_reason": (
+                "Native process wall/user/sys/RSS measurements characterize the hardware run but are not "
+                "produced by the simulator candidate bridge."
+            ),
+        }
+    return {
+        "metric_role": METRIC_ROLE_EXCLUDED_NON_COMPARABLE,
+        "include_in_s6_template": False,
+        "policy_reason": "Metric is useful context but is not a simulator-comparable S6 target.",
+    }
+
+
 def target_metric_record(
     benchmark_id: str,
     metric_name: str,
     value: float,
     source: str,
     unit: str | None = None,
-    include_in_s6: bool = True,
 ) -> dict[str, Any]:
+    policy = calibration_target_policy(metric_name, source)
     record = {
         "benchmark": benchmark_id,
         "metric": metric_name,
         "target": round(float(value), 9),
         "unit": metric_unit(metric_name, unit),
         "source": source,
+        "metric_role": policy["metric_role"],
         "weight": 1.0,
         "epsilon": metric_epsilon(metric_name),
         "normalization": "target_abs_or_epsilon",
-        "include_in_s6_template": bool(include_in_s6),
+        "include_in_s6_template": policy["include_in_s6_template"],
+        "policy_reason": policy["policy_reason"],
     }
     return record
 
@@ -420,14 +450,12 @@ def build_result(args: argparse.Namespace) -> dict[str, Any]:
             ("max_rss_kbytes", "native_max_rss_kbytes"),
         ):
             if source_name in time_metrics:
-                include_in_s6 = metric_name in {"native_wall_time_seconds"}
                 target_metrics.append(
                     target_metric_record(
                         benchmark_id,
                         metric_name,
                         float(time_metrics[source_name]),
                         "gnu_time",
-                        include_in_s6=include_in_s6,
                     )
                 )
 
@@ -460,14 +488,12 @@ def build_result(args: argparse.Namespace) -> dict[str, Any]:
             "per_kernel": nsys_summary.get("per_kernel", {}),
         }
         for metric_name, value in sorted(nsys_summary.get("metrics", {}).items()):
-            include_in_s6 = metric_name.endswith("_time_ms")
             target_metrics.append(
                 target_metric_record(
                     benchmark_id,
                     metric_name,
                     float(value),
                     "nsight_systems_cuda_gpu_kern_sum",
-                    include_in_s6=include_in_s6,
                 )
             )
 
@@ -546,6 +572,25 @@ def build_result(args: argparse.Namespace) -> dict[str, Any]:
             "simulator_marker_policy": "reject_inputs_containing_known_simulator_smoke_metric_markers",
             "rejected_markers": list(SIMULATOR_MARKERS),
             "job_486_policy": "job_486_simulator_metrics_are_not_hardware_target_metrics",
+        },
+        "calibration_target_policy": {
+            "hardware_characterization_metrics": (
+                "Retained in the hardware target artifact for provenance and run characterization."
+            ),
+            "simulator_comparable_calibration_targets": (
+                "Only these metrics are copied into the S6 target handoff/template."
+            ),
+            "excluded_non_comparable_metrics": (
+                "Retained or reported as context but not used as S6 calibration targets."
+            ),
+            "s6_inclusion_rule": (
+                "Include only Nsight Systems CUDA kernel time metrics whose simulator candidate counterpart "
+                "can be derived from per-kernel simulator cycles and the configured core clock."
+            ),
+            "native_metric_rule": (
+                "native_wall_time_seconds, native_user_time_seconds, native_sys_time_seconds, and "
+                "native_max_rss_kbytes remain hardware characterization metrics and are excluded from S6."
+            ),
         },
         "run_observations": raw_observations,
         "target_metrics": target_metrics,

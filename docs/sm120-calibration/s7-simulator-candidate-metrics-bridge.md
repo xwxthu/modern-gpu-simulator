@@ -40,6 +40,11 @@ The bridge deliberately does not map `native_wall_time_seconds`; local
 simulator stdout/config artifacts do not contain native hardware wall-clock
 time.
 
+The S7 target selection policy keeps native wall time as a hardware
+characterization metric only. Runnable S6 supplied-metrics manifests must use
+simulator-comparable calibration targets only, which currently means CUDA
+kernel elapsed-time metrics.
+
 ## Draft-Only Behavior
 
 Outputs use `status: draft_not_applied`, record
@@ -107,6 +112,8 @@ Current draft reduction:
 - `RTX5060-job486-simulator-candidate-metrics-draft.yaml`
 - `RTX5060-job486-s6-supplied-metrics-scaffold.yaml`
 
-The scaffold is intentionally non-runnable. It blocks on the hardware template
-still including `native_wall_time_seconds`, empty template search parameters,
-and `template_not_runnable` status.
+The original scaffold is intentionally non-runnable. After the S7 target
+selection policy is applied, job `486` can also be used for a single-candidate
+draft S6 baseline report with comparable CUDA-kernel timing metrics only. That
+baseline is validation evidence for the bridge and scorer, not calibration
+promotion.

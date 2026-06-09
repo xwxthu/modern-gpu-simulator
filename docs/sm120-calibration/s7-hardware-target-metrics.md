@@ -25,6 +25,24 @@ as `gpu_tot_sim_cycle`, `gpu_tot_sim_insn`, and `gpgpu_simulation_time`. Job
 `486` metrics remain simulator validation evidence only; they are not hardware
 target metrics.
 
+## Calibration Target Selection Policy
+
+The hardware target artifact keeps all parsed hardware characterization
+metrics that are useful for provenance and run review, including native process
+wall time, user/sys time, and max RSS. These metrics are not automatically S6
+calibration targets.
+
+The S6 handoff/template includes only simulator-comparable calibration targets:
+currently Nsight Systems CUDA kernel elapsed-time metrics whose simulator
+candidate counterpart can be derived from per-kernel simulator cycles and the
+configured core clock.
+
+Excluded/non-comparable metrics remain out of the S6 target list. In
+particular, `native_wall_time_seconds` is retained in the hardware target YAML
+as hardware characterization, but it is excluded from
+`s6_supplied_metrics_handoff.target_metrics` and from generated S6 templates.
+The simulator candidate bridge must not fabricate it.
+
 ## Supported MVP Case
 
 The first case is:
@@ -129,9 +147,9 @@ python3 simulator-remodeled/util/tuner/collect_sm120_hardware_metrics.py \
 ```
 
 The S6 template is deliberately `status: template_not_runnable`. It contains
-hardware `target_metrics`, but it still lacks reviewed bounded search
-parameters and local simulator candidate metrics. Do not generate an S6 ranked
-report from this template as-is.
+only simulator-comparable hardware `target_metrics`, but it still lacks
+reviewed bounded search parameters and local simulator candidate metrics. Do
+not generate an S6 ranked report from this template as-is.
 
 ## 2026-06-10 Draft RTX5060 Artifact
 

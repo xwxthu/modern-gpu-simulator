@@ -53,7 +53,8 @@ A manifest describes:
 - GPU and architecture.
 - S4 generated base `gpgpusim.config` and mirrored `trace.config`.
 - Benchmark cases.
-- Target hardware metrics with weights and normalization epsilon.
+- Simulator-comparable target hardware metrics with weights and normalization
+  epsilon.
 - Bounded candidate parameters.
 - Evaluation metrics for every generated candidate.
 - Optional command-planning fields.
@@ -76,6 +77,13 @@ the same CUDA-kernel timing names used by the S7 hardware target collector. It
 does not fabricate native wall time, does not treat simulator metrics as
 hardware targets, and emits a non-runnable scaffold unless reviewed search
 parameters and candidate metrics are complete.
+
+S7 target selection separates hardware characterization metrics from
+simulator-comparable calibration targets. Native wall time, CPU time, RSS, and
+similar process-level measurements may remain in the hardware characterization
+artifact, but they must not be listed as S6 target metrics unless a reviewed
+simulator-comparable derivation exists. The current S7 handoff includes only
+CUDA-kernel timing targets derived from Nsight Systems.
 
 ## Report Semantics
 

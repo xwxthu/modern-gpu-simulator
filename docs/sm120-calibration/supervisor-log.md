@@ -2127,3 +2127,59 @@ Supervisor review:
 Follow-up:
 - S7 remains in progress.
 - Promotion gate remains closed. Real supplied-metrics correlation is still not complete; the next work is to define reviewed bounded search parameters and target-metric inclusion policy, then run any required local candidate simulations and generate a reviewed real S6 ranked draft report.
+
+### 2026-06-10 02:41:52 CST
+
+Action:
+- Confirmed repository state after checkpoint `107ebd5` on branch `dev-5060`; tracked worktree was clean.
+- Began S7 calibration target selection and bounded baseline S6 work.
+- Spawned fresh blank-context worker `019ead9b-31da-7310-b226-d211a7ba01d7`.
+
+Scope:
+- Define and implement a reviewed target metric policy separating hardware characterization metrics from simulator-comparable calibration targets.
+- Keep `native_wall_time_seconds` in hardware target artifacts but exclude it from S6 target handoff/templates unless a reviewed simulator-comparable derivation exists.
+- If feasible, generate a draft-only single-candidate S6 baseline report from job `486` using comparable CUDA-kernel timing metrics only.
+- Do not run simulator on `dsp5060`, do not fabricate metrics, and do not promote accepted/generated/latest configs or `calibration-results/latest`.
+
+### 2026-06-10 02:55:00 CST
+
+Action:
+- S7 target selection worker `019ead9b-31da-7310-b226-d211a7ba01d7` completed `docs/sm120-calibration/worker-logs/worker-20260610-022405-s7-target-selection.md`.
+- Worker updated `simulator-remodeled/util/tuner/collect_sm120_hardware_metrics.py`.
+- Worker added focused tests `simulator-remodeled/util/tuner/test_collect_sm120_hardware_metrics.py`.
+- Worker updated S6/S7 documentation.
+- Worker reported internal reviewer Round 1 verdict of `ACCEPT`.
+- Spawned independent supervisor reviewer `019eadac-1b0e-7750-b777-561e1a8df4fa`.
+
+Target selection result:
+- Hardware target artifacts retain parsed hardware characterization metrics, including native wall time, user/sys time, and max RSS.
+- S6 handoff/templates now include only simulator-comparable calibration targets: currently Nsight Systems CUDA kernel elapsed-time metrics ending in `_time_ms`.
+- `native_wall_time_seconds` is retained as hardware characterization and excluded from S6 target handoff/templates.
+- `cuda_kernel_invocations` remains context rather than an S6 timing target.
+
+Draft baseline result:
+- Generated ignored artifacts under `artifacts/s7/s7-target-selection-20260610-022405/`.
+- The single-candidate S6 supplied-metrics baseline uses job `486` as simulator candidate evidence only.
+- Comparable target metrics:
+  `cuda_kernel_avg_time_ms`,
+  `cuda_kernel_bpnn_adjust_weights_cuda_total_time_ms`,
+  `cuda_kernel_bpnn_layerforward_cuda_total_time_ms`,
+  `cuda_kernel_total_time_ms`.
+- Baseline S6 report is `draft_not_applied`, has one candidate, target metric count `4`, best candidate `candidate_0001`, and best score `0.482422`.
+- The baseline validates the handoff/scorer path only and is not calibration promotion.
+
+Supervisor validation:
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest simulator-remodeled/util/tuner/test_collect_sm120_hardware_metrics.py simulator-remodeled/util/tuner/test_ingest_sm120_simulator_candidate_metrics.py` passed with 7 tests.
+- `git diff --check` passed.
+- `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only` passed.
+- `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/search_sm120_correlation.py --manifest artifacts/s7/s7-target-selection-20260610-022405/RTX5060-job486-s6-comparable-baseline-supplied-metrics.yaml --dry-run` passed with `candidates=1`, `best=candidate_0001`, `score=0.482422`.
+- Protected config/latest scoped `git status --short` check was empty.
+- `git check-ignore -v` confirmed the generated target-selection artifacts are ignored under `artifacts/s7/`.
+
+Supervisor review:
+- Independent supervisor reviewer `019eadac-1b0e-7750-b777-561e1a8df4fa` returned `ACCEPT`.
+- Reviewer confirmed the target metric policy uses standard terms, `native_wall_time_seconds` remains hardware characterization only and is rejected as simulator candidate input, S6 baseline target/scoring metrics are the four CUDA kernel `_time_ms` metrics only, the report remains draft-only, protected config/calibration paths are clean, and artifacts are ignored.
+
+Follow-up:
+- S7 remains in progress.
+- Promotion gate remains closed. Remaining work includes broader RTX5060/RTX5070Ti validation, deciding whether to run a multi-candidate bounded S6 search, collecting more robust/repeated hardware targets, and promotion-gate review before any accepted config or `calibration-results/latest` update.
