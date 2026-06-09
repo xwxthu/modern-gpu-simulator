@@ -1480,3 +1480,42 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound PTX `bar.sync` barrier id/count metadata propagation into the dynamic timing `warp_inst_t` before remodeled barrier handling.
+
+### 2026-06-09 13:48:32 CST
+
+Action:
+- S7 PTX barrier metadata worker `019eaacf-589d-71e1-8967-5d0b55e97995` completed `docs/sm120-calibration/worker-logs/worker-20260609-131926-s7-barrier-metadata.md`.
+- The worker reported a fresh blank-context read-only internal reviewer verdict of `ACCEPT` after one CLI invocation error.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/cuda-sim.cc`.
+- `docs/sm120-calibration/overall-plan.md`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-131926-s7-barrier-metadata.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-barrier-metadata-20260609-131926/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local PTX smoke job was launched.
+
+Root cause:
+- In PTX mode, remodeled IBuffer clones the canonical PTX instruction into a mutable dynamic `warp_inst_t`.
+- PTX `bar_impl()` resolved `bar.sync` runtime operands and wrote `bar_id` and `bar_count` onto the functional `ptx_instruction`.
+- `ptx_thread_info::ptx_exec_inst()` did not copy that barrier metadata back into the dynamic timing `warp_inst_t`, so `SM::issue_warp()` passed stale default barrier metadata into `barrier_set_t::warp_reaches_barrier()`.
+
+Partial result:
+- `ptx_thread_info::ptx_exec_inst()` now copies `bar_type`, `red_type`, `bar_id`, and `bar_count` from the functional PTX instruction into the dynamic timing instruction after functional barrier execution.
+- The fix does not synthesize a default barrier id, remove or weaken `bar_id != (unsigned)-1`, or skip barrier handling.
+- Trace mode remains outside this PTX functional execution path.
+- The previous `bar_id != (unsigned)-1` assertion is resolved for the local smoke, and the prior `pc == inst.pc` assertion did not regress.
+- The smoke still produced no real simulator metrics.
+- New blocker: `Subcore::single_decode()` asserts `pI->valid()` at `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc:916`; focused evidence shows `pI` is non-null but default/invalid decoded with `pc = 18446744073709551615`, `m_decoded = false`, `op = NO_OP`, and `isize = 0`.
+
+Supervisor review:
+- Supervisor reviewer `019eaae5-fa33-7d41-a3c7-1bd2cadf1723` returned `ACCEPT`.
+- Reviewer confirmed this is a root-cause metadata propagation fix rather than a default-id workaround, propagation happens before remodeled barrier handling, the barrier assertion and handling are preserved, trace mode is not touched, no config/latest/calibration-result/metrics outputs were changed, and the new invalid-decode assertion is separately bounded.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the remodeled PTX decode path that yields a non-null but invalid/default `warp_inst_t` at `Subcore::single_decode()`.

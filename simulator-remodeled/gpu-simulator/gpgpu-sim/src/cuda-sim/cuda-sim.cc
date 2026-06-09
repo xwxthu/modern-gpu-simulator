@@ -2105,6 +2105,13 @@ void ptx_thread_info::ptx_exec_inst(warp_inst_t &inst, unsigned lane_id) {
                         false /*not atomic*/);
     }
 
+    if (!skip && pI->op == BARRIER_OP) {
+      inst.bar_type = pI->bar_type;
+      inst.red_type = pI->red_type;
+      inst.bar_id = pI->bar_id;
+      inst.bar_count = pI->bar_count;
+    }
+
     if (pI->get_opcode() == ATOM_OP) {
       insn_memaddr = last_eaddr();
       insn_space = last_space();
