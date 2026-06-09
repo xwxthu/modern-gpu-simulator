@@ -1688,3 +1688,40 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: triage why the local PTX smoke reaches first-kernel performance simulation but does not produce first-kernel metrics within a bounded wait.
+
+### 2026-06-09 18:17:28 CST
+
+Action:
+- S7 smoke-stall triage worker `019eabb8-b3d6-79f0-89e9-573b3e26ac3e` completed `docs/sm120-calibration/worker-logs/worker-20260609-173154-s7-smoke-stall.md`.
+- The worker reported a fresh read-only reviewer verdict of `ACCEPT` in reviewer round 3 after correcting earlier reviewer findings about log placement and pending reviewer/final-status sections.
+
+Worker deliverables:
+- `docs/sm120-calibration/worker-logs/worker-20260609-173154-s7-smoke-stall.md`.
+- Local evidence under ignored `artifacts/s7/s7-smoke-stall-20260609-173154/`.
+
+Worker validation:
+- `git diff --check` passed.
+- `generate_sm120_configs.py --check-only` passed.
+- Local CUDA 13.1 release GPGPU-Sim runtime rebuild passed.
+- Setup-only local PTX smoke planning passed.
+- Exactly one fresh local PTX smoke was launched after rebuild as ProcMan job `482`.
+
+Triage result:
+- The earlier first-kernel no-metrics/stall hypothesis is not supported.
+- Fresh job `482` produced first-kernel metrics:
+  - `gpu_tot_sim_cycle = 7729`
+  - `gpu_tot_sim_insn = 4169728`
+  - `gpgpu_simulation_time = 0 days, 0 hrs, 7 min, 21 sec (441 sec)`
+- The fresh run then launched and bound the second kernel `_Z24bpnn_adjust_weights_cudaPfiS_iS_S_`.
+- No first-kernel pipeline/accounting no-progress root cause was reproduced, so no code change was justified for this specific triage task.
+
+Caveat:
+- This is not a full PTX smoke pass. The fresh run was manually stopped after first-kernel metrics and second-kernel bind were captured.
+- No generated configs, latest aliases, accepted calibration results, or metrics artifacts were promoted.
+
+Supervisor review:
+- Independent supervisor reviewer `019eabde-61b7-7943-a8c8-7771658d6b3a` returned `ACCEPT`.
+- Reviewer confirmed the worker conclusion is supported, no full-pass/calibration/correlation overclaim was made, no code change is acceptable for this triage-only result, and the next blocker is precise.
+
+Follow-up:
+- Pending S7 work remains: run a bounded local PTX smoke past the observed second-kernel bind, either to second-kernel/full application completion or to a later captured crash/stall point.
