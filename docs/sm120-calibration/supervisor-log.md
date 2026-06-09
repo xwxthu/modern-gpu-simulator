@@ -1927,3 +1927,53 @@ Result:
 
 Follow-up:
 - Pending S7 work remains: resolve or defer 13 unsupported S5 keys, obtain real hardware target metrics if correlation is required, create/review S6 supplied-metrics and ranked draft reports, and perform promotion-gate review including RTX5070Ti compatibility signoff.
+
+### 2026-06-09 23:40:00 CST
+
+Action:
+- Confirmed repository state after checkpoint `fd23be9` on branch `dev-5060`; tracked worktree was clean.
+- Began S7 unsupported S5 key disposition work.
+- Spawned fresh blank-context worker `019eacf7-e124-7442-be9c-f6a8b69c6280`.
+
+Scope:
+- Inspect the 13 unsupported keys from the real RTX5060 S5 draft.
+- Classify each key as safe S5 parser/stage-map support, S6 correlation candidate, explicit deferral/rejection, or requiring more evidence.
+- Produce a checked-in disposition document and worker log.
+- Do not run simulator, do not use `dsp5060`, and do not promote accepted/generated/latest configs or calibration results.
+
+### 2026-06-09 23:58:00 CST
+
+Action:
+- S7 unsupported S5 key worker `019eacf7-e124-7442-be9c-f6a8b69c6280` completed `docs/sm120-calibration/worker-logs/worker-20260609-232827-s7-unsupported-s5-keys.md`.
+- Worker produced checked-in disposition document `docs/sm120-calibration/s7-unsupported-s5-keys-20260609.md`.
+- Worker reported internal reviewer Round 2 verdict of `ACCEPT`.
+- Spawned independent supervisor reviewer `019ead0f-d39a-7db0-aafe-c99a3fdb5452`.
+
+Disposition result:
+- The real RTX5060 S5 draft has 13 unsupported keys and the disposition covers all 13 exactly once.
+- Two schema-active low-risk future S5 stage-map candidates:
+  `-gpgpu_ptx_force_max_capability`, `-gpgpu_coalesce_arch`.
+- Four schema-active keys need more hardware or benchmark evidence before S5 support:
+  `-gpgpu_kernel_launch_latency`, `-gpgpu_shmem_option`,
+  `-gpgpu_unified_l1d_size`, `-icnt_flit_size`.
+- Seven inactive legacy or trace keys are deferred or rejected as raw current-flow keys:
+  `-gpgpu_l1_latency`, `-gpgpu_num_dp_units`, `-gpgpu_smem_latency`,
+  `-specialized_unit_3`, `-specialized_unit_4`,
+  `-trace_opcode_latency_initiation_spec_op_3`,
+  `-trace_opcode_latency_initiation_spec_op_4`.
+- None of the 13 keys is a current S6 MVP candidate as-is.
+- No parser, stage-map, fixture, config, generated config, or calibration-result file was changed.
+
+Validation:
+- `git diff --check` passed.
+- S5 parse rerun passed and preserved the real draft summary: 76 parsed, 63 supported, 13 unsupported, 0 duplicate conflicts, `handoff.do_not_claim_calibrated: true`.
+- `generate_sm120_configs.py --check-only` passed.
+- Protected config/latest scoped status check was empty.
+
+Supervisor review:
+- Independent supervisor reviewer `019ead0f-d39a-7db0-aafe-c99a3fdb5452` returned `ACCEPT`.
+- Reviewer confirmed all 13 keys match the real draft, schema-active vs inactive classification is correct, documentation-only treatment is defensible for now, no overclaim was made, and protected config/calibration paths are clean.
+
+Follow-up:
+- S7 remains in progress.
+- Pending work remains: decide whether to implement future S5 support for the two low-risk active keys, gather additional hardware/benchmark evidence for the four active unresolved keys if needed, create real hardware target metrics and S6 supplied-metrics/ranked reports if correlation is required, and perform promotion-gate review.
