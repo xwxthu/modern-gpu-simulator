@@ -1089,3 +1089,52 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode `m_per_scalar_thread_valid` assertion in `warp_inst_t::generate_mem_accesses()`, rebuild, rerun one local smoke, then create real supplied-metrics correlation input only if simulator metrics exist.
+
+Checkpoint:
+- Commit `a9798111ba635e30f18758e90a73a6ca46a38459` (`fix: separate PTX scoreboarding from trace metadata`) recorded the PTX-mode scoreboarding/register-file trace metadata separation fix.
+
+### 2026-06-09 07:38:22 CST
+
+Action:
+- Spawned S7 memory-access validity worker `019ea995-4b09-7e30-a224-a956af6d7cd5`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode `m_per_scalar_thread_valid` assertion in `warp_inst_t::generate_mem_accesses()`.
+- Preserve normal PTX address generation and memory coalescing; avoid fake per-thread memory state or global memory-access bypasses.
+
+### 2026-06-09 08:04:26 CST
+
+Action:
+- S7 memory-access validity worker `019ea995-4b09-7e30-a224-a956af6d7cd5` completed `docs/sm120-calibration/worker-logs/worker-20260609-075815-s7-mem-accesses.md`.
+- The worker reported a fresh read-only blank-context internal reviewer verdict of `ACCEPT` after one failed CLI reviewer attempt.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/cuda-sim.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-075815-s7-mem-accesses.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-mem-accesses-20260609-074137/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- `ptx_thread_info::ptx_exec_inst(warp_inst_t&, unsigned)` was an empty stub in `cuda-sim.cc`.
+- PTX-mode timing execution therefore did not run PTX opcode handlers for active lanes and memory operations did not populate per-lane addresses through the normal `set_addr()` path before coalescing.
+
+Partial result:
+- Restored the normal PTX opcode-dispatch path in `ptx_exec_inst(warp_inst_t&, unsigned)`, including PC synchronization, predicate handling, opcode execution through `opcodes.def`, callbacks, PC/stat updates, and memory return-state capture from `last_eaddr()`, `last_space()`, and `datatype2size()`.
+- `warp_inst_t::generate_mem_accesses()` and the coalescer remain intact.
+- The previous `m_per_scalar_thread_valid` assertion is resolved for the local smoke.
+- Coredump evidence for the next abort shows `m_per_scalar_thread_valid = true`, `m_mem_accesses_created = true`, and a generated `CONST_ACC_R` access queue entry.
+- The smoke still produced no real simulator metrics.
+- New blocker: `Scoreboard::reserveRegister()` abort at `scoreboard.cc:95`, with `Subcore::issue_warp()` issuing `sm_warp_id = 12` while the `warp_inst_t` carries `m_warp_id = 5`, `m_dynamic_warp_id = 5`, `m_is_reissued = true`, and `m_vpreg_need_to_reissue = false`.
+
+Supervisor review:
+- Supervisor reviewer `019ea9ae-b960-7d80-87fa-2902f4b542a3` returned `ACCEPT`.
+- Reviewer confirmed the fix restores normal PTX execution/address setup semantics, does not fake memory addresses or bypass coalescing, does not regress trace-mode behavior, changes no config/latest/generated outputs, and bounds the next scoreboard warp-id mismatch blocker.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode `Scoreboard::reserveRegister()` abort caused by the mismatch between the issuing `sm_warp_id` and the instruction's stored warp id during reissue/scoreboard reservation.
