@@ -261,6 +261,7 @@ class SM : public core_t, public shader_core_ctx_wrapper {
   void display_pipeline(FILE *fout, int print_mem, int mask3bit) const override;
   void display_SM(FILE *fout, int print_mem, int mask3bit) const;
   void dump_warp_state(FILE *fout) const;
+  void append_kernel_progress_debug_summary(std::string &out) const override;
 
   // Stats
   void print_cache_stats(FILE *fp, unsigned &dl1_accesses,

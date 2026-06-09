@@ -769,6 +769,7 @@ class gpgpu_sim : public gpgpu_t {
   void increase_num_threads_kernel(unsigned kernel_id, unsigned num_threads);
   void decrease_num_threads_kernel(unsigned kernel_id, unsigned num_threads);
   void cycle();
+  void maybe_print_kernel_progress_debug();
   bool active();
   bool cycle_insn_cta_max_hit() {
     return (m_config.gpu_max_cycle_opt && (gpu_tot_sim_cycle + gpu_sim_cycle) >=
@@ -879,8 +880,15 @@ class gpgpu_sim : public gpgpu_t {
   void print_shader_cycle_distro(FILE *fout) const;
 
   void gpgpu_debug();
+  bool kernel_progress_debug_enabled();
 
   unsigned int m_current_cycle_clock_mask;
+  bool m_kernel_progress_debug_checked;
+  bool m_kernel_progress_debug_enabled;
+  unsigned long long m_kernel_progress_debug_interval;
+  unsigned m_kernel_progress_debug_sm_limit;
+  unsigned long long m_kernel_progress_debug_last_cycle;
+  std::string m_kernel_progress_debug_last_running_signature;
 
  protected:
   ///// data /////

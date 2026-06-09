@@ -73,6 +73,7 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include <string>
 
 //#include "../cuda-sim/ptx.tab.h"
 
@@ -248,6 +249,12 @@ class shd_warp_t {
 
   void print(FILE *fout) const;
   void print_ibuffer(FILE *fout) const;
+  bool debug_is_active() const { return !done_exit() && !functional_done(); }
+  unsigned debug_active_count() const { return m_active_threads.count(); }
+  unsigned debug_ibuffer_count() const { return num_inst_in_buffer(); }
+  unsigned debug_inst_in_pipeline() const { return m_inst_in_pipeline; }
+  unsigned debug_store_count() const { return m_stores_outstanding; }
+  bool debug_imiss_pending() const { return m_imiss_pending; }
 
   void set_scheduler(scheduler_unit* scheduler) { m_scheduler = scheduler; } // MOD. Added L0I
   scheduler_unit* get_scheduler() { return m_scheduler; } // MOD. Added L0I
@@ -3102,6 +3109,7 @@ class shader_core_ctx : public core_t, public shader_core_ctx_wrapper {
   // debug:
   void display_simt_state(FILE *fout, int mask) const;
   void display_pipeline(FILE *fout, int print_mem, int mask3bit) const;
+  void append_kernel_progress_debug_summary(std::string &out) const;
 
   void incload_stat() { m_stats->m_num_loadqueued_insn[m_sid]++; }
   void incstore_stat() { m_stats->m_num_storequeued_insn[m_sid]++; }
@@ -3608,6 +3616,7 @@ class simt_core_cluster {
   bool response_queue_full() {
     return (m_response_fifo.size() >= m_config->n_simt_ejection_buffer_size);
   }
+  size_t response_queue_size() const { return m_response_fifo.size(); }
   void push_response_fifo(class mem_fetch *mf) {
     m_response_fifo.push_back(mf);
   }
@@ -3622,6 +3631,8 @@ class simt_core_cluster {
   gpgpu_sim *get_gpu() { return m_gpu; }
 
   void display_pipeline(unsigned sid, FILE *fout, int print_mem, int mask);
+  void append_kernel_progress_debug_summary(unsigned max_sms, unsigned &printed,
+                                            std::string &out) const;
   void print_cache_stats(FILE *fp, unsigned &dl1_accesses,
                          unsigned &dl1_misses) const;
 

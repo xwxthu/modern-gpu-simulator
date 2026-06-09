@@ -62,6 +62,7 @@
 #include <limits.h>
 #include <string.h>
 #include <memory>
+#include <sstream>
 #include "../../libcuda/gpgpu_context.h"
 #include "../cuda-sim/cuda-sim.h"
 #include "../cuda-sim/ptx-stats.h"
@@ -3462,6 +3463,75 @@ void shader_core_ctx::display_pipeline(FILE *fout, int print_mem,
   
 }
 
+void shader_core_ctx::append_kernel_progress_debug_summary(
+    std::string &out) const {
+  unsigned active_warps = 0;
+  unsigned functional_done = 0;
+  unsigned in_pipeline = 0;
+  unsigned ibuffer = 0;
+  unsigned cta_barrier = 0;
+  unsigned membar = 0;
+  unsigned gridbar = 0;
+  unsigned imiss = 0;
+  unsigned atomic = 0;
+  const shd_warp_t *selected = NULL;
+
+  for (unsigned w = 0; w < m_config->max_warps_per_shader; w++) {
+    const shd_warp_t *warp = m_warp[w];
+    if (warp->functional_done()) {
+      functional_done++;
+    }
+    if (warp->debug_is_active()) {
+      active_warps++;
+      if (selected == NULL) {
+        selected = warp;
+      }
+    }
+    if (warp->inst_in_pipeline()) {
+      in_pipeline++;
+    }
+    ibuffer += warp->debug_ibuffer_count();
+    if (warp_waiting_at_barrier(w)) {
+      cta_barrier++;
+    }
+    if (warp->get_membar()) {
+      membar++;
+    }
+    if (warp->get_gridbar()) {
+      gridbar++;
+    }
+    if (warp->debug_imiss_pending()) {
+      imiss++;
+    }
+    if (warp->is_atomic_pending()) {
+      atomic++;
+    }
+  }
+
+  std::ostringstream ss;
+  ss << " sm" << m_sid << "{kernel=";
+  if (m_kernel) {
+    ss << m_kernel->get_uid();
+  } else {
+    ss << "none";
+  }
+  ss << ",cta=" << m_n_active_cta << ",notdone=" << m_not_completed
+     << ",aw=" << active_warps << ",fdone=" << functional_done
+     << ",pipew=" << in_pipeline << ",ibuf=" << ibuffer
+     << ",bar=" << cta_barrier << ",membar=" << membar
+     << ",gridbar=" << gridbar << ",imiss=" << imiss
+     << ",atomic=" << atomic;
+  if (selected) {
+    ss << ",selw=" << selected->get_warp_id() << ",pc=0x" << std::hex
+       << selected->get_pc() << std::dec
+       << ",active=" << selected->debug_active_count()
+       << ",pipe=" << selected->debug_inst_in_pipeline()
+       << ",stores=" << selected->debug_store_count();
+  }
+  ss << "}";
+  out += ss.str();
+}
+
 unsigned int shader_core_config::max_cta(const kernel_info_t &k) const {
   unsigned threads_per_cta = k.threads_per_cta();
   const class function_info *kernel = k.entry();
@@ -4745,6 +4815,24 @@ void simt_core_cluster::display_pipeline(unsigned sid, FILE *fout,
        i != m_response_fifo.end(); i++) {
     const mem_fetch *mf = *i;
     mf->print(fout);
+  }
+}
+
+void simt_core_cluster::append_kernel_progress_debug_summary(
+    unsigned max_sms, unsigned &printed, std::string &out) const {
+  if (printed < max_sms) {
+    std::ostringstream ss;
+    ss << " cluster" << m_cluster_id << "_respq=" << response_queue_size();
+    out += ss.str();
+  }
+  for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; i++) {
+    if (printed >= max_sms) {
+      return;
+    }
+    if (m_core[i]->get_not_completed() || m_core[i]->get_n_active_cta()) {
+      m_core[i]->append_kernel_progress_debug_summary(out);
+      printed++;
+    }
   }
 }
 

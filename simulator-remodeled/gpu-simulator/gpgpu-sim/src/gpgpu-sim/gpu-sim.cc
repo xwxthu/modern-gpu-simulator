@@ -107,6 +107,7 @@ class gpgpu_sim_wrapper {};
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 
@@ -1700,6 +1701,12 @@ gpgpu_sim::gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx)
   gpu_completed_cta = 0;
   m_total_cta_launched = 0;
   gpu_deadlock = false;
+  m_kernel_progress_debug_checked = false;
+  m_kernel_progress_debug_enabled = false;
+  m_kernel_progress_debug_interval = 50000;
+  m_kernel_progress_debug_sm_limit = 6;
+  m_kernel_progress_debug_last_cycle = 0;
+  m_kernel_progress_debug_last_running_signature.clear();
 
   gpu_stall_dramfull = 0;
   gpu_stall_icnt2sh = 0;
@@ -2794,6 +2801,144 @@ void gpgpu_sim::issue_block2core() {
   }
 }
 
+bool gpgpu_sim::kernel_progress_debug_enabled() {
+  if (m_kernel_progress_debug_checked) {
+    return m_kernel_progress_debug_enabled;
+  }
+
+  m_kernel_progress_debug_checked = true;
+  const char *enabled_env = getenv("GPGPUSIM_KERNEL_PROGRESS_DEBUG");
+  if (!enabled_env || enabled_env[0] == '\0' || enabled_env[0] == '0') {
+    return false;
+  }
+
+  m_kernel_progress_debug_enabled = true;
+  const char *interval_env = getenv("GPGPUSIM_KERNEL_PROGRESS_INTERVAL");
+  if (interval_env && interval_env[0] != '\0') {
+    char *end = NULL;
+    unsigned long long interval = strtoull(interval_env, &end, 10);
+    if (end != interval_env && interval > 0) {
+      m_kernel_progress_debug_interval = interval;
+    }
+  }
+
+  const char *sm_limit_env = getenv("GPGPUSIM_KERNEL_PROGRESS_SM_LIMIT");
+  if (sm_limit_env && sm_limit_env[0] != '\0') {
+    char *end = NULL;
+    unsigned long limit = strtoul(sm_limit_env, &end, 10);
+    if (end != sm_limit_env && limit > 0 &&
+        limit <= std::numeric_limits<unsigned>::max()) {
+      m_kernel_progress_debug_sm_limit = static_cast<unsigned>(limit);
+    }
+  }
+
+  printf(
+      "GPGPUSIM-K2-PROGRESS enabled interval=%llu sm_limit=%u "
+      "(env:GPGPUSIM_KERNEL_PROGRESS_DEBUG)\n",
+      m_kernel_progress_debug_interval, m_kernel_progress_debug_sm_limit);
+  fflush(stdout);
+  return true;
+}
+
+void gpgpu_sim::maybe_print_kernel_progress_debug() {
+  if (!kernel_progress_debug_enabled()) {
+    return;
+  }
+
+  const unsigned long long now = gpu_tot_sim_cycle + gpu_sim_cycle;
+  std::ostringstream signature;
+  for (unsigned i = 0; i < m_running_kernels.size(); i++) {
+    kernel_info_t *kernel = m_running_kernels[i];
+    if (kernel && !kernel->done()) {
+      signature << i << ":" << kernel->get_uid() << ":"
+                << kernel->get_next_cta_id_single() << ":"
+                << kernel->running() << ";";
+    }
+  }
+  const std::string running_signature = signature.str();
+  const bool running_changed =
+      running_signature != m_kernel_progress_debug_last_running_signature;
+  if (!running_changed && m_kernel_progress_debug_last_cycle != 0 &&
+      now - m_kernel_progress_debug_last_cycle <
+          m_kernel_progress_debug_interval) {
+    return;
+  }
+  m_kernel_progress_debug_last_running_signature = running_signature;
+  m_kernel_progress_debug_last_cycle = now;
+
+  unsigned active_cta = 0;
+  unsigned not_completed = 0;
+  unsigned active_sms = 0;
+  unsigned printed_sms = 0;
+  unsigned gridbar_active = 0;
+  unsigned long long gridbar_arrived = 0;
+  unsigned long long gridbar_threads = 0;
+  std::ostringstream out;
+
+  out << "GPGPUSIM-K2-PROGRESS cycle=" << now
+      << " gpu_sim_cycle=" << gpu_sim_cycle
+      << " gpu_tot_sim_cycle=" << gpu_tot_sim_cycle
+      << " cta_launched_kernel=" << m_total_cta_launched
+      << " cta_completed_kernel=" << gpu_completed_cta
+      << " cta_launched_total=" << (gpu_tot_issued_cta + m_total_cta_launched)
+      << " cta_completed_limit_count=" << gpu_completed_cta
+      << " stall_dramfull=" << gpu_stall_dramfull
+      << " stall_icnt2sh=" << gpu_stall_icnt2sh
+      << " running_kernels=[";
+
+  bool first_kernel = true;
+  for (unsigned i = 0; i < m_running_kernels.size(); i++) {
+    kernel_info_t *kernel = m_running_kernels[i];
+    if (!kernel || kernel->done()) {
+      continue;
+    }
+    if (!first_kernel) {
+      out << ";";
+    }
+    first_kernel = false;
+    out << "{slot=" << i << ",uid=" << kernel->get_uid()
+        << ",name=" << kernel->name()
+        << ",next_cta=" << kernel->get_next_cta_id_single()
+        << ",num_cta=" << kernel->num_blocks()
+        << ",running=" << kernel->running()
+        << ",done=" << kernel->done() << "}";
+  }
+  out << "]";
+
+  for (std::map<unsigned int, grid_barrier_status>::const_iterator it =
+           m_grid_barrier_status.begin();
+       it != m_grid_barrier_status.end(); ++it) {
+    if (it->second.active) {
+      gridbar_active++;
+    }
+    gridbar_arrived += it->second.num_threads_arrived;
+    gridbar_threads += it->second.num_threads_kernel;
+  }
+  out << " gridbar_active=" << gridbar_active
+      << " gridbar_arrived=" << gridbar_arrived
+      << " gridbar_threads=" << gridbar_threads;
+
+  for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
+    active_cta += m_cluster[i]->get_n_active_cta();
+    not_completed += m_cluster[i]->get_not_completed();
+    active_sms += m_cluster[i]->get_n_active_sms();
+  }
+  out << " active_cta=" << active_cta
+      << " not_completed_threads=" << not_completed
+      << " active_sms=" << active_sms;
+
+  std::string cluster_details;
+  for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
+    m_cluster[i]->append_kernel_progress_debug_summary(
+        m_kernel_progress_debug_sm_limit, printed_sms, cluster_details);
+  }
+  out << cluster_details;
+
+  std::string line = out.str();
+  printf("%s\n", line.c_str());
+  fflush(stdout);
+}
+
 unsigned long long g_single_step =
     0;  // set this in gdb to single step the pipeline
 
@@ -3046,6 +3191,7 @@ void gpgpu_sim::cycle() {
       
       issue_block2core();
       decrement_kernel_latency();
+      maybe_print_kernel_progress_debug();
 
       // Depending on configuration, invalidate the caches once all of threads are
       // completed.

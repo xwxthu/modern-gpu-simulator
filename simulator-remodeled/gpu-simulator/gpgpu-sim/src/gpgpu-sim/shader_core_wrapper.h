@@ -30,6 +30,7 @@
 #pragma once
 
 #include <bitset>
+#include <string>
 #include "../constants.h"
 #include "remodeling/new_stats.h"
 
@@ -161,4 +162,5 @@ class shader_core_ctx_wrapper {
   virtual void gather_gpu_per_sm_stats(Element_stats &all_stats, coalescingStatsAcrossSms& coal_stats_l1d, coalescingStatsAcrossSms& coal_stats_const, coalescingStatsAcrossSms& coal_stats_sharedmem) = 0;
   virtual void gather_gpu_per_sm_single_stat(Element_stats &all_stats, std::string stat_name) = 0;
   virtual void increment_sm_stat_by_integer(std::string stat_name, int val_to_increment) = 0;
+  virtual void append_kernel_progress_debug_summary(std::string &out) const = 0;
 };

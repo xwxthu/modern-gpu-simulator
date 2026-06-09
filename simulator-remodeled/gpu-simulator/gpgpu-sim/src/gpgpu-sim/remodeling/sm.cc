@@ -46,6 +46,7 @@
 
 #include "../../../../../util/traces_enhanced/src/traced_operand.h"
 
+#include <sstream>
 
 #define STRSIZE 1024
 
@@ -1575,6 +1576,76 @@ void SM::dump_warp_state(FILE *fout) const {
   fprintf(fout, "per warp functional simulation status:\n");
   for (unsigned w = 0; w < m_config->max_warps_per_shader; w++)
     m_physical_warp[w]->print(fout);
+}
+
+void SM::append_kernel_progress_debug_summary(std::string &out) const {
+  unsigned active_warps = 0;
+  unsigned functional_done = 0;
+  unsigned in_pipeline = 0;
+  unsigned ibuffer = 0;
+  unsigned cta_barrier = 0;
+  unsigned membar = 0;
+  unsigned gridbar = 0;
+  unsigned imiss = 0;
+  unsigned atomic = 0;
+  const shd_warp_t *selected = NULL;
+
+  for (unsigned w = 0; w < m_config->max_warps_per_shader; w++) {
+    const shd_warp_t *warp = m_physical_warp[w];
+    if (warp->functional_done()) {
+      functional_done++;
+    }
+    if (warp->debug_is_active()) {
+      active_warps++;
+      if (selected == NULL) {
+        selected = warp;
+      }
+    }
+    if (warp->inst_in_pipeline()) {
+      in_pipeline++;
+    }
+    ibuffer += warp->debug_ibuffer_count();
+    if (warp_waiting_at_barrier(w)) {
+      cta_barrier++;
+    }
+    if (warp->get_membar()) {
+      membar++;
+    }
+    if (warp->get_gridbar()) {
+      gridbar++;
+    }
+    if (warp->debug_imiss_pending()) {
+      imiss++;
+    }
+    if (warp->is_atomic_pending()) {
+      atomic++;
+    }
+  }
+
+  std::ostringstream ss;
+  ss << " sm" << m_sm_id << "{kernel=";
+  if (m_kernel) {
+    ss << m_kernel->get_uid();
+  } else {
+    ss << "none";
+  }
+  ss << ",cta=" << m_n_active_cta << ",notdone=" << m_not_completed
+     << ",aw=" << active_warps << ",fdone=" << functional_done
+     << ",pipew=" << in_pipeline << ",ibuf=" << ibuffer
+     << ",bar=" << cta_barrier << ",membar=" << membar
+     << ",gridbar=" << gridbar << ",imiss=" << imiss
+     << ",atomic=" << atomic
+     << ",mem_normal=" << m_ldst_unit_shared_of_sm->m_current_num_normal_mem_inst
+     << ",mem_shared=" << m_ldst_unit_shared_of_sm->m_current_num_shared_mem_inst;
+  if (selected) {
+    ss << ",selw=" << selected->get_warp_id() << ",pc=0x" << std::hex
+       << selected->get_pc() << std::dec
+       << ",active=" << selected->debug_active_count()
+       << ",pipe=" << selected->debug_inst_in_pipeline()
+       << ",stores=" << selected->debug_store_count();
+  }
+  ss << "}";
+  out += ss.str();
 }
 
 // Stats Functions

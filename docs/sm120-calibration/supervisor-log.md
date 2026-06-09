@@ -1765,3 +1765,58 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: focused triage of kernel-2 PTX performance-simulation internal progress after SM bind, using reviewable temporary instrumentation or debug-attach permissions to capture active CTA counts, completed CTA counts, per-SM active warp/barrier state, scheduler issue state, and selected warp PCs.
+
+### 2026-06-09 20:15:10 CST
+
+Action:
+- S7 kernel-2 progress diagnostic worker `019eac14-6327-7dd0-aed4-698de69e8480` completed `docs/sm120-calibration/worker-logs/worker-20260609-191215-s7-kernel2-progress.md`.
+- The worker reported a fresh read-only reviewer verdict of `ACCEPT`.
+
+Worker deliverables:
+- Default-off diagnostic instrumentation in:
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/gpu-sim.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/shader_core_wrapper.h`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.cc`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.h`
+- `docs/sm120-calibration/worker-logs/worker-20260609-191215-s7-kernel2-progress.md`.
+- Local evidence under ignored `artifacts/s7/s7-kernel2-progress-20260609-191215/`.
+
+Instrumentation:
+- Default off.
+- Enabled only with `GPGPUSIM_KERNEL_PROGRESS_DEBUG=1`.
+- Optional controls:
+  - `GPGPUSIM_KERNEL_PROGRESS_INTERVAL`
+  - `GPGPUSIM_KERNEL_PROGRESS_SM_LIMIT`
+- Grep prefix: `GPGPUSIM-K2-PROGRESS`.
+- Captures kernel uid/name/CTA progress, grid barrier aggregate state, aggregate active CTA/SM counts, sampled SM active CTA/warp/barrier/membar/gridbar/imiss/atomic state, selected warp PC/active lanes, and remodeled LD/ST public occupancy counters.
+
+Worker validation:
+- `git diff --check` passed.
+- `generate_sm120_configs.py --check-only` passed.
+- Local GPGPU-Sim rebuild passed.
+- Setup-only local PTX smoke planning passed.
+- Exactly one bounded diagnostic local PTX smoke was launched as ProcMan job `484`.
+- Final ProcMan status showed `Nothing Active`.
+
+Triage result:
+- Kernel 2 is not stuck at launch or bind, and it is not a no-progress hang.
+- `_Z24bpnn_adjust_weights_cudaPfiS_iS_S_` launches all 256 CTAs and completes 76 CTAs in the bounded diagnostic run.
+- The smoke still does not complete.
+- Sampled state near timeout shows extremely slow progress with many CTA-barrier/near-barrier warps around PC `0x2890`, pipeline activity, and small or zero normal-memory occupancy depending on sample.
+- No sampled membar, gridbar, instruction miss, or atomic-pending blocker was observed.
+- No second-kernel metrics, functional result output, full smoke pass, crash, assertion, or coredump was produced.
+
+Caveat:
+- This is not a root-cause fix and not a full PTX smoke pass.
+- No generated configs, latest aliases, accepted calibration results, metrics artifacts, calibration, or correlation outputs were promoted.
+- The `GPGPUSIM-K2-PROGRESS` prefix is acceptable for the current S7 diagnostic checkpoint; a future long-term cleanup may rename it if it becomes a general kernel-progress facility.
+
+Supervisor review:
+- Independent supervisor reviewer `019eac49-e872-70c2-97f3-7a69db91a51a` returned `ACCEPT`.
+- Reviewer confirmed the instrumentation is default-off, scoped, read-only against sampled simulator state, and sufficient to support the kernel-2 progress conclusion. The reviewer found no blocking rework before commit.
+
+Follow-up:
+- Pending S7 work remains: determine why kernel 2 makes extremely slow progress after all CTAs are resident, focusing on barrier-release bookkeeping, SIMT/reconvergence behavior near PC `0x2890`, scheduler issue/no-issue conditions, or memory-return/scoreboard latency in the post-barrier global load/store tail.
