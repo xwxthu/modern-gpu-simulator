@@ -54,6 +54,31 @@ uint64_t calculate_constant_address(uint64_t reg_offset_value, traced_operand& o
   return final_constant_addr;
 }
 
+static control_bits *get_ldst_trace_control_bits(warp_inst_t *inst,
+                                                 const shader_core_config *config,
+                                                 const char *context) {
+  assert(inst != nullptr);
+  if (!config->is_trace_mode) {
+    return nullptr;
+  }
+  if (!inst->has_extra_trace_instruction_info()) {
+    fprintf(stderr, "Trace %s requires trace instruction metadata.\n",
+            context);
+    abort();
+  }
+  return &inst->get_extra_trace_instruction_info().get_control_bits();
+}
+
+static void add_write_barrier_dependency_if_present(
+    AccessCoalescingInformation &access_info, warp_inst_t *inst,
+    const shader_core_config *config, const char *context) {
+  control_bits *bits = get_ldst_trace_control_bits(inst, config, context);
+  if (bits != nullptr && bits->get_is_new_write_barrier()) {
+    access_info.m_dep_counters_id_requesting.insert(
+        bits->get_id_new_write_barrier());
+  }
+}
+
 ldst_unit_sm::ldst_unit_sm(
     std::vector<register_set_uniptr*> result_ports,
     std::vector<register_set_uniptr*> reception_ports, mem_fetch_interface *icnt,
@@ -1155,6 +1180,16 @@ l1_cache*ldst_unit_sm::get_L1D() { return m_L1D; }
 SM* ldst_unit_sm::get_SM() { return m_sm; }
 
 unsigned long long ldst_unit_sm::get_instruction_id(warp_inst_t* inst, unsigned int idx) {
+  if (!m_config->is_trace_mode) {
+    return inst->out[idx];
+  }
+  if (!inst->has_extra_trace_instruction_info()) {
+    fprintf(stderr,
+            "Trace memory pending-write tracking requires trace instruction "
+            "metadata.\n");
+    abort();
+  }
+
   unsigned long long res = inst->get_unique_inst_id();
   assert(res != 0);
   if(idx >= inst->get_extra_trace_instruction_info().get_num_destination_registers()) {
@@ -1576,8 +1611,12 @@ unsigned int PendingRequestTable::dep_counters_waiting(bool checking_warp_id) {
     for(unsigned int wid = 0; (wid < m_ldst_unit_sm->get_SM()->get_config()->max_warps_per_shader) && !found; wid++) {
       auto &waiting_deps_of_warp = m_ldst_unit_sm->get_SM()->m_interwarp_coal_warps_waiting_dep_counter->m_waiting_dep_counters_per_warp[wid].m_waiting_dep_counters;
       for(auto it_deps = waiting_deps_of_warp.begin(); !found && (it_deps != waiting_deps_of_warp.end()); it_deps++) {
-        if(m_entries[*it].get_inst()->get_extra_trace_instruction_info().get_control_bits().get_is_new_write_barrier()) {
-          bool has_dep_id = it_deps->first == m_entries[*it].get_inst()->get_extra_trace_instruction_info().get_control_bits().get_id_new_write_barrier();
+        control_bits *bits = get_ldst_trace_control_bits(
+            m_entries[*it].get_inst().get(),
+            m_ldst_unit_sm->get_SM()->get_config(),
+            "PRT dependency-counter selection");
+        if(bits != nullptr && bits->get_is_new_write_barrier()) {
+          bool has_dep_id = it_deps->first == bits->get_id_new_write_barrier();
           has_dep_id = checking_warp_id ? (wid == m_entries[*it].get_inst()->warp_id()) : has_dep_id;
           if(has_dep_id) {
             found = true;
@@ -1783,9 +1822,10 @@ mem_access_t* PendingRequestTable::get_next_processed_access(unsigned int id) {
   res_acc->get_access_coal_info().m_pcs_requesting.insert(res_acc->get_inst()->pc);
   res_acc->get_access_coal_info().m_warp_id_requesting.insert(res_acc->get_inst()->warp_id());
   res_acc->get_access_coal_info().m_prts_requesting.push_back(res_acc->get_inst()->m_prt_id);
-  if(res_acc->get_inst()->get_extra_trace_instruction_info().get_control_bits().get_is_new_write_barrier()) {
-    res_acc->get_access_coal_info().m_dep_counters_id_requesting.insert(res_acc->get_inst()->get_extra_trace_instruction_info().get_control_bits().get_id_new_write_barrier());
-  }
+  add_write_barrier_dependency_if_present(
+      res_acc->get_access_coal_info(), res_acc->get_inst(),
+      m_ldst_unit_sm->get_SM()->get_config(),
+      "PRT access dependency metadata");
   m_last_warp_id = res_acc->get_inst()->warp_id();
   m_last_pc = res_acc->get_inst()->pc;
   return res_acc;
@@ -1912,9 +1952,10 @@ bool InterWarpCoalescingUnit::insert_access(mem_access_t* acc) {
     unsigned int size_acc = std::max(acc->get_size(), it->second->get_size());
     it->second->set_size(size_acc);
     it->second->set_sector_mask(it->second->get_sector_mask() | acc->get_sector_mask());
-    if(acc->get_inst()->get_extra_trace_instruction_info().get_control_bits().get_is_new_write_barrier()) {
-      it->second->get_access_coal_info().m_dep_counters_id_requesting.insert(acc->get_inst()->get_extra_trace_instruction_info().get_control_bits().get_id_new_write_barrier());
-    }
+    add_write_barrier_dependency_if_present(
+        it->second->get_access_coal_info(), acc->get_inst(),
+        m_ldst_unit_sm->get_SM()->get_config(),
+        "inter-warp coalescing dependency metadata");
     inserted = true;
     delete acc;
     m_ldst_unit_sm->get_SM()->m_sm_stats.m_stats_map["total_accesses_coalesced"]->increment_with_integer(1);

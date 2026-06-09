@@ -1187,3 +1187,55 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the PTX-mode trace metadata null dereference in `PendingRequestTable::get_next_processed_access()` / `ldst_unit_sm.cc`.
+
+Checkpoint:
+- Commit `4f07eeffdfa2406cd669bc7d8a60005ff2ace2ff` (`fix: clone PTX instructions for remodeled ibuffer`) recorded the PTX-mode IBuffer instruction ownership fix.
+
+### 2026-06-09 08:48:41 CST
+
+Action:
+- Spawned S7 LD/ST trace-metadata worker `019ea9d7-8d2a-7c31-a07c-178e2a95c227`.
+
+Scope:
+- Resolve or precisely bound the PTX-mode trace metadata null dereference in `PendingRequestTable::get_next_processed_access()` / `ldst_unit_sm.cc`.
+- Preserve LD/ST pipeline and pending request processing; do not fabricate control bits or drop accesses.
+
+### 2026-06-09 09:20:15 CST
+
+Action:
+- S7 LD/ST trace-metadata worker `019ea9d7-8d2a-7c31-a07c-178e2a95c227` completed `docs/sm120-calibration/worker-logs/worker-20260609-090538-s7-ldst-trace-metadata.md`.
+- The worker reported a fresh read-only blank-context internal reviewer verdict of `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/ldst_unit_sm.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-090538-s7-ldst-trace-metadata.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-ldst-trace-metadata-20260609-085111/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed.
+- Exactly one local smoke job was launched.
+
+Root cause:
+- `PendingRequestTable::get_next_processed_access()` and related LD/ST metadata paths unconditionally read enhanced trace control bits from `warp_inst_t::get_extra_trace_instruction_info()`.
+- PTX/performance-mode memory instructions have no enhanced trace metadata, so the dereference was invalid.
+
+Partial result:
+- Added a mode-gated LD/ST control-bit helper: PTX/performance mode returns no trace control bits before touching metadata; trace mode aborts explicitly if required metadata is missing.
+- Applied the helper to PRT access dependency metadata, PRT dependency-counter selection, and inter-warp coalescing dependency metadata.
+- Guarded LD/ST pending-write ID logic so PTX mode uses decoded `inst->out[idx]`, while trace mode keeps trace destination metadata behavior.
+- The previous `traced_instruction::get_control_bits(this=0x0)` null dereference is resolved for the local smoke.
+- The smoke still produced no real simulator metrics.
+- New blocker: `Error: Invalid access type` at `ldst_unit_sm.cc:948` for a PTX-mode `param_space_kernel` load coalesced as `CONST_ACC_R`.
+
+Supervisor review:
+- First supervisor reviewer `019ea9ec-4833-7753-9259-f9393a766ff2` returned `CHANGES_NEEDED`.
+- Required fix: make LD/ST control-bit and pending-write ID logic mode-gated rather than metadata-presence gated, so PTX mode never dereferences enhanced trace metadata even if metadata happens to be present.
+- Worker completed the targeted rework and a new internal reviewer round.
+- Second supervisor reviewer `019ea9f5-9377-7f30-8d37-d6025c091c7c` returned `ACCEPT`.
+- Reviewer confirmed PTX mode now returns before any enhanced metadata access, trace mode still requires metadata explicitly, LD/ST/PRT processing remains present, and the new `param_space_kernel` / `CONST_ACC_R` routing blocker is separate.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX-mode LD/ST queue-routing `Invalid access type` abort for `param_space_kernel` accesses classified as `CONST_ACC_R`.
