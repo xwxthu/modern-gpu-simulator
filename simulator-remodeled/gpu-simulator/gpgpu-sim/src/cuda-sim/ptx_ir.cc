@@ -46,7 +46,7 @@ typedef void *yyscan_t;
 
 #define STR_SIZE 1024
 
-ptx_instruction *gpgpu_context::pc_to_instruction(unsigned pc) { // MOD. VPREG
+ptx_instruction *gpgpu_context::pc_to_instruction(address_type pc) { // MOD. VPREG
   if (pc < s_g_pc_to_insn.size())
     return s_g_pc_to_insn[pc];
   else

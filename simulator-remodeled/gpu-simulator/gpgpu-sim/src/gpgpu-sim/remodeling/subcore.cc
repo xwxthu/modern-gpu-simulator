@@ -974,6 +974,10 @@ void Subcore::decode(SM *shared_sm) {
               warp->get_IBuffer_remodeled()->get_remodeled_ibuffer()) {
             if (!ibuffer_entry.m_valid && (ibuffer_entry.m_pc == pc)) {
               warp_inst_t *pI = get_next_inst(shared_sm, subcore_warp_id, pc);
+              if (pI == nullptr && !m_config->is_trace_mode) {
+                warp->get_IBuffer_remodeled()->remove_entry(ibuffer_entry.m_pc);
+                break;
+              }
               single_decode(shared_sm, pI, ibuffer_entry, sm_warp_id,
                             subcore_warp_id, warp);
             }
@@ -989,6 +993,10 @@ void Subcore::decode(SM *shared_sm) {
            warp->get_IBuffer_remodeled()->get_remodeled_ibuffer()) {
         if (!ibuffer_entry.m_valid && (ibuffer_entry.m_pc == pc)) {
           warp_inst_t *pI = get_next_inst(shared_sm, subcore_warp_id, pc);
+          if (pI == nullptr && !m_config->is_trace_mode) {
+            warp->get_IBuffer_remodeled()->remove_entry(ibuffer_entry.m_pc);
+            break;
+          }
           single_decode(shared_sm, pI, ibuffer_entry, sm_warp_id,
                         subcore_warp_id, warp);
         }
@@ -1008,9 +1016,13 @@ warp_inst_t *Subcore::get_next_inst(SM *shared_sm, unsigned int warp_id, address
   } else {
     warp_inst_t *static_inst =
         shared_sm->get_gpu()->gpgpu_ctx->ptx_fetch_inst(pc);
+    if (static_inst == nullptr || !static_inst->valid() ||
+        static_inst->pc != pc || static_inst->isize == 0) {
+      return nullptr;
+    }
     // Remodeled IBuffer entries own and mutate their instructions; clone the
     // canonical PTX instruction so coalesced decodes cannot share warp state.
-    return static_inst ? new warp_inst_t(*static_inst) : nullptr;
+    return new warp_inst_t(*static_inst);
   }
 }
 

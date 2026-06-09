@@ -1519,3 +1519,47 @@ Supervisor review:
 
 Follow-up:
 - Pending S7 work remains: fix or precisely bound the remodeled PTX decode path that yields a non-null but invalid/default `warp_inst_t` at `Subcore::single_decode()`.
+
+### 2026-06-09 14:35:32 CST
+
+Action:
+- S7 invalid decode worker `019eaaee-d36c-7641-9a8c-a9783e3beb01` completed `docs/sm120-calibration/worker-logs/worker-20260609-141104-s7-invalid-decode.md`.
+- The worker reported a fresh blank-context read-only internal reviewer verdict of `ACCEPT`.
+
+Worker deliverables:
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/libcuda/gpgpu_context.h`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/cuda-sim/ptx_ir.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/sm.cc`.
+- `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/remodeling/subcore.cc`.
+- `docs/sm120-calibration/worker-logs/worker-20260609-141104-s7-invalid-decode.md`.
+- Local smoke evidence under ignored `artifacts/s7/s7-invalid-decode-20260609-140131/`.
+
+Worker validation:
+- Rebuilt the CUDA 13.1 release GPGPU-Sim runtime.
+- `generate_sm120_configs.py --check-only` passed.
+- `git diff --check` passed.
+- Setup-only local smoke planning passed after sourcing the simulator environment.
+- Exactly one local PTX smoke job was launched.
+
+Root cause:
+- Remodeled PTX fetch/decode could clone a non-null canonical PTX instruction before the function's PDOM/predecode setup had populated decoded instruction metadata such as `pc`, `isize`, and `m_decoded`.
+- `pc_to_instruction()` also accepted an `unsigned` PC, so terminal or invalid 64-bit PCs such as `(address_type)-1` were not defensively represented at the lookup boundary.
+- The cloned dynamic instruction could therefore reach `Subcore::single_decode()` as a default/invalid instruction, where the correct `pI->valid()` assertion fired.
+
+Partial result:
+- PTX-mode `SM::init_warps()` now runs the existing function PDOM/predecode setup once before remodeled PTX timing fetch/decode can clone instructions.
+- `gpgpu_context::pc_to_instruction()` now accepts `address_type`.
+- Remodeled PTX `Subcore::get_next_inst()` now validates fetched canonical PTX instructions before cloning them: non-null, valid, matching PC, and nonzero instruction size.
+- If PTX fetch returns no valid instruction, the specific unresolved IBuffer reservation is rolled back rather than being marked as a valid decoded entry.
+- The `pI->valid()` assertion is preserved; the fix does not synthesize `NO_OP` instructions or skip validated PTX instructions.
+- Trace mode remains on the existing trace instruction source path.
+- The previous invalid/default decode assertion is resolved for the local smoke. The prior `bar_id != (unsigned)-1` and `pc == inst.pc` blockers did not regress.
+- The smoke still produced no real simulator metrics.
+- New blocker: SIGSEGV in `ptx_file_line_stats_add_exec_count()` during concurrent `ptx_file_line_stats_tracker` insertion; focused evidence reaches `std::unordered_map<ptx_file_line, ptx_file_line_stats,...>::operator[](...)` from `ptx_thread_info::ptx_exec_inst()`.
+
+Supervisor review:
+- Supervisor reviewer `019eab11-2bff-7ba2-9ddd-990cb6a05f60` returned `ACCEPT`.
+- Reviewer confirmed `Subcore::single_decode()`'s invariant is preserved, invalid/default PTX fetch results are rejected before cloning, no `NO_OP` workaround is introduced, PTX PDOM/predecode setup is trace-mode gated and `is_pdom_set()` protected, the `address_type` lookup change is a reasonable defensive fix, rollback is scoped by the IBuffer reservation model, no config/latest/calibration-result/metrics outputs were changed, and the new stats crash is separately bounded.
+
+Follow-up:
+- Pending S7 work remains: fix or precisely bound the PTX file-line stats concurrency crash in `ptx_file_line_stats_add_exec_count()`.

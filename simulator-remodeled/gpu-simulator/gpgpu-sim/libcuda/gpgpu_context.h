@@ -83,7 +83,7 @@ class gpgpu_context {
   void start_sim_thread(int api);
   struct _cuda_device_id *GPGPUSim_Init();
   void ptx_reg_options(option_parser_t opp);
-  ptx_instruction *pc_to_instruction(unsigned pc); // MOD. VPREG
+  ptx_instruction *pc_to_instruction(address_type pc); // MOD. VPREG
   warp_inst_t *ptx_fetch_inst(address_type pc); // MOD. VPREG
   unsigned translate_pc_to_ptxlineno(unsigned pc);
 };

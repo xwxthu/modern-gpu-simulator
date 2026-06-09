@@ -555,6 +555,10 @@ void SM::init_warps(unsigned cta_id, unsigned start_thread, unsigned end_thread,
                     unsigned ctaid, int cta_size, kernel_info_t &kernel) {
   address_type start_pc = next_pc(start_thread);
   unsigned kernel_id = kernel.get_uid();
+  if (!m_config->is_trace_mode && !kernel.entry()->is_pdom_set()) {
+    kernel.entry()->do_pdom();
+    kernel.entry()->set_pdom();
+  }
   if (m_config->model == POST_DOMINATOR) {
     unsigned start_warp = start_thread / m_config->warp_size;
     unsigned warp_per_cta = cta_size / m_config->warp_size;
