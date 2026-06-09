@@ -1885,3 +1885,45 @@ Supervisor review:
 Follow-up:
 - S7 remains in progress.
 - Pending S7 work remains: turn the successful local PTX smoke into reviewed S7 validation evidence, prepare real supplied-metrics correlation inputs only from real metrics, run bounded correlation/promotion-gate review if appropriate, and preserve RTX5070Ti compatibility.
+
+### 2026-06-09 23:05:00 CST
+
+Action:
+- Confirmed repository state after checkpoint `780719f` on branch `dev-5060`; tracked worktree was clean.
+- Re-read the S7 runbook, S7 manifest template, S7 checker, and S6 correlation-search contract.
+- Spawned fresh blank-context S7 validation evidence worker `019eacce-7276-7d21-a445-db5f742420bf`.
+
+Scope:
+- Consolidate job `486` local PTX smoke pass into reviewed S7 validation evidence.
+- Produce or update a validation manifest under ignored `artifacts/s7/` and a checked-in evidence document/log.
+- Explicitly preserve the boundary that job `486` simulator metrics are smoke evidence, not hardware target metrics for S6 correlation.
+- Do not promote accepted/generated/latest configs or calibration results.
+
+### 2026-06-09 23:28:00 CST
+
+Action:
+- S7 validation evidence worker `019eacce-7276-7d21-a445-db5f742420bf` completed `docs/sm120-calibration/worker-logs/worker-20260609-224022-s7-validation-evidence.md`.
+- Worker produced checked-in validation ledger `docs/sm120-calibration/s7-validation-evidence-20260609.md`.
+- Worker produced ignored local validation manifest `artifacts/s7/s7-kernel2-attribution-20260609-211410/validation-manifest.yaml`.
+- Worker reported an internal fresh read-only reviewer Round 2 verdict of `ACCEPT`.
+
+Validation:
+- `git diff --check` passed.
+- `generate_sm120_configs.py --check-only` passed.
+- `check_sm120_s7_validation.py --gpu RTX5060 --run-id s7-kernel2-attribution-20260609-211410 --no-command-plan` passed.
+- `check_sm120_s7_validation.py --gpu RTX5070_TI --run-id rtx5070ti-compat-plan --no-command-plan` passed.
+- No simulator job was launched by this consolidation task.
+
+Supervisor review:
+- First independent supervisor reviewer `019eaceb-ed55-7e20-9eec-1571d2dc3660` returned `CHANGES_NEEDED`.
+- Blocking issue: ignored validation manifest marked `microbenchmark_calibration.unsupported_keys_reviewed: true` and `pass: true`, which was too strong because 13 unsupported S5 keys remain unresolved.
+- Rework: updated the ignored manifest to `unsupported_keys_reviewed: false`, `pass: false`, and notes explaining that unsupported keys are identified but require explicit S6 treatment or reviewed deferral before promotion.
+- Second independent supervisor reviewer `019eacf0-a3fa-7cf2-92b8-f073c37f2b53` returned `ACCEPT`.
+
+Result:
+- Job `486` is now recorded as formal S7 local PTX smoke validation evidence for `RTX5060_SM120_GEN`.
+- The ledger and manifest explicitly state that job `486` simulator metrics are smoke metrics only, not hardware target metrics for S6 correlation.
+- Promotion gate remains closed: no S6 supplied-metrics manifest, no S6 ranked report, no hardware target metrics, no promotion reviewer approval, and no accepted/generated/latest config or calibration-result promotion.
+
+Follow-up:
+- Pending S7 work remains: resolve or defer 13 unsupported S5 keys, obtain real hardware target metrics if correlation is required, create/review S6 supplied-metrics and ranked draft reports, and perform promotion-gate review including RTX5070Ti compatibility signoff.
