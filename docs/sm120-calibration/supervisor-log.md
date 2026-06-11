@@ -2280,3 +2280,50 @@ Supervisor review:
 Follow-up:
 - S7 remains in progress.
 - Promotion gate remains closed. Remaining work is to explicitly approve and run the three local simulator candidate executions, collect candidate metrics through the bridge, then generate a reviewed multi-candidate S6 ranked draft report.
+
+### 2026-06-11 11:34:31 CST
+
+Action:
+- Recovered from an interrupted supervisor turn during execution of S7 bounded-sweep `candidate_0004`.
+- Reread `supervisor-log.md`, `overall-plan.md`, and the latest S7 execution-preparation worker log before acting.
+- Confirmed ProcMan was `Nothing Active` and no simulator job was still running.
+- Found the completed job `487` stdout/stderr in the candidate run directory rather than the original `/tmp` paths.
+- Spawned recovery worker `019eb4ba-32cf-7503-a2fb-9b76ea1da58f`.
+
+Recovered execution result:
+- `candidate_0004` used `-latency_L0_to_L1=39` and `-prefetch_per_stream_buffer_size=10`.
+- ProcMan job `487` completed locally on `dsp-ubuntu`; no simulator workload ran on `dsp5060`.
+- The run reported `PASSED` and `GPGPU-Sim: *** exit detected ***`.
+- Kernel 2 metrics include `gpu_sim_cycle = 38038`, `gpu_tot_sim_cycle = 45760`, and `gpu_tot_sim_insn = 8036672`.
+- Stderr contained only the existing `libgomp` `OMP_NUM_THREADS` warning.
+
+Artifacts:
+- Generated ignored draft simulator candidate metrics:
+  `artifacts/s7/s7-bounded-sweep-20260610-024829/candidate_0004-simulator-candidate-metrics.yaml`.
+- Generated ignored partial bridge scaffold:
+  `artifacts/s7/s7-bounded-sweep-20260610-024829/RTX5060-backprop-4096-s7-bounded-sweep-s6-manifest.PARTIAL-2OF4.yaml`.
+- The partial scaffold is not a runnable S6 manifest. It uses
+  `schema_id: sm120_s6_supplied_metrics_bridge_scaffold_v1`,
+  has `s6_manifest_runnable: false`, and says
+  `do_not_run_search_sm120_correlation_as_is: true`.
+- Removed the temporary untracked launcher alias
+  `simulator-remodeled/util/job_launching/configs/define-s7-bounded-sweep-temp.yml`.
+
+Validation:
+- `git diff --check` passed.
+- `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only` passed.
+- `python3 simulator-remodeled/util/job_launching/procman.py -p` reported `Nothing Active`.
+- Protected config/latest scoped `git status --short` check was empty.
+- `git check-ignore -v` confirmed the recovered metrics and partial scaffold artifacts are ignored under `artifacts/s7/`.
+- A direct `search_sm120_correlation.py --manifest` invocation on the partial scaffold failed with `manifest schema_id must be sm120_correlation_search_manifest_v1`, as expected for a bridge scaffold rather than a runnable scorer manifest.
+
+Worker and supervisor review:
+- Recovery worker log:
+  `docs/sm120-calibration/worker-logs/worker-20260611-113040-s7-single-candidate-recovery.md`.
+- Independent supervisor reviewer `019eb4be-98c3-7cf3-bba8-0827034f07db` returned `ACCEPT`.
+- Reviewer confirmed job `487` passed, candidate metrics are draft-only simulator evidence, the partial artifact is a non-runnable scaffold, ProcMan/config hygiene is clean, and the worker log needs no correction.
+
+Follow-up:
+- S7 remains in progress.
+- Candidate signatures `0001` and `0002` are still missing actual local simulator metrics.
+- Promotion gate remains closed. Do not generate a ranked S6 report or promote configs until all four candidate metrics are reviewed and a real S6 manifest/report is produced.

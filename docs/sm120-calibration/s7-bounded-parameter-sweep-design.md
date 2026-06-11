@@ -75,7 +75,7 @@ The full expanded space is four candidates:
 | `candidate_0001` | `37` | `8` | missing |
 | `candidate_0002` | `37` | `10` | missing |
 | `candidate_0003` | `39` | `8` | available from job `486` baseline |
-| `candidate_0004` | `39` | `10` | missing |
+| `candidate_0004` | `39` | `10` | available from recovered job `487` draft metrics |
 
 Other `rf_prefetch_remodeled_parameters` keys are deliberately excluded for
 this first multi-candidate S7 step. They are active and many are
@@ -111,8 +111,33 @@ The S7 scaffold is intentionally:
 The S6 draft uses `schema_id: sm120_correlation_search_manifest_v1` and the
 bounded four-candidate search space, but it includes only one
 `evaluation.candidate_metrics` entry. `search_sm120_correlation.py --dry-run`
-must reject it until the three missing candidate signatures have real local
+must reject it until the missing candidate signatures have real local
 simulator metrics.
+
+Recovery after the interrupted candidate `0004` execution produced a draft
+bridge artifact:
+
+```text
+artifacts/s7/s7-bounded-sweep-20260610-024829/candidate_0004-simulator-candidate-metrics.yaml
+```
+
+The recovered job was ProcMan job `487`, reported `PASSED`, and produced kernel
+2 `gpu_tot_sim_cycle = 45760` and `gpu_tot_sim_insn = 8036672`. The artifact is
+`status: draft_not_applied`, `simulator_candidate_metrics: true`, and
+`hardware_target_metrics: false`.
+
+A partial bridge scaffold now records the available `2/4` candidate metrics:
+
+```text
+artifacts/s7/s7-bounded-sweep-20260610-024829/RTX5060-backprop-4096-s7-bounded-sweep-s6-manifest.PARTIAL-2OF4.yaml
+```
+
+This partial file uses `schema_id:
+sm120_s6_supplied_metrics_bridge_scaffold_v1`, has
+`s6_manifest_runnable: false`, and explicitly says
+`do_not_run_search_sm120_correlation_as_is: true`. It is not a runnable
+`sm120_correlation_search_manifest_v1` for `search_sm120_correlation.py`.
+Candidate signatures `0001` and `0002` remain missing.
 
 ## Execution Commands
 
@@ -201,7 +226,7 @@ Stop before launching any candidate if:
 Stop during execution if:
 
 - one candidate exceeds 30 minutes without producing the expected kernel
-  metric block,
+  metric block and is not making bounded progress toward completion,
 - any candidate fails functionally,
 - any candidate produces no parseable simulator stdout metrics,
 - ProcMan state is stale or not clean after a candidate,
@@ -213,13 +238,16 @@ local simulator candidate metrics for all four target metrics.
 
 ## Execution Decision
 
-No new simulator jobs were run for this design step. The local job `486`
-baseline already required substantial smoke bring-up and recorded simulator
-times of `390.0` and `2398.0` seconds in the candidate-metrics artifact. A
-four-candidate sweep would require three additional local simulator jobs, and
-the current evidence does not justify launching them in an unreviewed worker
-step. The correct next action is reviewer approval of this bounded plan, then a
-separate execution worker if the supervisor wants the runtime cost.
+No new simulator jobs were run for the original design step. The local job
+`486` baseline already required substantial smoke bring-up and recorded
+simulator times of `390.0` and `2398.0` seconds in the candidate-metrics
+artifact.
+
+A later interrupted execution of candidate `0004` was recovered as complete
+ProcMan job `487`. This leaves two missing local simulator candidate metrics:
+`candidate_0001` and `candidate_0002`. The correct next action is a separate
+execution worker for those two candidates, followed by a reviewed real S6
+ranked draft report only if all four candidate metrics are complete.
 
 ## Promotion Policy
 
