@@ -4714,3 +4714,86 @@ Follow-up:
 - Next S7 work should design a reviewed supplied-metrics manifest/search-space
   decision using the aggregate hardware target and the high-latency simulator
   slice, still without promotion until gate review.
+
+### 2026-06-13 03:56:18 CST
+
+Action:
+- Created checkpoint `6de0c65`
+  (`feat: aggregate SM120 hardware target drafts`) for the accepted aggregate
+  hardware-target schema/protocol implementation.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 76 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Design or generate a reviewed supplied-metrics manifest/search-space decision
+  using the aggregate hardware target and high-latency simulator slice.
+- Default policy remains non-runnable and non-promotion until reviewer approval
+  accepts a narrowed search space or complete candidate coverage.
+
+### 2026-06-13 04:13:14 CST
+
+Action:
+- S7 supplied-metrics manifest/search-space worker
+  `019ebd68-a341-7622-8d2c-7942159c89ed` completed:
+  - `simulator-remodeled/util/tuner/build_sm120_supplied_metrics_manifest_draft.py`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/supplied-metrics-manifest-draft.schema.yaml`
+  - `docs/sm120-calibration/s7-supplied-metrics-manifest.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-035906-s7-supplied-metrics-manifest.md`
+  - ignored draft artifact
+    `artifacts/s7/s7-supplied-metrics-manifest-20260613-035906/RTX5060-backprop-4096-high-latency-supplied-metrics-manifest-draft.yaml`
+- The worker implemented a non-runnable/review-gated supplied-metrics manifest
+  draft builder.
+- It ran no simulator, ProcMan, S6 search/ranking/correlation, hardware
+  collection, or promotion commands.
+
+Implementation result:
+- The builder validates aggregate hardware target draft/non-promotion flags,
+  simulator candidate draft flags, exact metric-name alignment, exact `39/8`
+  and `39/10` signatures, and strict output containment under `artifacts/s7`.
+- The generated draft records the original four-candidate sweep as incomplete,
+  marks low-latency `37/*` points as excluded/deprioritized for the current S7
+  pass, and keeps the high-latency slice narrowed and review-gated.
+- The manifest remains non-runnable/non-promotion:
+  `ready_for_search_sm120_correlation: false`,
+  `s6_manifest_runnable: false`,
+  `do_not_run_search_sm120_correlation_as_is: true`, and all approval fields
+  remain false.
+- The target metrics are exactly the four aggregate CUDA `_time_ms` metrics.
+- Candidate mapping records job `486` / `candidate_job486_bootstrap` as
+  canonical `candidate_0003`, and job `487` as canonical `candidate_0004`.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebd76-2752-7d10-b2cd-a67f2b45a5bd`
+  returned `ACCEPT`.
+- Reviewer confirmed validation, metric alignment, search-space decision
+  wording, non-runnable flags, candidate mapping, ignored artifact status, and
+  protected-path cleanliness.
+- Reviewer confirmed the negative S6 guard is meaningful: the draft schema id
+  is `sm120_s7_supplied_metrics_manifest_decision_draft_v1`, not
+  `sm120_correlation_search_manifest_v1`, so `search_sm120_correlation.py`
+  rejects before writing a report.
+- Reviewer accepted the read-only local `codex exec` internal reviewer fallback
+  after thread-limit failure.
+
+Validation:
+- `python3 -m py_compile` passed for the manifest builder.
+- Supervisor-local reproduction regenerated the manifest into an ignored check
+  path and confirmed it byte-matches the worker artifact.
+- Static YAML assertions passed for draft flags, exact four target metrics,
+  canonical candidate IDs, and all approval fields false.
+- Negative S6 guard check rejected the artifact before report writing.
+- `git diff --check` passed.
+- SM120 config generation `--check-only` passed.
+- ProcMan live status checked as `Nothing Active`.
+- Temporary S7 bounded-sweep alias absent.
+- Scoped protected-path status showed only expected new docs/schema/script.
+
+Follow-up:
+- Update `overall-plan.md`.
+- Commit this non-runnable manifest builder checkpoint.
+- Next S7 decision point is whether to explicitly approve a narrowed
+  high-latency search-space conversion, or continue requiring complete
+  four-candidate coverage before any runnable S6 ranking.

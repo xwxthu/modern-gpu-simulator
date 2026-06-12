@@ -1,0 +1,85 @@
+schema_version: 1
+schema_id: sm120_s7_supplied_metrics_manifest_decision_draft_contract_v1
+description: >
+  Contract for a non-runnable S7 supplied-metrics manifest/search-space
+  decision draft. This draft may align aggregate hardware target metrics with
+  simulator candidate metrics, but it must remain review-gated and must not be
+  passed to search_sm120_correlation.py.
+
+required_top_level_fields:
+  - schema_version
+  - schema_id
+  - manifest_id
+  - gpu
+  - architecture
+  - status
+  - review_required
+  - template_not_runnable
+  - s6_manifest_runnable
+  - non_promotion
+  - promotion_quality
+  - generated_at
+  - source_artifacts
+  - search_space_decision
+  - target_metrics
+  - evaluation
+  - readiness
+  - handoff
+
+required_flags:
+  status: draft_not_applied
+  review_required: true
+  template_not_runnable: true
+  s6_manifest_runnable: false
+  non_promotion: true
+  promotion_quality: false
+
+source_requirements:
+  aggregate_hardware_target:
+    status: draft_not_applied
+    aggregate_draft: true
+    non_promotion: true
+    promotion_quality: false
+    hardware_target_metrics: true
+    simulator_smoke_metrics: false
+    ready_for_search_sm120_correlation: false
+  simulator_candidate_metrics:
+    status: draft_not_applied
+    simulator_candidate_metrics: true
+    hardware_target_metrics: false
+    application_passed: true
+
+metric_alignment_policy:
+  exact_name_match_required: true
+  allowed_metrics: >
+    Only metrics present in the aggregate hardware target S6 handoff and in
+    every supplied simulator candidate metrics artifact may be included.
+  excluded_metrics:
+    - cuda_kernel_invocations
+    - native_wall_time_seconds
+    - native_user_time_seconds
+    - native_sys_time_seconds
+    - native_max_rss_kbytes
+
+search_space_policy:
+  original_four_candidate_sweep_complete: false
+  high_latency_slice_only:
+    fixed_parameter:
+      -latency_L0_to_L1: "39"
+    varying_parameter:
+      key: -prefetch_per_stream_buffer_size
+      values:
+        - "8"
+        - "10"
+  runnable_conversion_requires:
+    - supervisor_approved_narrowed_search_space
+    - reviewer_approved_exact_metric_alignment
+    - reviewer_approved_s6_manifest_conversion
+    - promotion_gate_approval
+    - rtx5070ti_compatibility_signoff
+
+handoff_policy:
+  ready_for_search_sm120_correlation: false
+  do_not_run_search_sm120_correlation_as_is: true
+  do_not_claim_calibrated: true
+  do_not_promote_configs: true
