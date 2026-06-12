@@ -3881,3 +3881,112 @@ Follow-up:
   with enhanced cycle-cost detail enabled and minimal startup/dispatch
   confirmation, stopping at cycle `1801`, first bind/CTA launch, or a strict
   wall cap.
+
+### 2026-06-12 23:51:02 CST
+
+Action:
+- Created checkpoint `ff15841`
+  (`feat: add cluster-core cycle attribution`) for the accepted default-off
+  `cluster_core_detail` instrumentation and analysis documentation.
+- Ran post-commit preflight:
+  - worktree clean on `dev-5060` ahead of origin by 67 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 enhanced `candidate_0002` cluster-core-detail diagnostic worker
+  `019ebc87-45ef-7f92-818d-69e8678d139b`.
+
+Scope for worker:
+- Run exactly one actual local ProcMan diagnostic for bounded-sweep
+  `candidate_0002` (`-latency_L0_to_L1=37`,
+  `-prefetch_per_stream_buffer_size=10`).
+- Enable enhanced cycle-cost diagnostics with `cluster_core_detail` fields,
+  plus only minimum startup/dispatch/progress diagnostics needed to confirm
+  state.
+- Stop at cycle `1801`, `select_kernel_current`, first bind/CTA launch,
+  no-output-growth CPU-heavy state, repeated state without useful progress,
+  ProcMan stale/failure, or a strict wall cap no more than 25 minutes.
+- Preserve setup, effective config, ProcMan/process polling, stdout/stderr
+  evidence, cycle-cost detail lines, stop reason, final ProcMan state, and
+  temporary-alias cleanup under ignored `artifacts/s7/`.
+- Do not generate/promote metrics, S6 reports, generated configs,
+  accepted/latest configs, calibration results, or promotion artifacts.
+- Remove the temporary alias and leave ProcMan `Nothing Active`.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for the enhanced bounded diagnostic verdict before deciding whether a
+  pre-admission fast path experiment, OpenMP scheduling experiment, or
+  low-latency sweep exclusion policy is justified.
+
+### 2026-06-13 00:23:51 CST
+
+Action:
+- S7 enhanced `candidate_0002` cluster-core-detail diagnostic worker
+  `019ebc87-45ef-7f92-818d-69e8678d139b` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-235505-s7-candidate0002-cluster-core-detail-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebca5-5036-7ff0-9116-00827c58fd43`.
+
+Worker result:
+- Exactly one actual local ProcMan job was submitted: job `13`.
+- Effective candidate values were `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=10`.
+- Enhanced `cluster_core_detail` cycle-cost output was captured through cycle
+  `1200`.
+- Maximum observed cycle was `1201`; the run did not reach cycle `1801`,
+  `select_kernel_current`, bind, or CTA launch.
+- Stop reason was `no-output-growth-cpu-heavy`, under the 25-minute cap.
+- Aggregate sampled cost was dominated by `cluster_core`:
+  `496430 / 515073 us` (`96.38%`).
+- Enhanced detail attribution across samples:
+  `calls=240`, `more_cta_clusters=240`, `not_completed_clusters=0`,
+  `core_cycle_us=256`, and `non_core_cycle_residual_us=496174`.
+- The worker interpreted this as pre-admission OpenMP/cluster-loop residual
+  overhead while CTAs remain but TB latency prevents admission; it explicitly
+  kept the residual as an attribution hint, not a precise OpenMP-only measure.
+- Internal blank-context reviewer `019ebca0-1b40-7932-89c6-041d02d5314e`
+  returned `ACCEPT`.
+
+Validation reported by worker:
+- Final ProcMan status was `Nothing Active`.
+- Temporary S7 bounded-sweep alias was removed.
+- Protected generated/accepted/latest/calibration paths were clean.
+- `git diff --check` passed.
+- SM120 config generation `--check-only` passed.
+- No metrics, S6 report, generated config, calibration result, or promotion
+  artifact was created.
+
+Follow-up:
+- Wait for independent supervisor reviewer verdict before accepting or
+  checkpointing this diagnostic.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebca5-5036-7ff0-9116-00827c58fd43`
+  returned `ACCEPT`.
+- Reviewer confirmed exactly one actual ProcMan job (`13`) and one queued-job
+  marker.
+- Reviewer confirmed the effective candidate was
+  `RTX5060_SM120_GEN-S7SWEEP_L0L1_37_PREFETCH_10`, with appended overrides
+  `-latency_L0_to_L1 37 -prefetch_per_stream_buffer_size 10`.
+- Reviewer confirmed `logs/cycle-cost-lines.txt` includes
+  `cluster_core_detail` for eight samples and that the worker's arithmetic is
+  supported: `cluster_core=496430/515073 us = 96.380513%`,
+  `core_cycle_us=256`, `non_core_cycle_residual_us=496174`,
+  `calls=240`, and `more_cta_clusters=240`.
+- Reviewer confirmed stop/max/absence claims are supported:
+  `stop_reason=no-output-growth-cpu-heavy`, `max_observed_cycle=1201`,
+  `select_current=False`, `bind=False`, `cta_launch=False`, and empty
+  `result-files-at-stop.txt`.
+- Reviewer confirmed cleanup: current and artifact ProcMan state
+  `Nothing Active`, temporary alias absent, protected config/calibration paths
+  clean, and no S6/promotion/metrics artifacts.
+- Reviewer confirmed the residual is not over-claimed as OpenMP-only; the
+  split between OpenMP scheduling, eligibility checks, and inactive traversal
+  remains uncertain.
+
+Follow-up:
+- Checkpoint the accepted diagnostic documentation.
+- Next technical action should separate OpenMP parallel-region/scheduling cost
+  from eligibility scans and inactive cluster traversal before considering any
+  semantic pre-admission fast path.
