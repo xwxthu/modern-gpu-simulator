@@ -4292,3 +4292,91 @@ Follow-up:
 - Run final generator and cleanup checks, then checkpoint the documentation.
 - Next S7 action should be a single bounded `candidate_0002` refined residual
   rerun with progress-aware stop policy, not blind sweep metrics or promotion.
+
+### 2026-06-13 01:56:32 CST
+
+Action:
+- Created checkpoint `6ff16fc`
+  (`docs: analyze SM120 residual diagnostic stop policy`) for the accepted
+  stop-policy analysis.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 71 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Spawn a worker for one bounded `candidate_0002` refined residual rerun using
+  progress-aware stop policy.
+- The goal is diagnostic evidence for the pre-admission TB-latency window up
+  to cycle `1801` or first bind/CTA launch, not candidate metric promotion.
+- The worker must not run blind sweep jobs, generate S6 reports, modify
+  accepted/latest/generated config roots, or promote low-latency points.
+
+### 2026-06-13 02:28:23 CST
+
+Action:
+- S7 progress-aware rerun worker `019ebcfb-b2e1-7853-af34-9c308cb486e0`
+  completed
+  `docs/sm120-calibration/worker-logs/worker-20260613-015927-s7-candidate0002-progress-aware-rerun.md`.
+- The worker ran exactly one actual ProcMan/simulator diagnostic job, Job `15`.
+- The worker attempted one launch with an absolute `-r` path that failed before
+  any job was queued; ProcMan remained `Nothing Active`, so this was not a
+  simulator run.
+- The worker completed an internal reviewer round. Multi-agent reviewer spawn
+  was blocked by thread limit, so the worker used a separate read-only
+  `codex exec` reviewer and captured its log under the ignored artifact root.
+
+Worker evidence:
+- Effective active overrides were
+  `-latency_L0_to_L1 37` and `-prefetch_per_stream_buffer_size 10`.
+- Diagnostics used startup, dispatch/progress, and refined cycle-cost output
+  with `GPGPUSIM_CYCLE_COST_INTERVAL=50`.
+- Stop policy tracked the ProcMan wrapper and simulator child process tree;
+  CPU ticks increased through the stop gate.
+- Short stdout gaps were tolerated while the child was CPU-heavy.
+- Stop reason was `dispatch_or_progress_cycle_ge_1801`.
+- Monitor stop decision observed dispatch cycle `1807`, progress cycle `1806`,
+  and cycle-cost sample `1850`.
+- Preserved stdout later contained dispatch evidence through cycle `2007` and
+  cycle-cost sample `2000`, because output was copied while the simulator was
+  still running.
+- The run observed `select_kernel_current`, cluster/SM bind/admission, shader
+  bind, CTA issue/init, and `cta_launched_kernel=180` by cycle `1806`.
+- No result file, `PASSED`/`FAILED`, simulator metrics, S6 report, hardware
+  target metrics, calibration-result update, or promotion artifact was
+  produced.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebd15-b6bd-7862-95be-d2593c643ff7`
+  returned `ACCEPT`.
+- Reviewer confirmed Job `15` was the only actual ProcMan/simulator diagnostic
+  run.
+- Reviewer confirmed the effective `37/10` candidate overrides.
+- Reviewer confirmed the stop policy was progress-aware and did not stop on a
+  short stdout-silence gap.
+- Reviewer confirmed evidence for the intended `1800/1801` window,
+  `select_kernel_current`, bind/admission, and CTA launch.
+- Reviewer confirmed conclusions are appropriately bounded as diagnostic-only
+  evidence and not calibration promotion.
+- Reviewer confirmed cleanup/no side effects: ProcMan `Nothing Active`,
+  temporary alias absent, and protected generated/tested/accepted/latest,
+  calibration, S6, metrics, hardware-target, and promotion paths clean.
+- Reviewer accepted the read-only `codex exec` internal reviewer fallback for
+  this diagnostic-only case.
+
+Validation:
+- Live ProcMan status checked as `Nothing Active`.
+- Temporary S7 bounded-sweep alias checked as absent.
+- Artifact `run-summary.json` confirms `select_kernel_current=true`,
+  `bind_or_admission=true`, `cta_launch=true`, and
+  `stop_reason=dispatch_or_progress_cycle_ge_1801`.
+- Protected-path final status artifact is empty.
+
+Follow-up:
+- Update `overall-plan.md` with accepted Job `15` evidence.
+- Run final `git diff --check`, SM120 generation check, ProcMan/temp-alias, and
+  protected-path checks before checkpointing.
+- Next S7 action should shift from pre-admission stop-policy triage to either
+  post-admission behavior/cost analysis for low-latency points or an explicit
+  policy decision to exclude low `-latency_L0_to_L1=37` from promotion.
