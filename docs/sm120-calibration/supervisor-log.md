@@ -3990,3 +3990,103 @@ Follow-up:
 - Next technical action should separate OpenMP parallel-region/scheduling cost
   from eligibility scans and inactive cluster traversal before considering any
   semantic pre-admission fast path.
+
+### 2026-06-13 00:31:08 CST
+
+Action:
+- Created checkpoint `e3de9d2`
+  (`docs: record SM120 cluster-core detail diagnostic`) for the accepted job
+  `13` enhanced diagnostic documentation.
+- Ran post-commit preflight:
+  - worktree clean on `dev-5060` ahead of origin by 68 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 cluster-core residual attribution instrumentation worker
+  `019ebcac-0827-7b30-b51f-627f879ab21b`.
+
+Scope for worker:
+- Implement a narrow default-off diagnostic refinement to split the remaining
+  pre-admission `cluster_core` residual into more actionable attribution
+  buckets.
+- Keep diagnostics gated under `GPGPUSIM_CYCLE_COST_DEBUG` and only active
+  when a cycle-cost sample is due.
+- Preserve disabled semantics and the previous short-circuit behavior when
+  diagnostics are disabled.
+- Use conservative field names; do not over-claim exact OpenMP scheduler time.
+- Do not implement a semantic pre-admission fast path.
+- Avoid ProcMan diagnostics unless absolutely necessary.
+- Validate with rebuild, `git diff --check`, ProcMan clean, temporary alias
+  absent, and protected paths clean.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for the instrumentation worker and reviewer verdict before running any
+  further diagnostic or considering a fast-path experiment.
+
+### 2026-06-13 01:07:04 CST
+
+Action:
+- S7 cluster-core residual attribution instrumentation worker
+  `019ebcac-0827-7b30-b51f-627f879ab21b` completed
+  `docs/sm120-calibration/worker-logs/worker-20260613-003250-s7-cluster-core-residual-attribution.md`.
+- Spawned independent supervisor reviewer
+  `019ebccc-dd2b-7b10-b36c-d90eed3672bf`.
+
+Worker result:
+- Added default-off diagnostic refinement for existing
+  `GPGPUSIM_CYCLE_COST_DEBUG` cluster/core attribution.
+- Added `gpgpusim_cluster_core_detail` in `gpu-sim.h`.
+- Expanded `cluster_core_detail` output with:
+  `loop_accounted_us`, `eligibility_us`, `get_not_completed_*`,
+  `get_more_cta_left_*`, `not_completed_core_cycle_*`,
+  `inactive_core_cycle_*`, `active_sms_scan_*`, and
+  `accelwattch_stats_us`.
+- The worker reports disabled behavior is unchanged because the non-sampled
+  path preserves the old `get_more_cta_left()` short-circuit and original
+  `m_active_sms_this_cycle` reduction.
+- Detailed timers/counters are intended to run only when
+  `GPGPUSIM_CYCLE_COST_DEBUG` makes a CORE-clock cycle-cost sample due.
+- No semantic pre-admission fast path was added.
+- No ProcMan simulator jobs, bounded sweeps, metrics, S6 reports, or
+  promotion commands were run.
+- Internal blank-context reviewer `019ebcc5-fb3a-7c70-ad94-52b62f30e965`
+  returned `ACCEPT`.
+
+Validation reported by worker:
+- `git diff --check` passed.
+- Release rebuild passed.
+- Final ProcMan state was `Nothing Active`.
+- Temporary alias was absent.
+- Protected generated/tested/accepted/latest config and calibration-result
+  paths were clean.
+
+Follow-up:
+- Wait for independent supervisor reviewer verdict before accepting,
+  checkpointing, or running a diagnostic with the refined fields.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebccc-dd2b-7b10-b36c-d90eed3672bf`
+  returned `ACCEPT`.
+- Reviewer confirmed the worker stayed in scope: default-off sampled
+  diagnostics under `GPGPUSIM_CYCLE_COST_DEBUG`, no semantic fast path, and no
+  ProcMan diagnostic run.
+- Reviewer confirmed disabled/non-sampled behavior preserves the old
+  `get_more_cta_left()` short-circuit.
+- Reviewer confirmed sampled behavior intentionally calls `get_more_cta_left()`
+  for every cluster only for attribution and that this is documented.
+- Reviewer confirmed sampled AccelWattch and active-SM accounting placement
+  matches the prior placement and does not change accounting for ineligible
+  clusters.
+- Reviewer found no new OpenMP reduction race and accepted the conservative
+  residual naming.
+- Reviewer confirmed validation and side-effect boundaries: `git diff --check`
+  passed, release rebuild passed with existing warning classes, ProcMan
+  `Nothing Active`, temporary alias absent, protected paths clean, and no
+  config/calibration/promotion side effects.
+
+Follow-up:
+- Checkpoint the accepted default-off residual attribution instrumentation.
+- Next S7 action should be one bounded `candidate_0002` diagnostic using the
+  enhanced fields, with minimal startup/dispatch confirmation, stopping at
+  cycle `1801`, first bind/CTA launch, or a strict wall cap.

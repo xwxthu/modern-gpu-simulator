@@ -108,6 +108,25 @@ class gpgpu_context;
 
 extern tr1_hash_map<new_addr_type, unsigned> address_random_interleaving;
 
+struct gpgpusim_cluster_core_detail {
+  unsigned long long calls;
+  unsigned long long not_completed_core_cycle_calls;
+  unsigned long long inactive_core_cycle_calls;
+  unsigned long long core_cycle_us;
+  unsigned long long not_completed_core_cycle_us;
+  unsigned long long inactive_core_cycle_us;
+  unsigned long long get_not_completed_calls;
+  unsigned long long get_not_completed_us;
+  unsigned long long get_more_cta_left_calls;
+  unsigned long long get_more_cta_left_true;
+  unsigned long long get_more_cta_left_us;
+  unsigned long long not_completed_clusters;
+  unsigned long long more_cta_clusters;
+  unsigned long long active_sms_scan_calls;
+  unsigned long long active_sms_scan_us;
+  unsigned long long accelwattch_stats_us;
+};
+
 enum dram_ctrl_t { DRAM_FIFO = 0, DRAM_FRFCFS = 1 };
 
 enum hw_perf_t {
@@ -973,10 +992,7 @@ class gpgpu_sim : public gpgpu_t {
       unsigned long long issue_block2core_us,
       unsigned long long decrement_kernel_latency_us,
       unsigned long long diagnostic_emission_us, unsigned long long total_us,
-      unsigned long long cluster_core_calls,
-      unsigned long long cluster_core_core_cycle_us,
-      unsigned long long cluster_core_not_completed_clusters,
-      unsigned long long cluster_core_more_cta_clusters);
+      const gpgpusim_cluster_core_detail &cluster_core_detail);
   bool m_cycle_cost_debug_checked;
   bool m_cycle_cost_debug_enabled;
   unsigned long long m_cycle_cost_debug_interval;
