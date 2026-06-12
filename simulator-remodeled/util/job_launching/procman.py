@@ -172,13 +172,22 @@ class ProcMan:
         if not self.mutable:
             sys.exit("This ProcMan has already been started. No new spawning can occur.")
         shutil.copy(self.pickleFile, self.pickleFile + ".tmp")
-        p = Popen([__file__,"-f", self.pickleFile + ".tmp", "-t", str(sleepTime)],
-            cwd=this_directory,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            start_new_session=True
-        )
+        log_dir = os.path.join(os.path.dirname(self.pickleFile), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        log_base = os.path.basename(self.pickleFile)
+        out_log = open(os.path.join(log_dir, log_base + ".manager.out"), "a")
+        err_log = open(os.path.join(log_dir, log_base + ".manager.err"), "a")
+        try:
+            p = Popen([sys.executable, os.path.realpath(__file__), "-f", self.pickleFile + ".tmp", "-t", str(sleepTime)],
+                cwd=this_directory,
+                stdin=subprocess.DEVNULL,
+                stdout=out_log,
+                stderr=err_log,
+                start_new_session=True
+            )
+        finally:
+            out_log.close()
+            err_log.close()
         print("ProcMan spawned [pid={0}]".format(p.pid))
 
     def killJobs(self):
@@ -420,6 +429,7 @@ def main():
     parser.add_option("-j", "--procManForJob", dest="procManForJob",default=None, type=int,
                   help="Return the path of the pickle file for the ProcMan managing this job." )
     (options, args) = parser.parse_args()
+    options.file = os.path.realpath(options.file)
 
     if options.selfTest:
         selfTest()
@@ -479,6 +489,7 @@ def main():
                 sys.exit("Error - this procman has already started")
         else:
             procMan = ProcMan(options.cores)
+            procMan.pickleFile = options.file
         exec_file = args[0]
         st = os.stat(exec_file)
         os.chmod(exec_file, st.st_mode | stat.S_IEXEC)

@@ -2391,3 +2391,77 @@ Follow-up:
   metrics. They should be retried only after this ProcMan infrastructure fix is
   independently reviewed and committed.
 - Promotion gate remains closed.
+
+### 2026-06-12 17:22:07 CST
+
+Action:
+- Retried the remaining bounded-sweep candidates after checkpoint `1a030e8`.
+- Spawned retry worker `019ebae8-6001-7523-b980-358e5897d12d`.
+- Worker stopped under the hard rule because `candidate_0001` again stayed in
+  a queued-only ProcMan state after submission. `candidate_0002` was not
+  launched, and no metrics/report were generated.
+
+Root cause refinement:
+- The first ProcMan fix made `procman.py -k` capable of cleaning queued-only
+  stale state, but it did not explain why queued jobs failed to enter
+  `activeJobs`.
+- Inspection of `ProcMan.spawnProcMan()` found that the manager process was
+  launched with `Popen([__file__, ...], cwd=this_directory)`.
+- When `procman.py` is invoked by relative path, the child manager changes
+  working directory before resolving that same relative path. It can therefore
+  fail to find the script and exit immediately.
+- The old code sent manager stdout/stderr to `DEVNULL`, hiding that failure and
+  leaving only a queued job in the state file.
+- A separate custom `-f` validation issue was found: the first submit to a
+  custom state file still constructed `ProcMan(options.cores)` with the default
+  state path, making isolated ProcMan tests unreliable.
+
+Fix:
+- Updated `spawnProcMan()` to launch the manager with
+  `sys.executable` plus `os.path.realpath(__file__)`.
+- Added manager stdout/stderr logs under a `logs/` directory next to the
+  ProcMan state file. The logs are outside the `*pickle*` glob used for
+  inter-ProcMan accounting.
+- Canonicalized `options.file` to an absolute path after option parsing.
+- When creating a new ProcMan for a first submit, set `procMan.pickleFile` to
+  `options.file`, so `-f <custom>` works for isolated tests and non-default
+  state files.
+
+Validation:
+- `python3 -m py_compile simulator-remodeled/util/job_launching/procman.py`
+  passed.
+- Mini ProcMan validation with a Slurm-like script and absolute
+  `#SBATCH --output/--error` paths passed:
+  - submit returned job id `1`;
+  - start printed `ProcMan spawned`;
+  - one-second status showed `activeJobs=1` and `status=RUNNING`;
+  - final status showed `Nothing Active`;
+  - captured stdout contained `mini-start` and `mini-done`.
+- Earlier mini tests with malformed/no output paths now leave visible manager
+  errors in `*.manager.err`, confirming the new log path exposes manager
+  startup/runtime failures instead of hiding them.
+- Live `python3 simulator-remodeled/util/job_launching/procman.py -p` reported
+  `Nothing Active`.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebb25-3bc9-7963-8e43-3811fddeb195`
+  returned `ACCEPT`.
+- Reviewer confirmed that `spawnProcMan()` now uses `sys.executable` plus an
+  absolute `procman.py` path, manager stdout/stderr are preserved under a
+  sibling `logs/` directory, custom `-f` state files are honored on first
+  submit, and the earlier queued-only `-k` cleanup fix remains intact.
+- Reviewer accepted the mini ProcMan validation evidence and confirmed that
+  protected configs are clean, the temporary S7 bounded-sweep alias is absent,
+  ProcMan reports `Nothing Active`, no new metrics/report were generated, and
+  no promotion occurred.
+- Reviewer noted one non-blocking documentation-evidence gap: the retry worker
+  log describes immediate `ps` and run-directory stale checks, but those checks
+  were not all preserved as separate artifact files. The submit and cleanup
+  logs still support the queued-only stop conclusion.
+
+Follow-up:
+- S7 remains in progress.
+- Candidate signatures `0001` and `0002` still need actual local simulator
+  metrics and should be retried only after this ProcMan launch fix is reviewed
+  and committed.
+- Promotion gate remains closed.
