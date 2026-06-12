@@ -4905,3 +4905,99 @@ Follow-up:
 - Next S7 work should decide whether this draft ranking is sufficient for S7
   validation documentation, or whether additional RTX5070Ti compatibility
   review / promotion-gate design work is needed before S8 documentation.
+
+### 2026-06-13 04:44:56 CST
+
+Action:
+- Created checkpoint `c449600`
+  (`docs: record SM120 narrowed S6 draft ranking`) for the accepted narrowed
+  high-latency S6 draft ranking evidence.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 78 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Run a read-only S7 completion/readiness review.
+- Determine whether S7 can be closed into S8 documentation, or whether an
+  RTX5070Ti compatibility review / promotion-gate design task is still needed
+  before S8.
+
+### 2026-06-13 04:46:33 CST
+
+Action:
+- Read-only S7 completion/readiness reviewer
+  `019ebd95-06a9-71f2-b0e4-95ce32545616` completed.
+- Reviewer recommended one more narrow task before S8:
+  read-only/static RTX5070Ti compatibility closeout for checkpoint `c449600`.
+
+Rationale:
+- S7 is close, but the S7 goal includes preserving RTX5070Ti compatibility.
+- Latest accepted artifacts still record
+  `rtx5070ti_compatibility_signoff: false`.
+- Promotion-gate design is not required before S8 because no config is being
+  promoted; S8 can document the release as a non-promotion validation package.
+
+Next stage:
+- Spawn a read-only/static RTX5070Ti compatibility closeout worker.
+- Acceptance criteria: generated RTX5070Ti aliases/config paths still exist, no
+  S7 work changed RTX5070Ti protected outputs, no RTX5060-only assumptions were
+  introduced into shared SM120 base/schema/tuner/report paths, and the signoff
+  is explicitly static/no-hardware/no-simulator only.
+
+### 2026-06-13 05:01:10 CST
+
+Action:
+- S7 static RTX5070Ti compatibility closeout worker
+  `019ebd96-a26d-7931-9f9d-553b50a58fa8` completed:
+  - `docs/sm120-calibration/s7-rtx5070ti-static-compatibility-closeout.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-044836-s7-rtx5070ti-static-compatibility-closeout.md`
+  - metadata-only generator fix in
+    `simulator-remodeled/util/tuner/generate_sm120_configs.py`
+- The generator fix changes a shared manifest limitation string from hardcoded
+  `RTX5060` to the selected `gpu`; no generated outputs were regenerated or
+  edited.
+- The worker ran no simulator, ProcMan workload, hardware collection, promotion
+  path, or accepted/latest update.
+
+Closeout result:
+- `RTX5070_TI_SM120_GEN` still maps to
+  `$GPGPUSIM_ROOT/configs/generated/tested-cfgs/SM120_RTX5070_TI/gpgpusim.config`.
+- Generated RTX5070Ti GPGPU-Sim/trace config paths and manifests still exist.
+- RTX5070Ti generated manifests still select `gpu: RTX5070_TI`,
+  `config_name: SM120_RTX5070_TI`, `SM120_BASE`, `RTX5070_TI`, and the
+  RTX5070Ti bootstrap calibration result.
+- No protected generated/config/calibration/artifact paths changed after
+  checkpoint `c449600`.
+- No RTX5060-only behavior affecting RTX5070Ti was found in shared SM120
+  base/schema/overlay/tuner/report paths after the metadata fix.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebda2-5b4f-7c80-a06e-b501d69a4952`
+  returned `ACCEPT`.
+- Reviewer confirmed alias/path preservation, protected-path cleanliness, the
+  metadata-only nature of the generator fix, generator validation, and the
+  static/no-hardware/no-simulator boundary.
+- Reviewer accepted the read-only local `codex exec` internal reviewer fallback
+  after thread-limit failure.
+
+Validation:
+- `python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only`
+  passed for both `SM120_RTX5070_TI` and `SM120_RTX5060`.
+- `python3 -m py_compile simulator-remodeled/util/tuner/generate_sm120_configs.py`
+  passed.
+- `git diff --check` passed.
+- Modern repo ProcMan status checked as `Nothing Active`.
+- Temporary S7 bounded-sweep alias absent.
+- Scoped protected-path status showed only expected closeout docs and the
+  generator metadata fix.
+
+S7 status:
+- S7 is now ready to close into S8 documentation as a non-promotion validation
+  package: RTX5060 narrowed draft ranking exists, low-latency exclusions are
+  documented, repeated hardware target provenance and aggregate draft targets
+  exist, and RTX5070Ti static compatibility is signed off.
+- S8 must document residual limitations: no promotion-quality final config, no
+  RTX5070Ti hardware/simulator validation, no claim about excluded `37/*`
+  ranking, and promotion gate remains closed.

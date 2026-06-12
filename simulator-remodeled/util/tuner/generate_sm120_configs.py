@@ -512,7 +512,7 @@ def build_manifest(
         },
         "limitations": [
             "bootstrap-current-flat copies current flat values; it is not a new calibration result",
-            "RTX5060 timing, memory, trace, and XML values remain inherited or placeholder until S5/S6",
+            f"{gpu} timing, memory, trace, and XML values remain inherited or placeholder until S5/S6",
             "power is not enabled or calibrated by the bootstrap profile",
         ],
     }
