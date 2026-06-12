@@ -2568,3 +2568,103 @@ Supervisor review:
 Follow-up:
 - Checkpoint this accepted evidence.
 - Start a bounded timeout root-cause analysis for `candidate_0001`.
+
+### 2026-06-12 18:31:00 CST
+
+Action:
+- Created checkpoint `556c0cf`
+  (`docs: record post-ProcMan SM120 candidate timeout`) for the accepted
+  post-ProcMan-fix candidate execution evidence.
+- Ran preflight for the next S7 substage:
+  - worktree clean on `dev-5060` ahead of origin by 54 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent;
+  - protected generated/tested/latest config paths clean.
+- Spawned S7 timeout root-cause analysis worker
+  `019ebb5b-faec-7373-95dc-60e77e33a75d`.
+
+Scope for worker:
+- Diagnose why `candidate_0001` entered ProcMan `RUNNING` but timed out without
+  parseable simulator metrics.
+- Start with read-only artifact/config/stdout comparison against passing
+  candidate `0003`/job `486` and candidate `0004`/job `487`.
+- Determine whether the evidence points to parameter-induced extreme slowdown,
+  simulator/model deadlock or livelock, instrumentation/monitoring gap, or an
+  insufficient bounded timeout.
+- Do not blindly rerun the same full candidate. If static evidence is
+  insufficient, at most one short local diagnostic ProcMan job is allowed under
+  ignored `artifacts/s7/`, with cleanup and no promotion.
+
+Follow-up:
+- Wait for the timeout-analysis worker diagnosis before deciding whether to run
+  `candidate_0002`, adjust the bounded sweep, extend timeouts, or add/fix
+  targeted diagnostics.
+
+### 2026-06-12 18:36:00 CST
+
+Action:
+- S7 timeout root-cause analysis worker
+  `019ebb5b-faec-7373-95dc-60e77e33a75d` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-182853-s7-candidate0001-timeout-analysis.md`.
+- Spawned independent supervisor reviewer
+  `019ebb64-a8b3-7782-86f7-dcfb5113e2d2` to review the analysis.
+
+Worker diagnosis:
+- The previous ProcMan queued-only failure is no longer the active blocker:
+  `candidate_0001` entered ProcMan `RUNNING` and had a CPU-active simulator
+  child at timeout.
+- Effective config comparison found no accidental drift. Relative to passing
+  candidate `0003`/job `486`, `candidate_0001` differed only by
+  `-latency_L0_to_L1 37` instead of `39`; relative to passing candidate
+  `0004`/job `487`, it differed by the two intended sweep parameters.
+- The timeout run reached kernel 1 shader binding (`Shader 29 bind`) but did
+  not have progress diagnostics enabled, so the exact stuck/slow state after
+  binding cannot be proven from that run.
+- The worker ran one short local diagnostic job with
+  `GPGPUSIM_KERNEL_PROGRESS_DEBUG=1` and confirmed progress diagnostics emit
+  for candidate `0001`; the job was stopped quickly and did not produce metrics
+  or a report.
+- Diagnosis: medium-confidence candidate-specific simulator/model pathological
+  slowdown or livelock risk, likely associated with low
+  `-latency_L0_to_L1=37`, with the exact state still unobserved.
+
+Worker recommendation:
+- Do not extend timeout blindly.
+- Do not run `candidate_0002` yet.
+- Run a short progress-gated `candidate_0001` diagnostic with targeted
+  kernel/CTA/PC/barrier/scheduler/scoreboard/prefetch evidence before deciding
+  whether to exclude/fix the low-latency point or extend timeout.
+
+Cleanup:
+- Worker reported final ProcMan `Nothing Active`, temporary alias absent, no
+  candidate metrics, no S6 report, and no promotion.
+
+Follow-up:
+- Await supervisor reviewer verdict before checkpointing this analysis or
+  dispatching a progress-gated diagnostic worker.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebb64-a8b3-7782-86f7-dcfb5113e2d2`
+  returned `ACCEPT`.
+- Reviewer confirmed that ProcMan is no longer the active blocker, because the
+  timeout run reached `activeJobs=1`, `status=RUNNING`, had a CPU-heavy
+  simulator child at about `43:30`, and final cleanup returned
+  `Nothing Active`.
+- Reviewer confirmed that effective config diff evidence supports no accidental
+  config drift: relative to passing candidate `0003`/job `486`,
+  `candidate_0001` differs only by the intended `-latency_L0_to_L1 37`
+  override; relative to passing candidate `0004`, it differs only by the two
+  intended sweep parameters.
+- Reviewer accepted the medium-confidence qualification: the exact stuck state
+  is not proven because the original timeout run lacked progress diagnostics
+  after shader binding.
+- Reviewer confirmed the short diagnostic job respected the rules: local only,
+  bounded, one ProcMan job, artifacts under ignored `artifacts/s7/`, no metrics,
+  no promotion, final ProcMan `Nothing Active`, and temporary alias absent.
+- Reviewer agreed the next action should be a short progress-gated
+  `candidate_0001` diagnostic before running `candidate_0002` or extending the
+  timeout.
+
+Follow-up:
+- Checkpoint the accepted timeout root-cause analysis.
+- Dispatch a progress-gated diagnostic worker for `candidate_0001`.

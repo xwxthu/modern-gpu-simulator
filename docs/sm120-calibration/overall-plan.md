@@ -38,6 +38,8 @@ S0 through S6 are complete. S7 smoke bring-up is in progress. CUDA 13 runtime AB
 
 Latest S7 update: after checkpoint `4534e04`, `candidate_0001` with `-latency_L0_to_L1=37` and `-prefetch_per_stream_buffer_size=8` entered ProcMan `activeJobs`/`RUNNING`, so the previous queued-only ProcMan manager-launch failure is no longer the active blocker. The run was stopped after about 43 minutes without `result.txt`, `PASSED`, simulator exit marker, or parseable simulator metrics; `candidate_0002` was not launched. The next S7 step is timeout root-cause analysis for `candidate_0001`, not another blind rerun. Promotion gate remains closed.
 
+Latest timeout-analysis update: accepted root-cause analysis found no accidental config drift and judged the active issue to be a medium-confidence candidate-specific simulator/model pathological slowdown or livelock risk, most likely associated with the low `-latency_L0_to_L1=37` point. The original timeout run lacked progress diagnostics after kernel-1 shader binding, so the exact state is still unobserved. The next S7 step is a short progress-gated `candidate_0001` diagnostic with targeted kernel/CTA/PC/barrier/scheduler/scoreboard/prefetch evidence before running `candidate_0002` or extending the timeout. Promotion gate remains closed.
+
 ## Checkpoint Policy
 
 Commit at stable points:
