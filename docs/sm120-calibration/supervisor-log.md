@@ -2327,3 +2327,67 @@ Follow-up:
 - S7 remains in progress.
 - Candidate signatures `0001` and `0002` are still missing actual local simulator metrics.
 - Promotion gate remains closed. Do not generate a ranked S6 report or promote configs until all four candidate metrics are reviewed and a real S6 manifest/report is produced.
+
+### 2026-06-12 16:10:35 CST
+
+Action:
+- Began a fresh attempt to execute remaining bounded-sweep candidates `0001`
+  and `0002`.
+- Preflight checks showed tracked worktree clean at checkpoint `25463e5`,
+  ProcMan `Nothing Active`, no temporary S7 alias, and protected configs clean.
+- Spawned remaining-candidates worker `019eb4c3-6b7c-7b12-bbe2-1dfa9c74c33e`.
+
+Partial worker result:
+- Worker created
+  `docs/sm120-calibration/worker-logs/worker-20260611-114017-s7-remaining-candidates.md`.
+- Worker submitted `candidate_0001` after setup-only planning and effective
+  config verification for `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=8`.
+- ProcMan then entered a stale queued-only state:
+  `queuedJobs=1`, `activeJobs=0`, `completeJobs=0`.
+- No `candidate_0001` simulator process, `.o1/.e1`, `result.txt`, `PASSED`,
+  or parseable simulator metric output was produced.
+- `candidate_0002` was not started.
+
+Root cause:
+- Legacy `procman.py -k` crashed when asked to clean a ProcMan file containing
+  only queued jobs and no active jobs, because `ProcMan.killJobs()` accessed
+  `activeJob` after a loop that did not execute.
+- `procman.py -k` also did not discard queued jobs, so a queued-only stale
+  state could keep blocking later launches.
+
+Fix:
+- Updated `simulator-remodeled/util/job_launching/procman.py` so `killJobs()`
+  kills active jobs inside the loop, deletes killed active-job entries, and
+  drops queued jobs when `-k` is requested.
+- The `-k` command now removes the ProcMan state file when no queued or active
+  jobs remain, so `procman.py -p` reports `Nothing Active`.
+- Replaced the invalid Python string escapes for `%j` output/error expansion
+  with raw string patterns to remove Python 3.12 warning noise.
+
+Cleanup and evidence:
+- Archived live stale ProcMan state under ignored
+  `artifacts/s7/s7-bounded-sweep-20260610-024829/procman-queued-cleanup-20260611/live-state-before-cleanup/`.
+- Cleaned the live stale queue with the fixed `procman.py -k`; it reported
+  `Killing 0 jobs` and `Dropping 1 queued jobs`.
+- Removed the temporary alias
+  `simulator-remodeled/util/job_launching/configs/define-s7-bounded-sweep-temp.yml`.
+
+Validation:
+- `python3 -m py_compile simulator-remodeled/util/job_launching/procman.py`
+  passed.
+- Isolated queued-only ProcMan test passed: `procman.py -k` reported
+  `Dropping 1 queued jobs`, and the following `procman.py -p` reported
+  `Nothing Active`.
+- Live `python3 simulator-remodeled/util/job_launching/procman.py -p` reported
+  `Nothing Active`.
+- `git diff --check` passed.
+- `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only` passed.
+- Protected config/latest scoped `git status --short` check was empty.
+
+Follow-up:
+- S7 remains in progress.
+- Candidate signatures `0001` and `0002` still need actual local simulator
+  metrics. They should be retried only after this ProcMan infrastructure fix is
+  independently reviewed and committed.
+- Promotion gate remains closed.

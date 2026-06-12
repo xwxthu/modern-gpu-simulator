@@ -183,15 +183,23 @@ class ProcMan:
 
     def killJobs(self):
         print("Killing {0} jobs".format(len(self.activeJobs)))
+        jobsKilled = []
         for jid, activeJob in self.activeJobs.items():
             try:
                 p = psutil.Process(activeJob.procId)
             except (psutil.NoSuchProcess,psutil.AccessDenied) as e:
                print(e)
+               jobsKilled.append(jid)
                continue
             for child in p.children(recursive=True):
                 os.kill(child.pid,9)
-        os.kill(activeJob.procId,9)
+            os.kill(activeJob.procId,9)
+            jobsKilled.append(jid)
+        for jid in jobsKilled:
+            del self.activeJobs[jid]
+        if len(self.queuedJobs) > 0:
+            print("Dropping {0} queued jobs".format(len(self.queuedJobs)))
+            del self.queuedJobs[:]
 
     def tick(self):
         if self.tickingProcess == None:
@@ -421,6 +429,10 @@ def main():
             print("Killing active jobs in Procman: {0}".format(os.path.basename(f)))
             procMan = pickle.load(open(f, 'rb'))
             procMan.killJobs()
+            if procMan.complete():
+                os.remove(f)
+            else:
+                procMan.saveState()
     elif options.printState:
         numProcMans = 0
         numQueued = 0
@@ -491,8 +503,8 @@ def main():
         with open(exec_file, "w+") as f:
             f.write(contents)
 
-        job.outF = re.sub("\%j", str(job.id), job.outF)
-        job.errF = re.sub("\%j", str(job.id), job.errF)
+        job.outF = re.sub(r"%j", str(job.id), job.outF)
+        job.errF = re.sub(r"%j", str(job.id), job.errF)
         procMan.saveState()
         print(job.id)
     else:
