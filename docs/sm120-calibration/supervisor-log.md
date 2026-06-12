@@ -4634,3 +4634,83 @@ Follow-up:
   provenance documentation.
 - Next S7 work should design or implement the aggregate hardware-target schema
   and repeat protocol before any runnable S6 ranking or promotion attempt.
+
+### 2026-06-13 03:33:37 CST
+
+Action:
+- Created checkpoint `55305f7`
+  (`docs: record SM120 hardware target provenance`) for accepted repeated
+  RTX5060 hardware-target draft provenance.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 75 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Design and, if appropriately scoped, implement an aggregate hardware-target
+  schema/repeat protocol over the repeated draft hardware runs.
+- The output must remain draft/non-promotion until reviewed S6 supplied metrics,
+  promotion-gate review, and RTX5070Ti signoff are complete.
+
+### 2026-06-13 03:54:33 CST
+
+Action:
+- S7 aggregate hardware-target schema/repeat-protocol worker
+  `019ebd53-e7e8-7aa1-ac01-2756c71022bb` completed:
+  - `simulator-remodeled/util/tuner/aggregate_sm120_hardware_targets.py`
+  - `simulator-remodeled/gpu-simulator/gpgpu-sim/configs/layered/sm120/schema/aggregate-hardware-target.schema.yaml`
+  - `docs/sm120-calibration/s7-aggregate-hardware-target-schema.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-033706-s7-aggregate-hardware-target-schema.md`
+  - ignored aggregate draft artifact
+    `artifacts/s7/s7-aggregate-hardware-target-20260613-033706/RTX5060-backprop-4096-aggregate-hardware-target-draft.yaml`
+- The worker implemented the scoped aggregation path rather than stopping at
+  design-only.
+- It ran no simulator, ProcMan, S6 search/ranking/correlation, or hardware
+  collection.
+
+Implementation result:
+- The script reads repeated per-run draft hardware target YAMLs and
+  `repeatability-summary.draft.json`, validates source draft flags, hardware
+  target flags, no simulator-smoke flags, native pass/exit status, source
+  simulator-marker policy, full per-metric source coverage, and summary-stat
+  consistency against recomputed source values.
+- The aggregate output remains `draft_not_applied`, `aggregate_draft: true`,
+  `non_promotion: true`, `promotion_quality: false`,
+  `hardware_target_metrics: true`, and `simulator_smoke_metrics: false`.
+- S6 handoff remains non-runnable with
+  `ready_for_search_sm120_correlation: false`.
+- The handoff includes only four CUDA `_time_ms` metrics; native wall/user/sys
+  and RSS metrics are retained as excluded hardware characterization.
+- Supervisor-local reproduction regenerated the aggregate YAML into an ignored
+  check path and confirmed it byte-matches the worker artifact.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebd65-191a-7041-bfed-29e37d616f70`
+  returned `ACCEPT`.
+- Reviewer confirmed source validation, protected output guards,
+  draft/non-promotion flags, non-runnable S6 handoff, exact four CUDA metrics,
+  native metric exclusion, schema/doc alignment, and validation sufficiency.
+- Reviewer confirmed no evidence of simulator, ProcMan, S6 ranking/search,
+  correlation, or new hardware collection.
+- Reviewer accepted the read-only local `codex exec` internal reviewer fallback
+  after thread-limit failure.
+
+Validation:
+- `python3 -m py_compile` passed for the aggregate script.
+- Aggregate YAML assertions passed, including script SHA match and
+  per-metric repeat count `5`.
+- Aggregate artifact and supervisor reproduction artifact are ignored by
+  `.gitignore:4:artifacts/s7/`.
+- `git diff --check` passed.
+- SM120 config generation `--check-only` passed.
+- ProcMan live status checked as `Nothing Active`.
+- Temporary S7 bounded-sweep alias absent.
+- Scoped protected-path status showed only expected new docs/schema/script.
+
+Follow-up:
+- Update `overall-plan.md`.
+- Commit this code/schema/docs checkpoint.
+- Next S7 work should design a reviewed supplied-metrics manifest/search-space
+  decision using the aggregate hardware target and the high-latency simulator
+  slice, still without promotion until gate review.

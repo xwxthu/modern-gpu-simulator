@@ -1,0 +1,130 @@
+schema_version: 1
+schema_id: sm120_aggregate_hardware_target_metrics_contract_v1
+description: >
+  Contract for draft S7 aggregate SM120 hardware target metrics built from
+  repeated per-run draft hardware target YAMLs. Aggregate targets remain
+  non-promotion artifacts until the repeat protocol, S6 supplied metrics,
+  promotion gate, and compatibility signoff are reviewed.
+
+required_top_level_fields:
+  - schema_version
+  - schema_id
+  - target_id
+  - gpu
+  - architecture
+  - status
+  - aggregate_draft
+  - non_promotion
+  - promotion_quality
+  - hardware_target_metrics
+  - simulator_smoke_metrics
+  - generated_at
+  - source_artifacts
+  - device_and_tool_identity
+  - benchmark_cases
+  - repeat_protocol
+  - source_validation
+  - simulator_marker_rejection_summary
+  - target_metrics
+  - s6_supplied_metrics_handoff
+  - excluded_native_wall_metrics
+  - threshold_summary
+  - blockers
+  - handoff
+
+status_values:
+  - draft_not_applied
+
+required_flags:
+  aggregate_draft: true
+  non_promotion: true
+  promotion_quality: false
+  hardware_target_metrics: true
+  simulator_smoke_metrics: false
+
+source_artifacts:
+  required_fields:
+    - repeatability_summary
+    - per_run_hardware_target_yamls
+    - raw_provenance_hashes
+  per_run_requirements:
+    status: draft_not_applied
+    hardware_target_metrics: true
+    simulator_smoke_metrics: false
+    native_exit_status: 0
+    application_passed: true
+  hash_policy: >
+    The aggregate must record SHA256 hashes for the per-run draft target YAMLs
+    and preserve source file hashes already recorded by the per-run collector.
+
+repeat_protocol:
+  required_fields:
+    - repeat_count
+    - native_run_count
+    - nsight_run_count
+    - metric_selection_policy
+    - cv_threshold_percent
+    - range_threshold_percent
+    - required_source_status
+    - required_source_flags
+    - required_native_outcome
+    - warmup_clock_thermal_policy
+  metric_selection_policy_values:
+    - mean
+    - median
+  promotion_rule: >
+    Mean or median may be selected for draft aggregate targets, but threshold
+    pass/fail is only a review aid until a hardware-control protocol is
+    approved. The aggregate must keep promotion_quality false.
+
+target_metrics:
+  required_fields:
+    - benchmark
+    - metric
+    - target
+    - selected_statistic
+    - unit
+    - source
+    - source_metric_source
+    - metric_role
+    - include_in_s6_template
+    - repeatability
+    - threshold_evaluation
+  repeatability_fields:
+    - n
+    - values
+    - mean
+    - median
+    - min
+    - max
+    - stdev
+    - cv_percent
+    - range_percent_of_mean
+  s6_inclusion_policy: >
+    Only Nsight Systems CUDA kernel elapsed-time metrics with simulator
+    candidate counterparts may be marked include_in_s6_template true. Native
+    wall/user/sys/RSS metrics must be retained only as excluded hardware
+    characterization metrics.
+
+simulator_marker_rejection_summary:
+  required_markers:
+    - gpu_tot_sim_cycle
+    - gpu_tot_sim_insn
+    - gpgpu_simulation_time
+    - gpgpu_simulation_rate
+    - GPGPU-Sim
+    - Accel-Sim
+    - ProcMan job
+  policy: >
+    Per-run collectors reject raw inputs containing simulator markers. The
+    aggregate validates the source YAML safety policy and must not claim
+    simulator smoke metrics as hardware target metrics.
+
+handoff_policy:
+  s6_ready: false
+  do_not_claim_calibrated: true
+  do_not_apply_automatically:
+    - flat tested configs
+    - generated tested-cfgs outputs
+    - calibration-results/latest
+    - S6 ranked reports without candidate simulator metrics
