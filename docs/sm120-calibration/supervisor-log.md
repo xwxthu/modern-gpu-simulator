@@ -3383,3 +3383,89 @@ Follow-up:
   repeated-state detection.
 - Keep low `-latency_L0_to_L1=37` points out of promotion until the later
   slowdown/livelock risk is understood.
+
+### 2026-06-12 21:46:13 CST
+
+Action:
+- Created checkpoint `ed2ab24`
+  (`docs: record SM120 candidate0002 startup diagnostic`) for the accepted job
+  `10` startup/dispatch/progress diagnostic.
+- Ran preflight for one deeper bounded `candidate_0002` diagnostic:
+  - worktree clean on `dev-5060` ahead of origin by 62 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 `candidate_0002` deeper bounded diagnostic worker
+  `019ebc15-0c4a-7402-a202-4dea7741d7f2`.
+
+Scope for worker:
+- Run at most one actual local ProcMan job for `candidate_0002`
+  (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=10`).
+- Enable startup, dispatch-bind, and progress diagnostics.
+- Preserve setup, effective config, ProcMan/process polling,
+  stdout/stderr-growth, startup/dispatch/progress key lines over time, result
+  state, stop reason, and cleanup evidence under ignored `artifacts/s7/`.
+- Stop at CTA admission/bind/CTA launch, repeated unchanged state after enough
+  samples, no output growth despite CPU-heavy process, ProcMan stale/failure,
+  or wall time no more than 20 minutes.
+- Do not generate/promote metrics, S6 reports, accepted/latest configs,
+  generated configs, or calibration results.
+- Remove the temporary alias before final state and leave ProcMan
+  `Nothing Active`.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for the deeper bounded diagnostic verdict before deciding whether a
+  low-latency point can be diagnosed to CTA launch, needs more instrumentation,
+  or should be paused/excluded from promotion.
+
+### 2026-06-12 21:56:22 CST
+
+Action:
+- S7 `candidate_0002` deeper bounded diagnostic worker
+  `019ebc15-0c4a-7402-a202-4dea7741d7f2` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-214628-s7-candidate0002-deeper-dispatch-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebc1d-8cce-7b22-a3ce-a9b6c4a7b26b`.
+
+Worker result:
+- Exactly one actual local ProcMan job was submitted: job `11`.
+- Effective candidate values were `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=10`.
+- Startup, dispatch-bind, and progress diagnostics were enabled and observed.
+- The run reached startup, GPU launch insertion, and pre-admission
+  `select_kernel_none detail=tb_latency_pending`.
+- Evidence showed `tb_latency=1800` at cycle `1` and `tb_latency=1600` at
+  cycle `201`, with `cta_launched_kernel=0` and `active_sms=0`.
+- No CTA admission, SM bind, shader bind, or CTA launch evidence was observed.
+- Stop gate was repeated normalized pre-admission / no-ready-CTA state, under
+  the 20-minute cap.
+- No `result.txt`, candidate metrics, S6 report, config promotion, generated
+  config change, accepted/latest config change, or calibration output was
+  produced.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebc1d-8cce-7b22-a3ce-a9b6c4a7b26b`
+  returned `ACCEPT`.
+- Reviewer confirmed the "repeated-unchanged-state" stop reason is acceptable
+  as documented because the worker log narrows it to repeated normalized
+  no-ready-CTA / pre-admission state and explicitly notes `tb_latency`
+  decreased from `1800` to `1600`.
+- Reviewer confirmed one-job scope, effective `37/10` override evidence,
+  startup/dispatch/progress diagnostics, no bind/CTA launch markers, no
+  promotion side effects, final ProcMan `Nothing Active`, and temporary alias
+  removal.
+
+Validation:
+- `git diff --check` passed.
+- Live ProcMan status was `Nothing Active`.
+- Temporary S7 bounded-sweep alias was absent.
+- Protected generated/tested/accepted/latest config and calibration paths were
+  clean.
+
+Follow-up:
+- Checkpoint the accepted diagnostic documentation.
+- Treat `candidate_0002` low-latency point as not promotion-ready.
+- Next S7 work should move to targeted code-path/instrumentation analysis for
+  why the low-latency point remains CPU-heavy in the pre-admission TB-latency
+  window, rather than blindly extending bounded sweep execution.

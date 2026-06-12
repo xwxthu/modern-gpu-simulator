@@ -54,6 +54,8 @@ Latest startup-instrumentation update: accepted default-off startup diagnostics 
 
 Latest candidate_0002 startup-diagnostic update: accepted bounded diagnostic job `10` for `candidate_0002` (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=10`) produced immediate startup stderr and first-poll dispatch/progress stdout. The previous no-first-output uncertainty was localized past runtime init, config/trace parse, GPU and stream-manager creation, simulator thread startup, function registration, CUDA launch/grid init, stream push, and initial dispatch/progress emission for this instrumented run. The observed state stopped at early `tb_latency_pending` before CTA admission (`cta_launched_kernel=0`, `active_sms=0`), with no result or metrics. The next S7 action may be one deeper bounded `candidate_0002` diagnostic toward CTA admission/bind or repeated-state detection. Promotion gate remains closed.
 
+Latest candidate_0002 deeper-diagnostic update: accepted bounded diagnostic job `11` for the same low-latency point again reached startup, GPU launch insertion, and pre-admission `tb_latency_pending`, but did not reach CTA admission, SM bind, shader bind, or CTA launch. Detailed dispatch evidence showed `tb_latency` progressing from `1800` at cycle `1` to `1600` at cycle `201`, while progress stayed at `cta_launched_kernel=0` and `active_sms=0`. The stop gate is documented as repeated normalized no-ready-CTA / pre-admission state, not an unchanged TB-latency counter. `candidate_0002` remains not promotion-ready. The next S7 step should be targeted code-path/instrumentation analysis around the CPU-heavy pre-admission TB-latency window, not blind bounded-sweep extension. Promotion gate remains closed.
+
 ## Checkpoint Policy
 
 Commit at stable points:
