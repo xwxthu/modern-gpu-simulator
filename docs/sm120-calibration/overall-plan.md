@@ -46,6 +46,8 @@ Latest deeper-diagnostic update: accepted deeper progress-gated diagnostic for t
 
 Latest instrumentation update: accepted default-off dispatch-bind instrumentation now covers stream launch wait/to-GPU, GPU launch insertion, kernel selection/TB-latency pending state, cluster admission, SM bind, and SM CTA initialization. Enable it with `GPGPUSIM_KERNEL_DISPATCH_DEBUG=1` and `GPGPUSIM_KERNEL_DISPATCH_INTERVAL=<cycles>`. Rework validation shows final-code evidence for `stream_kernel_launch_wait detail=launch_latency`, `stream_kernel_launch_to_gpu`, and `select_kernel_none detail=tb_latency_pending`, with no `admission_full` mismatch. The next S7 step is one bounded `candidate_0001` reproduction with both progress and dispatch-bind debug enabled; this should locate whether the long interval is stuck before TB latency expiry, during cluster admission, or inside SM CTA initialization before running `candidate_0002` or extending timeout. Promotion gate remains closed.
 
+Latest final-code diagnostic update: accepted final-code `candidate_0001` diagnostic shows the dispatch-to-bind path is normal through early CTA launch. The run completed stream launch latency, inserted the kernel, counted down TB latency pending to ready selection, bound shaders, initialized CTAs, and reached `cta_launched_kernel=180` by cycle `1806`. The observed long interval in this diagnostic is TB latency pending; cluster admission and SM bind/init are not the cause in this early window. The later 43-minute timeout region remains unobserved. The next S7 step may be `candidate_0002` only as a bounded, carefully monitored diagnostic with progress and dispatch-bind debug enabled. Promotion gate remains closed.
+
 ## Checkpoint Policy
 
 Commit at stable points:

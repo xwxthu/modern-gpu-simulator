@@ -3002,3 +3002,104 @@ Follow-up:
   progress and dispatch-bind debug enabled to locate whether the long interval
   is stuck before TB latency expiry, during cluster admission, or inside SM CTA
   initialization.
+
+### 2026-06-12 20:28:00 CST
+
+Action:
+- Created checkpoint `d390d8e` (`feat: add dispatch-bind diagnostics`) for the
+  accepted default-off dispatch-bind instrumentation.
+- Ran preflight for final-code candidate `0001` diagnostic:
+  - worktree clean on `dev-5060` ahead of origin by 58 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent;
+  - protected generated/tested/accepted/latest config paths clean.
+- Spawned S7 final-code diagnostic worker
+  `019ebbbe-ef8a-7152-9ec3-8c5920e664bf`.
+
+Scope for worker:
+- Run at most one actual local ProcMan job for `candidate_0001`
+  (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=8`).
+- Enable both progress diagnostics and the new dispatch-bind diagnostics.
+- Run no longer than 20 minutes and stop at a diagnostic gate: launch-to-GPU
+  and TB-latency progression, repeated unchanged dispatch-bind state, post-bind
+  CTA launch samples, or wall timeout.
+- Preserve key dispatch-bind/progress lines, stdout/stderr snapshots,
+  ProcMan/process polls, file growth, effective config, and stop reason under
+  ignored `artifacts/s7/`.
+- Do not generate/promote candidate metrics, S6 reports, or accepted/latest
+  configs.
+
+Follow-up:
+- Wait for the final-code diagnostic verdict before deciding whether to run
+  candidate `0002`, extend timeout, exclude/fix the low-latency point, or add
+  further code instrumentation/fixes.
+
+### 2026-06-12 20:40:00 CST
+
+Action:
+- S7 final-code diagnostic worker
+  `019ebbbe-ef8a-7152-9ec3-8c5920e664bf` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-201232-s7-candidate0001-final-dispatch-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebbd8-2622-7663-82a6-5ee97c7bbc55` to review the diagnostic evidence.
+
+Worker result:
+- Exactly one actual local ProcMan job was used: job `8`.
+- Effective candidate values were `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=8`.
+- Final instrumentation showed normal dispatch-to-bind progression:
+  stream launch latency completed, GPU launch inserted the kernel,
+  `select_kernel_none detail=tb_latency_pending` counted down from `1800` to
+  `200`, then at cycle `1801` the kernel became ready, shader bind occurred,
+  SM CTA initialization succeeded, and CTA launch reached `180` by cycle
+  `1806`.
+- A later `cluster_cta_admission_blocked` at cycle `1807` was interpreted as
+  post-bind capacity pressure after six CTAs per SM, not the long pre-bind
+  interval.
+- The diagnostic still did not cover the later 43-minute timeout region.
+
+Worker recommendation:
+- Proceed to `candidate_0002` only as a bounded diagnostic/carefully monitored
+  run with dispatch/progress diagnostics enabled.
+- Do not exclude or fix the low `-latency_L0_to_L1=37` point based on the
+  dispatch-bind evidence.
+- Do not promote metrics from the diagnostic run.
+
+Cleanup:
+- Worker reported final ProcMan `Nothing Active`, temporary alias absent, no
+  metrics/report/promotion, protected paths clean.
+- Worker noted a near-simultaneous manual cleanup and monitor cleanup near the
+  wall cap; both captured the same final stdout/stderr sizes, and final
+  ProcMan status was clean.
+
+Follow-up:
+- Await supervisor reviewer verdict before checkpointing this diagnostic or
+  deciding whether to run `candidate_0002`.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebbd8-2622-7663-82a6-5ee97c7bbc55`
+  returned `ACCEPT`.
+- Reviewer confirmed dispatch/bind path evidence is normal through early CTA
+  launch: launch latency, launch-to-GPU, GPU insert, TB-latency pending
+  countdown, ready selection, cluster/SM bind, shader bind, SM CTA init, and
+  `cta_launched_kernel=180` by cycle `1806`.
+- Reviewer confirmed the long observed interval in this diagnostic is
+  GPU-side TB latency pending, not cluster admission, SM bind, or SM CTA
+  initialization. The later `cluster_cta_admission_blocked` appears only after
+  `cta_launched_kernel=180`, so it is post-residency capacity pressure.
+- Reviewer confirmed the worker caveat remains important: the later
+  43-minute timeout region is still unobserved.
+- Reviewer confirmed rule compliance: exactly one actual local ProcMan job,
+  bounded under 20 minutes, no metrics/promotion, artifacts under ignored
+  `artifacts/s7/`, final ProcMan `Nothing Active`, temporary alias absent, and
+  protected paths clean.
+- Reviewer accepted that near-simultaneous manual cleanup did not create
+  material ambiguity because final state is clear and monitor/manual
+  stdout/stderr hashes match.
+- Reviewer agreed the next step can be `candidate_0002` only as a bounded,
+  carefully monitored diagnostic with progress/dispatch diagnostics enabled.
+
+Follow-up:
+- Checkpoint the accepted final-code `candidate_0001` diagnostic.
+- Prepare a bounded diagnostic run for `candidate_0002`, not a promotion or
+  blind full calibration run.
