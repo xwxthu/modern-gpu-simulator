@@ -50,6 +50,8 @@ Latest final-code diagnostic update: accepted final-code `candidate_0001` diagno
 
 Latest candidate_0002 diagnostic update: accepted bounded diagnostic for `candidate_0002` used exactly one ProcMan job (`9`). It entered `RUNNING` and showed CPU-heavy simulator activity for about 7.5 minutes, but produced no stdout growth, no dispatch-bind lines, no kernel-progress lines, no shader bind / CTA evidence, no `result.txt`, and no candidate metrics. This does not localize the simulator semantic state because the first diagnostic output was never emitted. The next S7 step should be early startup/first-output instrumentation, or a reviewed policy to pause/exclude low `-latency_L0_to_L1=37` points from promotion until the silent CPU-heavy path is understood. Promotion gate remains closed.
 
+Latest startup-instrumentation update: accepted default-off startup diagnostics now use `GPGPUSIM_STARTUP_DEBUG=1` and emit immediately flushed `GPGPUSIM-STARTUP` lines to `stderr`. Coverage includes runtime/device init, env/config/trace parsing, GPU and stream-manager creation, simulator thread startup/work detection, fat-binary/function registration, CUDA launch, grid initialization, and stream push. The env gate uses thread-safe function-local static initialization, and new `%p` diagnostics cast pointer arguments explicitly. The next S7 step is one bounded `candidate_0002` silent-path diagnostic with startup, dispatch, and progress debug enabled. Promotion gate remains closed.
+
 ## Checkpoint Policy
 
 Commit at stable points:

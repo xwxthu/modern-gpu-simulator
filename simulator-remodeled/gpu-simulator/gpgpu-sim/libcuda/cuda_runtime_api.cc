@@ -191,8 +191,10 @@ void register_ptx_function(const char *name, function_info *impl) {
 #endif
 
 struct _cuda_device_id *gpgpu_context::GPGPUSim_Init() {
+  gpgpusim_startup_debug("runtime_init_enter");
   _cuda_device_id *the_device = the_gpgpusim->the_cude_device;
   if (!the_device) {
+    gpgpusim_startup_debug("runtime_init_create_device_begin");
     gpgpu_sim *the_gpu = gpgpu_ptx_sim_init_perf();
 
     cudaDeviceProp *prop = (cudaDeviceProp *)calloc(sizeof(cudaDeviceProp), 1);
@@ -240,8 +242,13 @@ struct _cuda_device_id *gpgpu_context::GPGPUSim_Init() {
     the_gpu->set_prop(prop);
     the_gpgpusim->the_cude_device = new _cuda_device_id(the_gpu);
     the_device = the_gpgpusim->the_cude_device;
+    gpgpusim_startup_debug("runtime_init_create_device_done",
+                           "device=%p gpu=%p", (void *)the_device,
+                           (void *)the_gpu);
   }
   start_sim_thread(1);
+  gpgpusim_startup_debug("runtime_init_done", "device=%p",
+                         (void *)the_device);
   return the_device;
 }
 
@@ -588,6 +595,8 @@ void **cudaRegisterFatBinaryInternal(void *fatCubin,
   if (g_debug_execution >= 3) {
     announce_call(__my_func__);
   }
+  gpgpusim_startup_debug("register_fat_binary_begin", "fatCubin=%p",
+                         (void *)fatCubin);
 #if (CUDART_VERSION < 2010)
   printf(
       "GPGPU-Sim PTX: ERROR ** this version of GPGPU-Sim requires CUDA 2.1 or "
@@ -666,6 +675,9 @@ void **cudaRegisterFatBinaryInternal(void *fatCubin,
     assert(fat_cubin_handle >= 1);
     if (fat_cubin_handle == 1) ctx->api->cuobjdumpInit();
     ctx->api->cuobjdumpRegisterFatBinary(fat_cubin_handle, filename, context);
+    gpgpusim_startup_debug("register_fat_binary_done",
+                           "handle=%llu filename=%s", fat_cubin_handle,
+                           filename);
 
     return (void **)fat_cubin_handle;
   }
@@ -772,6 +784,10 @@ void cudaRegisterFunctionInternal(void **fatCubinHandle, const char *hostFun,
   }
   CUctx_st *context = GPGPUSim_Context(ctx);
   unsigned fat_cubin_handle = (unsigned)(unsigned long long)fatCubinHandle;
+  gpgpusim_startup_debug("register_function_begin",
+                         "hostFun=%p deviceFun=%s handle=%u", (void *)hostFun,
+                         deviceFun ? deviceFun : "(null)",
+                         fat_cubin_handle);
   printf(
       "GPGPU-Sim PTX: __cudaRegisterFunction %s : hostFun 0x%p, "
       "fat_cubin_handle = %u\n",
@@ -779,6 +795,10 @@ void cudaRegisterFunctionInternal(void **fatCubinHandle, const char *hostFun,
   if (context->get_device()->get_gpgpu()->get_config().use_cuobjdump())
     ctx->cuobjdumpParseBinary(fat_cubin_handle);
   context->register_function(fat_cubin_handle, hostFun, deviceFun);
+  gpgpusim_startup_debug("register_function_done",
+                         "hostFun=%p deviceFun=%s handle=%u", (void *)hostFun,
+                         deviceFun ? deviceFun : "(null)",
+                         fat_cubin_handle);
 }
 
 void cudaRegisterVarInternal(
@@ -919,6 +939,7 @@ cudaError_t cudaSetupArgumentInternal(const void *arg, size_t size,
 
 cudaError_t cudaLaunchInternal(const char *hostFun,
                                gpgpu_context *gpgpu_ctx = NULL) {
+  gpgpusim_startup_debug("cuda_launch_enter", "hostFun=%p", (void *)hostFun);
   gpgpu_context *ctx;
   if (gpgpu_ctx) {
     ctx = gpgpu_ctx;
@@ -929,6 +950,8 @@ cudaError_t cudaLaunchInternal(const char *hostFun,
     announce_call(__my_func__);
   }
   CUctx_st *context = GPGPUSim_Context(ctx);
+  gpgpusim_startup_debug("cuda_launch_context_ready", "hostFun=%p context=%p",
+                         (void *)hostFun, (void *)context);
   char *mode = getenv("PTX_SIM_MODE_FUNC");
   if (mode) sscanf(mode, "%u", &(ctx->func_sim->g_ptx_sim_mode));
   gpgpusim_ptx_assert(!ctx->api->g_cuda_launch_stack.empty(),
@@ -946,6 +969,15 @@ cudaError_t cudaLaunchInternal(const char *hostFun,
     }
   }
   struct CUstream_st *stream = config.get_stream();
+  {
+    dim3 gridDim = config.grid_dim();
+    dim3 blockDim = config.block_dim();
+    gpgpusim_startup_debug(
+        "cuda_launch_config_ready",
+        "hostFun=%p stream=%u grid=(%u,%u,%u) block=(%u,%u,%u)",
+        (void *)hostFun, stream ? stream->get_uid() : 0, gridDim.x, gridDim.y,
+        gridDim.z, blockDim.x, blockDim.y, blockDim.z);
+  }
 
   printf("\nGPGPU-Sim PTX: cudaLaunch for 0x%p (mode=%s) on stream %u\n",
          hostFun,
@@ -955,6 +987,10 @@ cudaError_t cudaLaunchInternal(const char *hostFun,
   kernel_info_t *grid = ctx->api->gpgpu_cuda_ptx_sim_init_grid(
       hostFun, config.get_args(), config.grid_dim(), config.block_dim(),
       context);
+  gpgpusim_startup_debug("cuda_launch_grid_init_done",
+                         "hostFun=%p kernel_uid=%u kernel=%s",
+                         (void *)hostFun,
+                         grid->get_uid(), grid->name().c_str());
   // do dynamic PDOM analysis for performance simulation scenario
   std::string kname = grid->name();
   function_info *kernel_func_info = grid->entry();
@@ -1009,7 +1045,12 @@ cudaError_t cudaLaunchInternal(const char *hostFun,
       gridDim.z, blockDim.x, blockDim.y, blockDim.z);
   stream_operation op(grid, ctx->func_sim->g_ptx_sim_mode, stream);
   ctx->the_gpgpusim->g_stream_manager->push(op);
+  gpgpusim_startup_debug("cuda_launch_stream_push_done",
+                         "kernel_uid=%u stream=%u", grid->get_uid(),
+                         stream ? stream->get_uid() : 0);
   ctx->api->g_cuda_launch_stack.pop_back();
+  gpgpusim_startup_debug("cuda_launch_done", "kernel_uid=%u",
+                         grid->get_uid());
   return g_last_cudaError = cudaSuccess;
 }
 
@@ -4102,10 +4143,18 @@ int cuda_runtime_api::load_constants(symbol_table *symtab, addr_t min_gaddr,
 kernel_info_t *cuda_runtime_api::gpgpu_cuda_ptx_sim_init_grid(
     const char *hostFun, gpgpu_ptx_sim_arg_list_t args, struct dim3 gridDim,
     struct dim3 blockDim, CUctx_st *context) {
+  gpgpusim_startup_debug(
+      "grid_init_begin",
+      "hostFun=%p args=%zu grid=(%u,%u,%u) block=(%u,%u,%u)",
+      (void *)hostFun, args.size(), gridDim.x, gridDim.y, gridDim.z,
+      blockDim.x, blockDim.y, blockDim.z);
   if (g_debug_execution >= 3) {
     announce_call(__my_func__);
   }
   function_info *entry = context->get_kernel(hostFun);
+  gpgpusim_startup_debug("grid_init_kernel_lookup",
+                         "hostFun=%p entry=%p", (void *)hostFun,
+                         (void *)entry);
   gpgpu_t *gpu = context->get_device()->get_gpgpu();
   /*
   Passing a snapshot of the GPU's current texture mapping to the kernel's info
@@ -4130,6 +4179,9 @@ kernel_info_t *cuda_runtime_api::gpgpu_cuda_ptx_sim_init_grid(
   }
 
   entry->finalize(result->get_param_memory());
+  gpgpusim_startup_debug("grid_init_finalize_done",
+                         "kernel_uid=%u kernel=%s", result->get_uid(),
+                         result->name().c_str());
   gpgpu_ctx->func_sim->g_ptx_kernel_count++;
   fflush(stdout);
 

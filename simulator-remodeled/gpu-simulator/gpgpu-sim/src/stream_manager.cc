@@ -444,6 +444,9 @@ void stream_manager::print_impl(FILE *fp) {
 
 void stream_manager::push(stream_operation op) {
   struct CUstream_st *stream = op.get_stream();
+  gpgpusim_startup_debug("stream_manager_push_begin", "stream=%u blocking=%u",
+                         stream ? stream->get_uid() : 0,
+                         m_cuda_launch_blocking ? 1 : 0);
 
   // block if stream 0 (or concurrency disabled) and pending concurrent
   // operations exist
@@ -474,6 +477,9 @@ void stream_manager::push(stream_operation op) {
   }
   if (g_debug_execution >= 3) print_impl(stdout);
   pthread_mutex_unlock(&m_lock);
+  gpgpusim_startup_debug("stream_manager_push_done", "stream=%u blocking=%u",
+                         stream ? stream->get_uid() : 0,
+                         m_cuda_launch_blocking ? 1 : 0);
   if (m_cuda_launch_blocking || stream == NULL) {
     unsigned int wait_amount = 100;
     unsigned int wait_cap = 100000;  // 100ms

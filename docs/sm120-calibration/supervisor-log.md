@@ -3189,3 +3189,107 @@ Follow-up:
   either add earlier startup/first-output instrumentation to localize the
   silent CPU-heavy path, or apply a reviewed policy to pause/exclude low
   `-latency_L0_to_L1=37` points from promotion until the path is understood.
+
+### 2026-06-12 21:07:03 CST
+
+Action:
+- Created checkpoint `4bc66b5`
+  (`docs: record SM120 candidate0002 silent diagnostic`) for the accepted
+  `candidate_0002` bounded diagnostic documentation.
+- Ran preflight for the next S7 diagnostic-instrumentation task:
+  - worktree clean on `dev-5060` ahead of origin by 60 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 early startup / first-output instrumentation worker
+  `019ebbf1-3482-7d81-9095-b115cf066fbf`.
+
+Scope for worker:
+- Inspect simulator/app launch stages before existing dispatch/progress debug
+  output can appear.
+- Add minimal default-off startup/first-output instrumentation, preferably
+  controlled by `GPGPUSIM_STARTUP_DEBUG=1`, with immediately flushed output and
+  a consistent `GPGPUSIM-STARTUP` prefix.
+- Keep disabled overhead negligible and avoid normal behavior changes.
+- Do not modify accepted/generated/latest configs, calibration outputs, or job
+  aliases.
+- Validate with build/diff checks and only run at most one short local ProcMan
+  diagnostic under ignored `artifacts/s7/` if needed.
+- Spawn an internal blank-context reviewer and address worthwhile findings.
+
+Follow-up:
+- Wait for worker implementation and internal reviewer verdict before
+  supervisor review.
+
+### 2026-06-12 21:30:00 CST
+
+Action:
+- S7 startup / first-output instrumentation worker
+  `019ebbf1-3482-7d81-9095-b115cf066fbf` returned an initial implementation.
+- Worker added default-off `GPGPUSIM_STARTUP_DEBUG=1` diagnostics emitting
+  flushed `GPGPUSIM-STARTUP` lines to `stderr`.
+- Worker reported rebuild, `git diff --check`, ProcMan clean, temporary alias
+  absent, and internal reviewer `ACCEPT`.
+- Spawned independent supervisor reviewer
+  `019ebbfb-9879-7a02-b96d-4dc2451ac390`.
+
+Supervisor review result:
+- Reviewer returned `CHANGES_NEEDED`.
+- Blocking finding 1: `gpgpusim_startup_debug_enabled()` used unsynchronized
+  mutable static first-call cache state, which can race if CUDA
+  registration/init/launch paths first enter concurrently.
+- Blocking finding 2: several new `%p` startup-debug call sites passed
+  `const char *hostFun` without explicit `void *` casts.
+- Reviewer otherwise accepted the instrumentation scope, stderr flushing,
+  prefix, coverage, and validation/cleanup evidence.
+
+Follow-up:
+- Returned the task to worker `019ebbf1-3482-7d81-9095-b115cf066fbf` for
+  rework.
+- Required rework: use a thread-safe env initialization pattern, add explicit
+  `void *` casts for new `%p` diagnostics, rebuild, rerun validation/cleanup
+  checks, update worker log, and complete a new internal reviewer round.
+
+### 2026-06-12 21:33:56 CST
+
+Action:
+- Startup instrumentation worker
+  `019ebbf1-3482-7d81-9095-b115cf066fbf` completed rework.
+- Worker replaced the unsynchronized env cache with C++ function-local static
+  initialization, preserved the enable policy as non-empty and not exactly
+  `0`, and added explicit `void *` casts for new `%p` startup diagnostics.
+- Worker completed additional internal reviewer rounds:
+  - round 2 returned `CHANGES_NEEDED` for exact env semantics;
+  - round 3 returned `ACCEPT`.
+- Spawned final independent supervisor reviewer
+  `019ebc07-8309-7421-91c2-f569cbed06b7`.
+
+Supervisor review:
+- Final supervisor reviewer returned `ACCEPT`.
+- Reviewer confirmed `gpgpusim_startup_debug_enabled()` now uses C++11
+  function-local static initialization with a one-time flushed stderr banner.
+- Reviewer confirmed startup output uses flushed `stderr` and consistent
+  `GPGPUSIM-STARTUP` prefix.
+- Reviewer confirmed new startup `%p` diagnostics explicitly cast applicable
+  pointer arguments to `void *`.
+- Reviewer confirmed the instrumentation scope remains startup/launch
+  boundaries: init/config/thread startup, registration, launch/grid init, and
+  stream push.
+- Reviewer confirmed there is no hot busy-loop concern because
+  `sim_thread_work_detected` is emitted after the empty-stream spin exits.
+- Reviewer accepted disabled overhead and behavior-change risk as low.
+
+Validation:
+- Worker rebuild passed after final rework.
+- Supervisor checks confirmed `git diff --check` passed, ProcMan reported
+  `Nothing Active`, the temporary S7 bounded-sweep alias was absent, generated
+  SM120 config `--check-only` passed, and protected config/result/job-alias
+  paths were clean.
+- No ProcMan diagnostic job was run for this instrumentation change.
+
+Follow-up:
+- Checkpoint the accepted default-off startup instrumentation.
+- Next S7 action should be one bounded `candidate_0002` silent-path diagnostic
+  with `GPGPUSIM_STARTUP_DEBUG=1`,
+  `GPGPUSIM_KERNEL_DISPATCH_DEBUG=1`, and
+  `GPGPUSIM_KERNEL_PROGRESS_DEBUG=1`, inspecting stderr first if stdout remains
+  empty.

@@ -27,7 +27,10 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include "gpgpusim_entrypoint.h"
+#include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "../libcuda/gpgpu_context.h"
 #include "cuda-sim/cuda-sim.h"
@@ -46,8 +49,40 @@
 static int sg_argc = 3;
 static const char *sg_argv[] = {"", "-config", "gpgpusim.config"};
 
+bool gpgpusim_startup_debug_enabled() {
+  static const bool enabled = []() {
+    const char *env = getenv("GPGPUSIM_STARTUP_DEBUG");
+    const bool is_enabled =
+        env && env[0] != '\0' && strcmp(env, "0") != 0;
+    if (is_enabled) {
+      fprintf(stderr,
+              "GPGPUSIM-STARTUP enabled "
+              "(env:GPGPUSIM_STARTUP_DEBUG)\n");
+      fflush(stderr);
+    }
+    return is_enabled;
+  }();
+  return enabled;
+}
+
+void gpgpusim_startup_debug(const char *stage, const char *fmt, ...) {
+  if (!gpgpusim_startup_debug_enabled()) return;
+
+  fprintf(stderr, "GPGPUSIM-STARTUP stage=%s", stage ? stage : "unknown");
+  if (fmt && fmt[0] != '\0') {
+    fprintf(stderr, " ");
+    va_list args;
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
+  }
+  fprintf(stderr, "\n");
+  fflush(stderr);
+}
+
 void *gpgpu_sim_thread_sequential(void *ctx_ptr) {
   gpgpu_context *ctx = (gpgpu_context *)ctx_ptr;
+  gpgpusim_startup_debug("sim_thread_sequential_enter");
   // at most one kernel running at a time
   bool done;
   do {
@@ -77,6 +112,7 @@ static void termination_callback() {
 
 void *gpgpu_sim_thread_concurrent(void *ctx_ptr) {
   gpgpu_context *ctx = (gpgpu_context *)ctx_ptr;
+  gpgpusim_startup_debug("sim_thread_concurrent_enter");
   atexit(termination_callback);
   // concurrent kernel execution simulation thread
   do {
@@ -89,6 +125,8 @@ void *gpgpu_sim_thread_concurrent(void *ctx_ptr) {
     while (ctx->the_gpgpusim->g_stream_manager->empty_protected() &&
            !ctx->the_gpgpusim->g_sim_done)
       ;
+    gpgpusim_startup_debug("sim_thread_work_detected", "sim_done=%u",
+                           ctx->the_gpgpusim->g_sim_done ? 1 : 0);
     if (g_debug_execution >= 3) {
       printf("GPGPU-Sim: ** START simulation thread (detected work) **\n");
       ctx->the_gpgpusim->g_stream_manager->print(stdout);
@@ -221,59 +259,79 @@ void gpgpu_context::exit_simulation() {
 
 gpgpu_sim *gpgpu_context::gpgpu_ptx_sim_init_perf() {
   srand(1);
+  gpgpusim_startup_debug("init_perf_enter", "config=%s", sg_argv[2]);
   print_splash();
+  gpgpusim_startup_debug("splash_printed");
   func_sim->read_sim_environment_variables();
+  gpgpusim_startup_debug("sim_env_read");
   ptx_parser->read_parser_environment_variables();
+  gpgpusim_startup_debug("parser_env_read");
   if (the_gpgpusim->g_runtime_config_opp) {
+    gpgpusim_startup_debug("runtime_option_parser_destroy_old");
     option_parser_destroy(the_gpgpusim->g_runtime_config_opp);
   }
   option_parser_t opp = option_parser_create();
   the_gpgpusim->g_runtime_config_opp = opp;
+  gpgpusim_startup_debug("option_parser_created");
 
   ptx_reg_options(opp);
   func_sim->ptx_opcocde_latency_options(opp);
 
   icnt_reg_options(opp);
   the_gpgpusim->g_the_gpu_config = new gpgpu_sim_config(this);
+  gpgpusim_startup_debug("gpu_config_allocated");
   the_gpgpusim->g_the_gpu_config->reg_options(
       opp);  // register GPU microrachitecture options
+  gpgpusim_startup_debug("gpu_options_registered");
 #if TRACING_ON
   the_gpgpusim->g_trace_config = new trace_config;
   the_gpgpusim->g_trace_config_owned = true;
   the_gpgpusim->g_trace_config->reg_options(opp);
+  gpgpusim_startup_debug("trace_options_registered");
 #endif
 
   option_parser_cmdline(opp, sg_argc, sg_argv);  // parse configuration options
+  gpgpusim_startup_debug("option_parse_done", "config=%s", sg_argv[2]);
   fprintf(stdout, "GPGPU-Sim: Configuration options:\n\n");
   option_parser_print(opp, stdout);
   // Set the Numeric locale to a standard locale where a decimal point is a
   // "dot" not a "comma" so it does the parsing correctly independent of the
   // system environment variables
   assert(setlocale(LC_NUMERIC, "C"));
+  gpgpusim_startup_debug("locale_set");
   the_gpgpusim->g_the_gpu_config->init();
+  gpgpusim_startup_debug("gpu_config_init_done");
 #if TRACING_ON
   the_gpgpusim->g_trace_config->parse_config();
+  gpgpusim_startup_debug("trace_config_parse_done");
 #endif
 
   the_gpgpusim->g_the_gpu_config->set_custom_options(false); // MOD. General parse options
+  gpgpusim_startup_debug("custom_options_set");
 
 
   the_gpgpusim->g_the_gpu =
       new exec_gpgpu_sim(*(the_gpgpusim->g_the_gpu_config), this); 
+  gpgpusim_startup_debug("gpu_created", "ptr=%p",
+                         (void *)the_gpgpusim->g_the_gpu);
   the_gpgpusim->g_stream_manager = new stream_manager(
       (the_gpgpusim->g_the_gpu), func_sim->g_cuda_launch_blocking);
+  gpgpusim_startup_debug("stream_manager_created", "cuda_launch_blocking=%u",
+                         func_sim->g_cuda_launch_blocking ? 1 : 0);
 
   the_gpgpusim->g_simulation_starttime = time((time_t *)NULL);
 
   sem_init(&(the_gpgpusim->g_sim_signal_start), 0, 0);
   sem_init(&(the_gpgpusim->g_sim_signal_finish), 0, 0);
   sem_init(&(the_gpgpusim->g_sim_signal_exit), 0, 0);
+  gpgpusim_startup_debug("init_perf_done");
   return the_gpgpusim->g_the_gpu;
 }
 
 void gpgpu_context::start_sim_thread(int api) {
   if (the_gpgpusim->g_sim_done) {
     the_gpgpusim->g_sim_done = false;
+    gpgpusim_startup_debug("start_sim_thread", "api=%d", api);
     if (api == 1) {
       pthread_create(&(the_gpgpusim->g_simulation_thread), NULL,
                      gpgpu_sim_thread_concurrent, (void *)this);
@@ -281,6 +339,7 @@ void gpgpu_context::start_sim_thread(int api) {
       pthread_create(&(the_gpgpusim->g_simulation_thread), NULL,
                      gpgpu_sim_thread_sequential, (void *)this);
     }
+    gpgpusim_startup_debug("start_sim_thread_done", "api=%d", api);
   }
 }
 

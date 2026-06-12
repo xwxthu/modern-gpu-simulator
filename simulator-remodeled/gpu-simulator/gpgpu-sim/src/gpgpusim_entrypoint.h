@@ -38,6 +38,9 @@
 // extern time_t g_simulation_starttime;
 class gpgpu_context;
 
+bool gpgpusim_startup_debug_enabled();
+void gpgpusim_startup_debug(const char *stage, const char *fmt = NULL, ...);
+
 class GPGPUsim_ctx {
  public:
   GPGPUsim_ctx(gpgpu_context *ctx) {
