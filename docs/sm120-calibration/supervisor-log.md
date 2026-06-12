@@ -4201,3 +4201,94 @@ Follow-up:
 - Keep promotion closed.
 - Next S7 action should investigate why the refined diagnostic run stalls or
   outputs so slowly before the deeper pre-admission window.
+
+### 2026-06-13 01:44:22 CST
+
+Action:
+- Created checkpoint `78a5bc7`
+  (`docs: record SM120 residual attribution diagnostic`) for the accepted job
+  `14` early-stop diagnostic documentation.
+- Ran post-commit preflight:
+  - worktree clean on `dev-5060` ahead of origin by 70 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 residual diagnostic stop-policy analysis worker
+  `019ebcef-2d43-73c3-8926-faaee5fde0cf`.
+
+Scope for worker:
+- Analyze why refined residual-attribution job `14` stopped at dispatch cycle
+  `201` / cycle-cost sample `200` instead of reaching the deeper cycle
+  `1200` or `1801` window.
+- Compare job `14` with job `13` for output-growth cadence, CPU-heavy
+  evidence, cycle progression, cycle-cost intervals, monitor timing, and stop
+  gates.
+- Determine whether job `14` likely reflected a real simulator stall/livelock
+  before cycle `1200`, or whether the no-output-growth stop policy was too
+  aggressive for low-frequency output while cycles may still have been
+  progressing.
+- Recommend the safest next diagnostic policy or action.
+- Prefer no source changes and no ProcMan diagnostics; use existing artifacts
+  unless a short probe is absolutely necessary.
+- Do not modify configs, generated/accepted/latest paths, calibration results,
+  metrics, S6 reports, or promotion artifacts.
+- Leave ProcMan `Nothing Active` and temporary alias absent.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for stop-policy analysis before running any further low-latency
+  diagnostic or considering exclusion/promotion policy.
+
+### 2026-06-13 01:54:43 CST
+
+Action:
+- S7 residual diagnostic stop-policy analysis worker
+  `019ebcef-2d43-73c3-8926-faaee5fde0cf` completed
+  `docs/sm120-calibration/worker-logs/worker-20260613-014600-s7-residual-diagnostic-stop-policy-analysis.md`.
+- The worker made no source edits, launched no ProcMan diagnostic, generated no
+  metrics/S6 reports, and touched no generated/accepted/latest config or
+  calibration-result paths.
+- The worker completed an internal blank-context reviewer round; reviewer
+  `019ebcf3-b33e-7252-9dfd-9f4d15179ab8` returned `ACCEPT`.
+
+Worker conclusion:
+- Job `14` is medium-high confidence evidence of stop-policy miscalibration
+  rather than proof of a simulator stall/livelock before cycle `1200`.
+- Job `14` progressed to dispatch cycle `201` / cycle-cost sample `200`, but
+  the raw monitor did not include a later post-cycle-201 no-growth sequence.
+- Manual-stop artifacts showed a CPU-heavy simulator child, while the monitor
+  CPU field was tracking the ProcMan wrapper PID.
+- Job `13` is a fair comparison for the same low-latency candidate point and
+  showed that low-frequency stdout growth can still reach cycle-cost sample
+  `1200` under similar diagnostics.
+- The recommended next action is a progress-aware rerun policy with child
+  process-tree CPU tracking, strict wall cap, and no kill solely on short
+  stdout silence before the target cycle.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebcf7-b36a-76b1-bf75-2f0cdc83e68d`
+  returned `ACCEPT`.
+- Reviewer confirmed the job `14` analysis is artifact-backed and appropriately
+  bounded.
+- Reviewer confirmed the job `13` versus job `14` comparison is fair and does
+  not overclaim equivalence.
+- Reviewer confirmed the conclusion "stop-policy miscalibration / premature
+  early stop, not proven simulator stall" is justified by the cited evidence.
+- Reviewer confirmed no ProcMan/config/promotion side effects are implied by
+  the worker scope.
+- Reviewer confirmed the recommended next step, a progress-aware rerun before
+  further source instrumentation, is sensible.
+
+Validation:
+- Live ProcMan status checked as `Nothing Active`.
+- Temporary S7 bounded-sweep alias checked as absent.
+- `git diff --check` passed.
+- SM120 config generation `--check-only` passed.
+- Protected config/calibration/promoted output paths showed no unexpected
+  tracked modifications.
+
+Follow-up:
+- Update `overall-plan.md` with the accepted stop-policy analysis.
+- Run final generator and cleanup checks, then checkpoint the documentation.
+- Next S7 action should be a single bounded `candidate_0002` refined residual
+  rerun with progress-aware stop policy, not blind sweep metrics or promotion.
