@@ -3226,6 +3226,157 @@ Action:
 - S7 cycle-cost diagnostics worker
   `019ebc2b-04c9-7760-8ed8-a7d55aa59723` completed
   `docs/sm120-calibration/worker-logs/worker-20260612-222108-s7-cycle-cost-diagnostics.md`.
+- Worker completed four internal reviewer rounds after an initial agent-capacity
+  delay and reached `ACCEPT`.
+- Spawned independent supervisor reviewer
+  `019ebc4e-724e-7012-8f25-71132481460a`.
+
+Worker result:
+- Added default-off `GPGPUSIM_CYCLE_COST_DEBUG=1` diagnostics with
+  `GPGPUSIM-CYCLE-COST` output.
+- Added `GPGPUSIM_CYCLE_COST_INTERVAL` and
+  `GPGPUSIM_CYCLE_COST_LIMIT` controls.
+- The accepted implementation emits saved pre-increment cycle, clock mask,
+  running/TB-latency kernel state, CTA/SM state, and host-time buckets for
+  `clock_domain`, `interconnect_memory`, `cluster_core`,
+  `stats_bookkeeping`, `issue_block2core`, `decrement_kernel_latency`,
+  `diagnostic_emission`, and `total`.
+- Internal reviewers required and verified fixes for sampled cycle numbering,
+  heap allocation, non-CORE arming, clock-domain timing boundary, sampled-path
+  string allocation, and format warnings.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebc4e-724e-7012-8f25-71132481460a`
+  returned `ACCEPT`.
+- Reviewer confirmed the disabled path is cached and cheap, with no timers,
+  string building, kernel/cluster scans, or heap allocation after the first env
+  read when disabled.
+- Reviewer confirmed the sampled path uses `steady_clock`, stack
+  `std::optional`, direct `printf`, CORE-clock gating, interval/limit controls,
+  and useful output fields.
+
+Validation:
+- Worker release rebuild passed after final fixes.
+- `git diff --check` passed.
+- Live ProcMan status was `Nothing Active`.
+- Temporary S7 bounded-sweep alias was absent.
+- Generated SM120 config `--check-only` passed.
+- Protected generated/tested/accepted/latest config and calibration paths were
+  clean.
+- No ProcMan diagnostic run, metrics, promotion output, config generation, or
+  calibration output was produced by this instrumentation task.
+
+Follow-up:
+- Created checkpoint `7f2c4e7` (`feat: add cycle-cost diagnostics`) for the
+  accepted cycle-cost diagnostics implementation.
+- Next S7 action should be one bounded `candidate_0002` diagnostic with
+  startup, dispatch/progress, and cycle-cost diagnostics enabled until cycle
+  `1801`, first bind/CTA launch, or a strict wall cap.
+
+### 2026-06-12 22:52:40 CST
+
+Action:
+- Ran preflight for bounded `candidate_0002` cycle-cost diagnostic:
+  - worktree clean on `dev-5060` ahead of origin by 65 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 `candidate_0002` cycle-cost diagnostic worker
+  `019ebc51-fe35-79e3-b245-8bd16ca2091a`.
+
+Scope for worker:
+- Run at most one actual local ProcMan job for `candidate_0002`
+  (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=10`).
+- Enable startup, dispatch-bind, progress, and cycle-cost diagnostics with
+  cycle-cost interval `200` and limit `16`.
+- Preserve setup, effective config, ProcMan/process polling,
+  stdout/stderr-growth, startup/dispatch/progress/cycle-cost key lines over
+  time, result state, stop reason, and cleanup evidence under ignored
+  `artifacts/s7/`.
+- Stop at cycle `1801` / `select_kernel_current`, CTA admission/bind/CTA
+  launch, repeated state with no useful cycle progress, no output growth
+  despite CPU-heavy process, ProcMan stale/failure, or wall time no more than
+  25 minutes.
+- Extract a short cycle-cost bucket summary.
+- Do not generate/promote metrics, S6 reports, accepted/latest configs,
+  generated configs, calibration results, or promotion artifacts.
+- Remove the temporary alias before final state and leave ProcMan
+  `Nothing Active`.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for the bounded cycle-cost diagnostic verdict before deciding whether
+  `candidate_0002` reaches bind/CTA launch, needs post-bind instrumentation, or
+  should be paused/excluded.
+
+### 2026-06-12 23:09:54 CST
+
+Action:
+- S7 `candidate_0002` cycle-cost diagnostic worker
+  `019ebc51-fe35-79e3-b245-8bd16ca2091a` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-225310-s7-candidate0002-cycle-cost-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebc60-8a81-7870-9059-ec30512355c8`.
+
+Worker result:
+- Exactly one actual local ProcMan job was submitted: job `12`.
+- Effective candidate values were `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=10`.
+- Startup, dispatch/progress, and cycle-cost diagnostics were enabled and
+  observed with the requested intervals and limits.
+- The run did not reach cycle `1801`, `select_kernel_current`, bind, or CTA
+  launch; the maximum observed cycle was `201`.
+- Stop reason was `no-output-growth-cpu-heavy`.
+- Cycle-cost samples showed the pre-admission cost was dominated by
+  `cluster_core`: about `99.95%` at cycle `1`, about `99.76%` at cycle `200`,
+  and `77.19%` of aggregate sampled cost.
+- Aggregate sampled `interconnect_memory` was `22.72%`, mostly from the first
+  sampled cycle.
+- `diagnostic_emission` was material to observe but immaterial in cost:
+  about `0.0044%` aggregate.
+- No `result.txt`, candidate metrics, S6 report, config promotion, generated
+  config change, accepted/latest config change, or calibration output was
+  produced.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebc60-8a81-7870-9059-ec30512355c8`
+  returned `ACCEPT`.
+- Reviewer confirmed one-job scope, effective `37/10` override evidence,
+  requested diagnostics, max cycle `201`, no bind/CTA/current-kernel evidence,
+  stop reason, final ProcMan `Nothing Active`, and temporary alias removal.
+- Reviewer confirmed the cycle-cost arithmetic from
+  `logs/cycle-cost-lines.txt`: aggregate total `809576 us`,
+  `cluster_core=624897 us` (`77.19%`),
+  `interconnect_memory=183953 us` (`22.72%`), and
+  `diagnostic_emission=36 us` (`0.0044%`).
+- Reviewer confirmed no result/metrics/S6 report/config/calibration/promotion
+  leakage and accepted the worker's recommendation not to promote or run more
+  bounded-sweep metrics for this low-latency point.
+- Reviewer noted the launcher build-label mismatch is already handled
+  accurately in the worker log: runtime labels show `3611fc2_modified`, while
+  HEAD/start state was `7f2c4e7`; emitted `GPGPUSIM-CYCLE-COST` lines prove
+  the binary contained the new diagnostics.
+
+Validation:
+- `git diff --check` passed.
+- Live ProcMan status was `Nothing Active`.
+- Temporary S7 bounded-sweep alias was absent.
+- Protected generated/tested/accepted/latest config and calibration paths were
+  clean.
+
+Follow-up:
+- Checkpoint the accepted cycle-cost diagnostic documentation.
+- Treat `candidate_0002` low-latency point as not promotion-ready.
+- Next S7 work should investigate or instrument the pre-admission
+  `cluster_core` cost directly, especially the OpenMP cluster loop and
+  inactive-SM fast-return path during TB-latency countdown.
+
+### 2026-06-12 22:50:32 CST
+
+Action:
+- S7 cycle-cost diagnostics worker
+  `019ebc2b-04c9-7760-8ed8-a7d55aa59723` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-222108-s7-cycle-cost-diagnostics.md`.
 - Worker initially hit the agent thread limit while trying to spawn its
   internal reviewer. After supervisor closed completed agents, worker completed
   four internal review rounds and reached reviewer `ACCEPT`.
