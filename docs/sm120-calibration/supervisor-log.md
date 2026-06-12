@@ -3469,3 +3469,99 @@ Follow-up:
 - Next S7 work should move to targeted code-path/instrumentation analysis for
   why the low-latency point remains CPU-heavy in the pre-admission TB-latency
   window, rather than blindly extending bounded sweep execution.
+
+### 2026-06-12 21:58:11 CST
+
+Action:
+- Created checkpoint `10d4cd1`
+  (`docs: record SM120 candidate0002 deeper diagnostic`) for the accepted job
+  `11` deeper bounded diagnostic.
+- Ran preflight for targeted pre-admission TB-latency code-path analysis:
+  - worktree clean on `dev-5060` ahead of origin by 63 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 pre-admission TB-latency code-path analysis worker
+  `019ebc20-22d4-71a0-a6c4-864e773a2132`.
+
+Scope for worker:
+- Inspect simulator per-cycle code paths before CTA admission while
+  `select_kernel_none detail=tb_latency_pending` is active.
+- Identify where `tb_latency` is decremented and what else runs before CTAs can
+  be admitted.
+- Compare with accepted `candidate_0001` final dispatch diagnostic behavior.
+- Determine whether the high wall time with only cycle `1` to `201` progress is
+  expected pre-admission work, diagnostics overhead, dispatch/scheduler loop
+  pathology, config-specific model pathology, or still unknown.
+- Implement only a clear low-risk root-cause fix or default-off instrumentation
+  improvement if one is evident; otherwise produce supported analysis and a
+  concrete next-step plan.
+- Do not modify accepted/generated/latest configs, calibration outputs, job
+  aliases, or promotion paths.
+- Do not run full simulator jobs unless absolutely necessary; at most one short
+  local ProcMan diagnostic under ignored `artifacts/s7/` if needed.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for the code-path analysis and reviewer verdict before deciding whether
+  to instrument/fix TB-latency pre-admission behavior or pause/exclude the low
+  `-latency_L0_to_L1=37` sweep points.
+
+### 2026-06-12 22:07:15 CST
+
+Action:
+- S7 pre-admission TB-latency code-path analysis worker
+  `019ebc20-22d4-71a0-a6c4-864e773a2132` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-220119-s7-candidate0002-preadmission-codepath.md`.
+- Spawned independent supervisor reviewer
+  `019ebc26-f63a-7673-a0a5-caf49b8db32d`.
+
+Worker result:
+- No simulator jobs were launched and no code files were changed.
+- The worker classified the observed cycle `1` to `201` behavior as an
+  expensive but expected pre-admission TB-latency loop, amplified by enabled
+  diagnostics.
+- Root-cause confidence is medium-high for the immediate pre-admission window,
+  but lower for the broader timeout because `candidate_0002` has not been
+  observed through cycle `1801` or post-bind.
+- The worker found that `issue_block2core()` / `select_kernel()` observe
+  nonzero TB latency before `decrement_kernel_latency()` runs later in the same
+  core-clock tick.
+- The worker found that `get_more_cta_left()` ignores TB latency, so the
+  per-cycle cluster/core path is entered while CTAs remain even though no CTA
+  can yet be admitted.
+- The worker declined a shortcut that would skip the cluster/core path during
+  TB-latency pending because it could affect stats, clocked work, and admission
+  timing.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebc26-f63a-7673-a0a5-caf49b8db32d`
+  returned `ACCEPT`.
+- Reviewer confirmed the TB-latency decrement order and `gpgpu_sim::cycle()`
+  order are source-backed.
+- Reviewer confirmed the pre-admission work explanation is accurate:
+  `get_more_cta_left()` ignores TB latency, inactive remodeled SMs return
+  quickly, but the simulator still pays clock-domain, cluster loop,
+  CTA-selection, stats, and diagnostics overhead.
+- Reviewer confirmed the comparison with `candidate_0001` is fair: the prior
+  accepted diagnostic showed the same TB countdown and reached bind only after
+  running to cycle `1801`.
+- Reviewer agreed the no-code-change decision is appropriate and that skipping
+  cluster/core work while TB latency is pending has semantic risk.
+- Reviewer agreed the recommended next step is default-off low-volume
+  cycle-cost diagnostics around `gpgpu_sim::cycle()`, followed by one bounded
+  `candidate_0002` run to cycle `1801`, first bind/CTA launch, or a strict cap.
+
+Validation:
+- `git diff --check` passed.
+- Live ProcMan status was `Nothing Active`.
+- Temporary S7 bounded-sweep alias was absent.
+- Generated SM120 config `--check-only` passed.
+- Protected generated/tested/accepted/latest config and calibration paths were
+  clean.
+
+Follow-up:
+- Checkpoint the accepted analysis documentation.
+- Next S7 work should add a default-off, low-volume cycle-cost diagnostic for
+  `gpgpu_sim::cycle()` sections before running any further bounded
+  `candidate_0002` diagnostic.
