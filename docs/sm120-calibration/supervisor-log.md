@@ -2465,3 +2465,106 @@ Follow-up:
   metrics and should be retried only after this ProcMan launch fix is reviewed
   and committed.
 - Promotion gate remains closed.
+
+### 2026-06-12 17:45:00 CST
+
+Action:
+- Created checkpoint `4534e04` (`fix: launch ProcMan manager by absolute path`)
+  for the reviewed ProcMan manager-launch infrastructure fix.
+- Ran S7 remaining-candidates preflight after the checkpoint:
+  - `git status --short --branch --untracked-files=all` showed a clean tracked
+    worktree on `dev-5060` ahead of origin by 53 commits.
+  - `python3 simulator-remodeled/util/job_launching/procman.py -p` reported
+    `Nothing Active`.
+  - `simulator-remodeled/util/job_launching/configs/define-s7-bounded-sweep-temp.yml`
+    was absent.
+  - Protected generated/tested/latest config paths were clean.
+  - `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only`
+    passed for both `SM120_RTX5070_TI` and `SM120_RTX5060`.
+- Spawned fresh blank-context S7 execution worker
+  `019ebb2a-577b-7dd1-907f-24a513865a6d` to run remaining bounded-sweep
+  candidates `candidate_0001` and `candidate_0002` locally.
+
+Scope for worker:
+- Use base checkpoint `4534e04`.
+- Run only local simulator jobs, one ProcMan job at a time.
+- Use and remove only the temporary
+  `define-s7-bounded-sweep-temp.yml` alias.
+- Stop if a candidate does not enter active/running state within 30 seconds or
+  if ProcMan becomes stale.
+- Do not rerun candidate `0003`/job `486` or candidate `0004`/job `487`.
+- Do not modify accepted/generated/latest configs, promote configs, or claim
+  calibration-quality results.
+
+Follow-up:
+- Waiting for the worker to report candidate metrics, a complete draft S6
+  supplied-metrics manifest/ranked report if all four candidates become
+  available, or a blocker.
+
+### 2026-06-12 18:20:00 CST
+
+Action:
+- S7 remaining-candidates worker `019ebb2a-577b-7dd1-907f-24a513865a6d`
+  completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-173032-s7-remaining-candidates-post-procman-fix.md`.
+- Worker ran `candidate_0001` locally after the ProcMan manager-launch fix.
+- Spawned independent supervisor reviewer
+  `019ebb58-676d-7833-944e-75261a93ee32` to review the worker output and
+  artifacts.
+
+Worker result:
+- `candidate_0001` setup-only planning succeeded with final values
+  `-latency_L0_to_L1=37` and `-prefetch_per_stream_buffer_size=8`.
+- `candidate_0001` was submitted locally and entered ProcMan `activeJobs` with
+  `status=RUNNING` within the 30-second check window. This validates that the
+  previous queued-only manager-launch failure is no longer reproduced by this
+  candidate.
+- The worker stopped `candidate_0001` after about 43 minutes because there was
+  still no `result.txt`, `PASSED`, simulator exit marker, or parseable
+  simulator metrics.
+- `candidate_0002` was not launched, per stop rule after `candidate_0001`
+  produced no parseable metrics.
+- No complete S6 supplied-metrics manifest or ranked report was generated.
+- No new candidate metric YAML was produced for `candidate_0001`.
+
+Cleanup and evidence:
+- Worker artifact directory:
+  `artifacts/s7/s7-bounded-sweep-20260610-024829/remaining-candidates-post-procman-fix-20260612-173032/`.
+- Candidate run directory:
+  `artifacts/s7/s7-bounded-sweep-20260610-024829/sim-runs/candidate_0001-post-procman-fix-20260612-173032/`.
+- Timeout stdout/stderr snapshots were preserved under the worker artifact
+  directory.
+- Final `python3 simulator-remodeled/util/job_launching/procman.py -p`
+  reported `Nothing Active`.
+- The temporary
+  `simulator-remodeled/util/job_launching/configs/define-s7-bounded-sweep-temp.yml`
+  alias was absent after cleanup.
+- Supervisor spot-check `git status --short --branch --untracked-files=all`
+  showed only the supervisor log and the new worker log as tracked/untracked
+  changes.
+
+Follow-up:
+- Await supervisor reviewer verdict before checkpointing this evidence.
+- If accepted, the next S7 work should be timeout root-cause analysis for
+  `candidate_0001`, not another blind rerun of the same candidate.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebb58-676d-7833-944e-75261a93ee32`
+  returned `ACCEPT`.
+- Reviewer confirmed that `candidate_0001` entered ProcMan `activeJobs` with
+  `status=RUNNING` after checkpoint `4534e04`.
+- Reviewer confirmed the timeout/no-parseable-metrics conclusion is supported:
+  before cleanup, ProcMan still showed the job running at about `0:43:14`, the
+  simulator child process had been active for about `43:30`, stdout/stderr
+  snapshots were preserved, and no result/metrics/report files were found under
+  the candidate run tree.
+- Reviewer confirmed `candidate_0002` was not launched, ProcMan cleanup ended
+  at `Nothing Active`, the temporary alias is absent, protected
+  generated/latest/calibration paths were untouched, and no promotion or
+  fabricated metrics/report occurred.
+- Reviewer recommended the next S7 step be timeout root-cause analysis rather
+  than another blind rerun.
+
+Follow-up:
+- Checkpoint this accepted evidence.
+- Start a bounded timeout root-cause analysis for `candidate_0001`.
