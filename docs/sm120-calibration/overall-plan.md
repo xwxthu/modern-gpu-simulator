@@ -52,6 +52,8 @@ Latest candidate_0002 diagnostic update: accepted bounded diagnostic for `candid
 
 Latest startup-instrumentation update: accepted default-off startup diagnostics now use `GPGPUSIM_STARTUP_DEBUG=1` and emit immediately flushed `GPGPUSIM-STARTUP` lines to `stderr`. Coverage includes runtime/device init, env/config/trace parsing, GPU and stream-manager creation, simulator thread startup/work detection, fat-binary/function registration, CUDA launch, grid initialization, and stream push. The env gate uses thread-safe function-local static initialization, and new `%p` diagnostics cast pointer arguments explicitly. The next S7 step is one bounded `candidate_0002` silent-path diagnostic with startup, dispatch, and progress debug enabled. Promotion gate remains closed.
 
+Latest candidate_0002 startup-diagnostic update: accepted bounded diagnostic job `10` for `candidate_0002` (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=10`) produced immediate startup stderr and first-poll dispatch/progress stdout. The previous no-first-output uncertainty was localized past runtime init, config/trace parse, GPU and stream-manager creation, simulator thread startup, function registration, CUDA launch/grid init, stream push, and initial dispatch/progress emission for this instrumented run. The observed state stopped at early `tb_latency_pending` before CTA admission (`cta_launched_kernel=0`, `active_sms=0`), with no result or metrics. The next S7 action may be one deeper bounded `candidate_0002` diagnostic toward CTA admission/bind or repeated-state detection. Promotion gate remains closed.
+
 ## Checkpoint Policy
 
 Commit at stable points:

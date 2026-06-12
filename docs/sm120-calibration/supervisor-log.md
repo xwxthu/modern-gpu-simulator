@@ -3293,3 +3293,93 @@ Follow-up:
   `GPGPUSIM_KERNEL_DISPATCH_DEBUG=1`, and
   `GPGPUSIM_KERNEL_PROGRESS_DEBUG=1`, inspecting stderr first if stdout remains
   empty.
+
+### 2026-06-12 21:35:54 CST
+
+Action:
+- Created checkpoint `984f64f` (`feat: add startup diagnostics`) for the
+  accepted default-off startup/first-output instrumentation.
+- Ran preflight for one bounded `candidate_0002` silent-path diagnostic:
+  - worktree clean on `dev-5060` ahead of origin by 61 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 `candidate_0002` startup/dispatch/progress diagnostic worker
+  `019ebc0b-3cd5-7103-bf33-2ed53bda47a9`.
+
+Scope for worker:
+- Run at most one actual local ProcMan job for `candidate_0002`
+  (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=10`).
+- Enable `GPGPUSIM_STARTUP_DEBUG=1`,
+  `GPGPUSIM_KERNEL_DISPATCH_DEBUG=1`, and
+  `GPGPUSIM_KERNEL_PROGRESS_DEBUG=1`.
+- Preserve setup, effective config, ProcMan/process polling,
+  stdout/stderr-growth, startup/dispatch/progress key lines, result state,
+  stop reason, and cleanup evidence under ignored `artifacts/s7/`.
+- Use strict stop gates and wall time no more than 15 minutes.
+- Do not generate/promote candidate metrics, S6 reports, accepted/latest
+  configs, generated configs, or calibration results.
+- Remove the temporary alias before final state and leave ProcMan
+  `Nothing Active`.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings before reporting back.
+
+Follow-up:
+- Wait for the bounded diagnostic verdict before deciding whether the low
+  `-latency_L0_to_L1=37` points need more instrumentation, a root-cause fix, or
+  a reviewed pause/exclusion policy.
+
+### 2026-06-12 21:43:27 CST
+
+Action:
+- S7 `candidate_0002` startup/dispatch/progress diagnostic worker
+  `019ebc0b-3cd5-7103-bf33-2ed53bda47a9` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-213551-s7-candidate0002-startup-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebc11-b085-75c2-861f-f2b1dd90ab5c`.
+
+Worker result:
+- Exactly one actual local ProcMan job was submitted: job `10`.
+- Effective candidate values were `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=10`.
+- Startup stderr output appeared immediately, including runtime init, config
+  parse, GPU and stream-manager creation, simulator thread start, function
+  registration, CUDA launch, grid init, stream push, and
+  `sim_thread_work_detected`.
+- Dispatch/progress stdout appeared on the first monitor poll:
+  `startup_lines=45`, `dispatch_lines=37`, and `progress_lines=2`.
+- Key dispatch/progress evidence showed kernel insertion followed by
+  `select_kernel_none detail=tb_latency_pending` at cycle `1`, with
+  `cta_launched_kernel=0` and `active_sms=0`.
+- Stop reason was `normal-startup-dispatch-progress-observed`.
+- No `result.txt` or candidate metrics were produced.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebc11-b085-75c2-861f-f2b1dd90ab5c`
+  returned `ACCEPT`.
+- Reviewer confirmed one-job scope via `run-submit.log`, final/live ProcMan
+  `Nothing Active`, and effective `37/10` override evidence.
+- Reviewer confirmed the startup evidence covers meaningful pre-dispatch
+  stages through simulator-thread work detection.
+- Reviewer confirmed dispatch/progress evidence supports the stop reason and
+  the early `tb_latency_pending` state before CTA admission.
+- Reviewer confirmed the worker's localization language is appropriately
+  bounded: it only closes the prior no-first-output uncertainty for this
+  instrumented run, and does not claim completion, metrics validity, or
+  promotion readiness.
+- Reviewer confirmed no result/metrics/promotion leakage, empty temp-alias
+  final log, and no protected-path changes.
+
+Validation:
+- `git diff --check` passed.
+- Live ProcMan status was `Nothing Active`.
+- Temporary S7 bounded-sweep alias was absent.
+- Protected generated/tested/accepted/latest config and calibration paths were
+  clean.
+
+Follow-up:
+- Checkpoint the accepted diagnostic documentation.
+- Next S7 action may be at most one deeper bounded `candidate_0002` diagnostic
+  from the observed `tb_latency_pending` state toward CTA admission/bind or
+  repeated-state detection.
+- Keep low `-latency_L0_to_L1=37` points out of promotion until the later
+  slowdown/livelock risk is understood.
