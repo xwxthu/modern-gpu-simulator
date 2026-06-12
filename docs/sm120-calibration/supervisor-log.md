@@ -2863,3 +2863,142 @@ Follow-up:
 - Checkpoint the accepted deeper diagnostic.
 - Dispatch targeted instrumentation/code-path investigation for the
   kernel-dispatch to shader-bind path.
+
+### 2026-06-12 19:29:00 CST
+
+Action:
+- Created checkpoint `89bef1d` (`docs: record SM120 candidate prelaunch stall`)
+  for the accepted deeper progress-gated diagnostic.
+- Ran preflight for targeted instrumentation/code-path investigation:
+  - worktree clean on `dev-5060` ahead of origin by 57 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent;
+  - protected generated/tested/latest config paths clean.
+- Spawned S7 instrumentation/code-path investigation worker
+  `019ebb94-85cb-74e2-b858-c484e0dfe82c`.
+
+Scope for worker:
+- Inspect the existing progress diagnostic implementation and the simulator
+  path from kernel push/dispatch to shader bind/CTA launch.
+- Identify where a CPU-heavy loop could occur before shader bind with
+  `next_cta=0`, `active_sms=0`, and no stdout growth.
+- Add minimal default-off instrumentation, or a safe minimal root-cause fix if
+  one is clearly proven.
+- Keep changes narrowly scoped; do not modify accepted/generated/latest config
+  paths or promote calibration results.
+- If a validation run is needed, run at most one short local ProcMan diagnostic
+  job under ignored `artifacts/s7/`, then clean ProcMan and any temporary alias.
+
+Follow-up:
+- Wait for the worker's code-path diagnosis and instrumentation/fix proposal.
+
+### 2026-06-12 20:05:00 CST
+
+Action:
+- S7 instrumentation/code-path investigation worker
+  `019ebb94-85cb-74e2-b858-c484e0dfe82c` returned an initial implementation
+  of default-off dispatch-bind instrumentation.
+- Closed completed earlier agents to free reviewer capacity.
+- Spawned independent supervisor reviewer
+  `019ebbaa-cad1-76e0-b2f8-debfb014f348`.
+
+Worker initial result:
+- Added `GPGPUSIM_KERNEL_DISPATCH_DEBUG=1` with
+  `GPGPUSIM_KERNEL_DISPATCH_INTERVAL=<cycles>` and output prefix
+  `GPGPUSIM-DISPATCH-BIND`.
+- Instrumented stream launch wait/to-GPU, GPU launch insertion,
+  `select_kernel()`, cluster admission, SM bind, and SM CTA initialization.
+- Reported successful rebuild and short local diagnostics under
+  `artifacts/s7/s7-dispatch-bind-instrumentation-20260612-193054/`.
+
+Supervisor review result:
+- Reviewer returned `CHANGES_NEEDED`.
+- Blocking finding 1: worker log materially misstated ProcMan usage. It claimed
+  one short diagnostic/no second ProcMan job after refinement, but artifacts
+  show an initial failed `run-submit.log`, then two successful actual ProcMan
+  jobs: `run-submit-retry.log` queued job `5`, and `run-submit-final.log`
+  queued job `6`.
+- Blocking finding 2: final runtime evidence did not cleanly prove final source
+  state. `key-lines-final-poll-1.log` still shows
+  `detail=admission_full`, but current `stream_manager.cc` logic made that
+  label effectively unreachable in the wait branch.
+- Blocking finding 3: the stream wait-reason logic needs correction and clearer
+  documentation. The reviewer recommended explicit precedence, with
+  launch-latency reported before decrementing, then admission-blocked
+  classification, then any rare fallback.
+- Non-blocking: reviewer considered the default-off dispatch-bind
+  instrumentation generally useful and cleanup/protected-path hygiene clean.
+
+Follow-up:
+- Returned the task to worker `019ebb94-85cb-74e2-b858-c484e0dfe82c` for
+  rework.
+- Required rework: fix `stream_manager.cc` wait-reason logic, update the worker
+  log to document the actual job count and workflow deviation, rebuild, run
+  validation, confirm ProcMan/alias/protected-path hygiene, and provide final
+  source-state evidence. One additional short local diagnostic is allowed if
+  needed to prove final behavior.
+
+### 2026-06-12 20:18:00 CST
+
+Action:
+- Instrumentation worker `019ebb94-85cb-74e2-b858-c484e0dfe82c` completed
+  rework for the supervisor `CHANGES_NEEDED` review.
+- Spawned independent supervisor reviewer
+  `019ebbbb-c05f-7ed3-9c38-1e203dd0ef39` for final review.
+
+Rework result:
+- `stream_manager.cc` wait-reason precedence now reports `launch_latency` first
+  when `m_launch_latency > 0`, then `admission_blocked` if launch latency is
+  zero but the GPU cannot accept a kernel, then `unexpected_launch_wait` as a
+  rare fallback.
+- Worker log now documents the workflow deviation honestly:
+  - an initial failed submit before any job was queued;
+  - original short diagnostic job `5`;
+  - original short diagnostic job `6`;
+  - cleanup evidence for both jobs;
+  - no metrics/report/promotion from those jobs.
+- Worker ran one additional allowed rework validation job `7` after the final
+  wait-reason fix and rebuild.
+- Rework artifact:
+  `artifacts/s7/s7-dispatch-bind-rework-validation-20260612-195505/`.
+- Rework key evidence shows `stream_kernel_launch_wait detail=launch_latency`,
+  `stream_kernel_launch_to_gpu`, `gpu_launch_insert`, and
+  `select_kernel_none detail=tb_latency_pending`; no `detail=admission_full`
+  appears in the final-code evidence.
+
+Validation and cleanup:
+- Worker reported full rebuild passed after the code change.
+- Worker reported `git diff --check` passed.
+- Live supervisor checks confirmed ProcMan `Nothing Active`; temporary alias
+  absent; protected generated/accepted/latest/calibration paths clean.
+
+Follow-up:
+- Await final supervisor reviewer verdict before checkpointing the
+  instrumentation code.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebbbb-c05f-7ed3-9c38-1e203dd0ef39`
+  returned `ACCEPT`.
+- Reviewer confirmed the worker log now accurately documents the failed setup,
+  original diagnostic jobs `5` and `6`, cleanup, workflow deviation, and
+  rework job `7`.
+- Reviewer confirmed `stream_manager.cc` wait-reason precedence is correct:
+  `launch_latency` before decrement, then `admission_blocked`, then
+  `unexpected_launch_wait`.
+- Reviewer confirmed final rework runtime evidence matches final source:
+  `stream_kernel_launch_wait detail=launch_latency`, no `admission_full`,
+  then `stream_kernel_launch_to_gpu`, and
+  `select_kernel_none detail=tb_latency_pending`.
+- Reviewer accepted the instrumentation as default-off via
+  `GPGPUSIM_KERNEL_DISPATCH_DEBUG`, with acceptable disabled overhead and
+  useful rate-limited diagnostic output for short targeted runs.
+- Reviewer confirmed final validation and cleanup: rebuild exit code `0`,
+  current `git diff --check` passes, ProcMan `Nothing Active`, temporary alias
+  absent, and protected generated/accepted/latest/calibration paths clean.
+
+Follow-up:
+- Checkpoint the accepted dispatch-bind instrumentation.
+- Next S7 action should be one bounded candidate `0001` reproduction with both
+  progress and dispatch-bind debug enabled to locate whether the long interval
+  is stuck before TB latency expiry, during cluster admission, or inside SM CTA
+  initialization.

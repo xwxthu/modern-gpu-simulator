@@ -4680,22 +4680,38 @@ unsigned simt_core_cluster::issue_block2core() {
         // wait till current kernel finishes
         if (m_core[core]->get_not_completed() == 0) {
           kernel_info_t *k = m_gpu->select_kernel();
-          if (k) m_core[core]->set_kernel(k);
+          if (k) {
+            m_gpu->maybe_print_dispatch_bind_debug(
+                "cluster_set_kernel", k, m_cluster_id,
+                m_config->cid_to_sid(core, m_cluster_id));
+            m_core[core]->set_kernel(k);
+          }
           kernel = k;
         }
       }
     }
 
-    if (m_gpu->kernel_more_cta_left(kernel) &&
+    if (!m_gpu->kernel_more_cta_left(kernel)) {
+      m_gpu->maybe_print_dispatch_bind_debug(
+          "cluster_no_kernel_or_no_cta", kernel, m_cluster_id,
+          m_config->cid_to_sid(core, m_cluster_id), "no_cta_ready");
+    } else if (
         //            (m_core[core]->get_n_active_cta() <
         //            m_config->max_cta(*kernel)) ) {
         m_core[core]->can_issue_1block(*kernel)) {
+      m_gpu->maybe_print_dispatch_bind_debug(
+          "cluster_issue_cta_to_sm", kernel, m_cluster_id,
+          m_config->cid_to_sid(core, m_cluster_id));
       m_core[core]->issue_block2core(*kernel);
       m_gpu->increase_num_threads_kernel(kernel->get_uid(), kernel->threads_per_cta());
       num_blocks_issued++;
       m_cta_issue_next_core = core;
       check_kernel_launch_limitation(*kernel, m_config, m_gpu->get_shader_stats()); 
       break;
+    } else {
+      m_gpu->maybe_print_dispatch_bind_debug(
+          "cluster_cta_admission_blocked", kernel, m_cluster_id,
+          m_config->cid_to_sid(core, m_cluster_id), "can_issue_1block_false");
     }
   }
   

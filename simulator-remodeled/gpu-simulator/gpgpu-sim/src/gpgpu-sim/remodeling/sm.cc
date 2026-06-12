@@ -995,6 +995,7 @@ address_type SM::next_pc(int tid) const {
 void SM::set_kernel(kernel_info_t *k) {
   assert(k);
   m_kernel = k;
+  m_gpu->maybe_print_dispatch_bind_debug("sm_set_kernel", k, -1, m_sm_id);
   //        k->inc_running();
   printf("GPGPU-Sim uArch: Shader %d bind to kernel %u \'%s\'\n", m_sm_id,
          m_kernel->get_uid(), m_kernel->name().c_str());
@@ -1263,6 +1264,8 @@ float SM::get_current_occupancy(unsigned long long &active,
 }
 
 void SM::issue_block2core(kernel_info_t &kernel) {
+  m_gpu->maybe_print_dispatch_bind_debug("sm_issue_block_enter", &kernel, -1,
+                                         m_sm_id);
   if (!m_config->gpgpu_concurrent_kernel_sm)
     set_max_cta(kernel);
   else
@@ -1375,6 +1378,8 @@ void SM::issue_block2core(kernel_info_t &kernel) {
                  free_cta_hw_id, start_thread, end_thread, m_gpu->gpu_sim_cycle,
                  m_gpu->gpu_tot_sim_cycle, kernel.get_uid(),
                  kernel.get_name().c_str());
+  m_gpu->maybe_print_dispatch_bind_debug("sm_issue_block_done", &kernel, -1,
+                                         m_sm_id, "cta_initialized");
 }
 
 bool SM::can_issue_1block(kernel_info_t &kernel) {

@@ -155,16 +155,27 @@ bool stream_operation::do_operation(gpgpu_sim *gpu) {
         gpu->set_cache_config(m_kernel->name());
         gpu->functional_launch(m_kernel);
       } else {  // Performance Sim
-        if (gpu->can_start_kernel() && m_kernel->m_launch_latency == 0) {
+        const bool can_start_kernel = gpu->can_start_kernel();
+        if (can_start_kernel && m_kernel->m_launch_latency == 0) {
           if (g_debug_execution >= 3) {
             printf("kernel %d: \'%s\' transfer to GPU hardware scheduler\n",
                    m_kernel->get_uid(), m_kernel->name().c_str());
             m_kernel->print_parent_info();
           }
           gpu->set_cache_config(m_kernel->name());
+          gpu->maybe_print_dispatch_bind_debug("stream_kernel_launch_to_gpu",
+                                               m_kernel);
           gpu->launch(m_kernel);
         } else {
+          const char *wait_reason = "unexpected_launch_wait";
+          if (m_kernel->m_launch_latency > 0) {
+            wait_reason = "launch_latency";
+          } else if (!can_start_kernel) {
+            wait_reason = "admission_blocked";
+          }
           if (m_kernel->m_launch_latency) m_kernel->m_launch_latency--;
+          gpu->maybe_print_dispatch_bind_debug(
+              "stream_kernel_launch_wait", m_kernel, -1, -1, wait_reason);
           if (g_debug_execution >= 3)
             printf(
                 "kernel %d: \'%s\', latency %u not ready to transfer to GPU "

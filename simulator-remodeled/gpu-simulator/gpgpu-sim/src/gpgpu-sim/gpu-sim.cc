@@ -1517,6 +1517,7 @@ void increment_x_then_y_then_z(dim3 &i, const dim3 &bound) {
 }
 
 void gpgpu_sim::launch(kernel_info_t *kinfo) {
+  maybe_print_dispatch_bind_debug("gpu_launch_enter", kinfo);
   unsigned cta_size = kinfo->threads_per_cta();
   if (cta_size > m_shader_config->n_thread_per_shader) {
     printf(
@@ -1543,6 +1544,8 @@ void gpgpu_sim::launch(kernel_info_t *kinfo) {
   m_shader_stats->num_kernel_not_in_binary += !kinfo->is_captured_from_binary;
   m_grid_barrier_status[kinfo->get_uid()] = grid_barrier_status(kinfo->get_uid(), 0);
   assert(n < m_running_kernels.size());
+  maybe_print_dispatch_bind_debug("gpu_launch_insert", kinfo, -1, -1,
+                                  "inserted_running_slot");
 }
 
 bool gpgpu_sim::can_start_kernel() {
@@ -1590,6 +1593,9 @@ kernel_info_t *gpgpu_sim::select_kernel() {
   if (m_running_kernels[m_last_issued_kernel] &&
       !m_running_kernels[m_last_issued_kernel]->no_more_ctas_to_run() &&
       !m_running_kernels[m_last_issued_kernel]->m_kernel_TB_latency) {
+    maybe_print_dispatch_bind_debug("select_kernel_current",
+                                    m_running_kernels[m_last_issued_kernel],
+                                    -1, -1, "ready");
     unsigned launch_uid = m_running_kernels[m_last_issued_kernel]->get_uid();
     if (std::find(m_executed_kernel_uids.begin(), m_executed_kernel_uids.end(),
                   launch_uid) == m_executed_kernel_uids.end()) {
@@ -1608,6 +1614,9 @@ kernel_info_t *gpgpu_sim::select_kernel() {
     if (kernel_more_cta_left(m_running_kernels[idx]) &&
         !m_running_kernels[idx]->m_kernel_TB_latency) {
       m_last_issued_kernel = idx;
+      maybe_print_dispatch_bind_debug("select_kernel_next",
+                                      m_running_kernels[idx], -1, -1,
+                                      "ready");
       m_running_kernels[idx]->start_cycle = gpu_sim_cycle + gpu_tot_sim_cycle;
       // record this kernel for stat print if it is the first time this kernel
       // is selected for execution
@@ -1621,6 +1630,18 @@ kernel_info_t *gpgpu_sim::select_kernel() {
       return m_running_kernels[idx];
     }
   }
+  kernel_info_t *latency_pending_kernel = NULL;
+  for (unsigned n = 0; n < m_running_kernels.size(); n++) {
+    if (m_running_kernels[n] &&
+        !m_running_kernels[n]->no_more_ctas_to_run() &&
+        m_running_kernels[n]->m_kernel_TB_latency) {
+      latency_pending_kernel = m_running_kernels[n];
+      break;
+    }
+  }
+  maybe_print_dispatch_bind_debug(
+      "select_kernel_none", latency_pending_kernel, -1, -1,
+      latency_pending_kernel ? "tb_latency_pending" : "no_ready_kernel");
   return NULL;
 }
 
@@ -1707,6 +1728,10 @@ gpgpu_sim::gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx)
   m_kernel_progress_debug_sm_limit = 6;
   m_kernel_progress_debug_last_cycle = 0;
   m_kernel_progress_debug_last_running_signature.clear();
+  m_dispatch_bind_debug_checked = false;
+  m_dispatch_bind_debug_enabled = false;
+  m_dispatch_bind_debug_interval = 1000;
+  m_dispatch_bind_debug_last_signature_cycle.clear();
 
   gpu_stall_dramfull = 0;
   gpu_stall_icnt2sh = 0;
@@ -2791,12 +2816,15 @@ int gpgpu_sim::next_clock_domain(void) {
 
 void gpgpu_sim::issue_block2core() {
   unsigned last_issued = m_last_cluster_issue;
+  maybe_print_dispatch_bind_debug("issue_block2core_begin", NULL);
   for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
     unsigned idx = (i + last_issued + 1) % m_shader_config->n_simt_clusters;
     unsigned num = m_cluster[idx]->issue_block2core();
     if (num) {
       m_last_cluster_issue = idx;
       m_total_cta_launched += num;
+      maybe_print_dispatch_bind_debug("issue_block2core_cluster_issued", NULL,
+                                      idx, -1, "cta_issued");
     }
   }
 }
@@ -2838,6 +2866,107 @@ bool gpgpu_sim::kernel_progress_debug_enabled() {
       m_kernel_progress_debug_interval, m_kernel_progress_debug_sm_limit);
   fflush(stdout);
   return true;
+}
+
+bool gpgpu_sim::dispatch_bind_debug_enabled() {
+  if (m_dispatch_bind_debug_checked) {
+    return m_dispatch_bind_debug_enabled;
+  }
+
+  m_dispatch_bind_debug_checked = true;
+  const char *enabled_env = getenv("GPGPUSIM_KERNEL_DISPATCH_DEBUG");
+  if (!enabled_env || enabled_env[0] == '\0' || enabled_env[0] == '0') {
+    return false;
+  }
+
+  m_dispatch_bind_debug_enabled = true;
+  const char *interval_env = getenv("GPGPUSIM_KERNEL_DISPATCH_INTERVAL");
+  if (interval_env && interval_env[0] != '\0') {
+    char *end = NULL;
+    unsigned long long interval = strtoull(interval_env, &end, 10);
+    if (end != interval_env && interval > 0) {
+      m_dispatch_bind_debug_interval = interval;
+    }
+  }
+
+  printf(
+      "GPGPUSIM-DISPATCH-BIND enabled interval=%llu "
+      "(env:GPGPUSIM_KERNEL_DISPATCH_DEBUG)\n",
+      m_dispatch_bind_debug_interval);
+  fflush(stdout);
+  return true;
+}
+
+void gpgpu_sim::maybe_print_dispatch_bind_debug(const char *stage,
+                                                const kernel_info_t *kernel,
+                                                int cluster_id, int sm_id,
+                                                const char *detail) {
+  if (!dispatch_bind_debug_enabled()) {
+    return;
+  }
+
+  const unsigned long long now = gpu_tot_sim_cycle + gpu_sim_cycle;
+  std::ostringstream signature;
+  signature << stage << ":";
+  if (kernel) {
+    signature << kernel->get_uid() << ":" << kernel->get_next_cta_id_single()
+              << ":" << kernel->running();
+  } else {
+    signature << "nokernel";
+  }
+  signature << ":" << cluster_id << ":" << sm_id << ":"
+            << m_total_cta_launched << ":" << gpu_completed_cta;
+  if (detail) {
+    signature << ":" << detail;
+  }
+  const std::string current_signature = signature.str();
+  std::map<std::string, unsigned long long>::iterator last_signature_cycle =
+      m_dispatch_bind_debug_last_signature_cycle.find(current_signature);
+  if (last_signature_cycle != m_dispatch_bind_debug_last_signature_cycle.end() &&
+      now - last_signature_cycle->second < m_dispatch_bind_debug_interval) {
+    return;
+  }
+  m_dispatch_bind_debug_last_signature_cycle[current_signature] = now;
+
+  unsigned active_cta = 0;
+  unsigned not_completed = 0;
+  unsigned active_sms = 0;
+  for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
+    active_cta += m_cluster[i]->get_n_active_cta();
+    not_completed += m_cluster[i]->get_not_completed();
+    active_sms += m_cluster[i]->get_n_active_sms();
+  }
+
+  std::ostringstream out;
+  out << "GPGPUSIM-DISPATCH-BIND cycle=" << now
+      << " gpu_sim_cycle=" << gpu_sim_cycle
+      << " gpu_tot_sim_cycle=" << gpu_tot_sim_cycle
+      << " stage=" << stage
+      << " cluster=" << cluster_id
+      << " sm=" << sm_id
+      << " cta_launched_kernel=" << m_total_cta_launched
+      << " cta_completed_kernel=" << gpu_completed_cta
+      << " active_cta=" << active_cta
+      << " not_completed_threads=" << not_completed
+      << " active_sms=" << active_sms;
+  if (detail) {
+    out << " detail=" << detail;
+  }
+  if (kernel) {
+    out << " kernel={uid=" << kernel->get_uid()
+        << ",name=" << kernel->name()
+        << ",next_cta=" << kernel->get_next_cta_id_single()
+        << ",num_cta=" << kernel->num_blocks()
+        << ",running=" << kernel->running()
+        << ",done=" << kernel->done()
+        << ",launch_latency=" << kernel->m_launch_latency
+        << ",tb_latency=" << kernel->m_kernel_TB_latency << "}";
+  } else {
+    out << " kernel=none";
+  }
+
+  printf("%s\n", out.str().c_str());
+  fflush(stdout);
 }
 
 void gpgpu_sim::maybe_print_kernel_progress_debug() {

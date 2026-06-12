@@ -760,6 +760,10 @@ class gpgpu_sim : public gpgpu_t {
   std::map<std::string, address_type> *get_kernel_adresses_map() { return &m_first_pc_of_each_defined_kernel; } // MOD. Instruction addresses of different kernels have a different address request in memory
   void launch(kernel_info_t *kinfo);
   bool can_start_kernel();
+  void maybe_print_dispatch_bind_debug(const char *stage,
+                                       const kernel_info_t *kernel = NULL,
+                                       int cluster_id = -1, int sm_id = -1,
+                                       const char *detail = NULL);
   unsigned finished_kernel();
   void set_kernel_done(kernel_info_t *kernel);
   void stop_all_running_kernels();
@@ -881,6 +885,7 @@ class gpgpu_sim : public gpgpu_t {
 
   void gpgpu_debug();
   bool kernel_progress_debug_enabled();
+  bool dispatch_bind_debug_enabled();
 
   unsigned int m_current_cycle_clock_mask;
   bool m_kernel_progress_debug_checked;
@@ -889,6 +894,11 @@ class gpgpu_sim : public gpgpu_t {
   unsigned m_kernel_progress_debug_sm_limit;
   unsigned long long m_kernel_progress_debug_last_cycle;
   std::string m_kernel_progress_debug_last_running_signature;
+  bool m_dispatch_bind_debug_checked;
+  bool m_dispatch_bind_debug_enabled;
+  unsigned long long m_dispatch_bind_debug_interval;
+  std::map<std::string, unsigned long long>
+      m_dispatch_bind_debug_last_signature_cycle;
 
  protected:
   ///// data /////
