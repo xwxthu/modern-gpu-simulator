@@ -2668,3 +2668,102 @@ Supervisor review:
 Follow-up:
 - Checkpoint the accepted timeout root-cause analysis.
 - Dispatch a progress-gated diagnostic worker for `candidate_0001`.
+
+### 2026-06-12 18:43:00 CST
+
+Action:
+- Created checkpoint `f0ddcc7` (`docs: analyze SM120 candidate timeout`) for
+  the accepted timeout root-cause analysis.
+- Ran preflight for progress-gated diagnostics:
+  - worktree clean on `dev-5060` ahead of origin by 55 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent;
+  - protected generated/tested/latest config paths clean.
+- Spawned S7 progress-gated diagnostic worker
+  `019ebb67-9326-7162-a140-2aea72aa13c1`.
+
+Scope for worker:
+- Run at most one short local diagnostic ProcMan job for `candidate_0001`
+  (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=8`).
+- Enable default-off progress diagnostics and run long enough to capture
+  semantic samples after kernel-1 shader binding if possible.
+- Stop after enough post-bind samples, repeated unchanged semantic state, or a
+  strict short wall timeout no longer than 15 minutes without explicit reason.
+- Preserve stdout/stderr snapshots, ProcMan/process polls, file-growth
+  observations, and effective config values under ignored `artifacts/s7/`.
+- Do not generate/promote candidate metrics, complete S6 manifests, ranked
+  reports, or accepted/latest configs.
+
+Follow-up:
+- Wait for the diagnostic verdict before deciding whether to exclude/fix the
+  low `-latency_L0_to_L1=37` point, run `candidate_0002`, extend timeout, or
+  add instrumentation/code fixes.
+
+### 2026-06-12 18:58:00 CST
+
+Action:
+- S7 progress-gated diagnostic worker
+  `019ebb67-9326-7162-a140-2aea72aa13c1` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-185413-s7-candidate0001-progress-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebb7d-837c-7bc2-a4e4-39b73d551dc5` to review the diagnostic evidence.
+
+Worker result:
+- Exactly one short local ProcMan diagnostic job was run for `candidate_0001`
+  with `-latency_L0_to_L1=37` and `-prefetch_per_stream_buffer_size=8`.
+- The diagnostic captured six post-bind progress samples after kernel-1
+  `Shader 29 bind`, at cycles `1801` through `1806`.
+- In those samples, `cta_launched_kernel`, `next_cta`, and `active_cta`
+  advanced from `30` to `180`; sampled SM0 CTA advanced from `1` to `6`;
+  sampled PC stayed at `0x2400`; barrier waiting stayed `0`.
+- The early post-bind pattern matched passing job `486` for the same window,
+  so the evidence does not support an immediate post-bind deadlock/livelock.
+- The diagnostic intentionally stopped before the later 43-minute timeout
+  region, so it does not identify the full timeout root cause.
+
+Worker recommendation:
+- Do not exclude/fix `-latency_L0_to_L1=37` based only on early post-bind
+  evidence.
+- Do not run `candidate_0002` blindly yet.
+- Run one deeper progress-gated `candidate_0001` diagnostic that continues past
+  the early CTA launch burst to all-CTAs-launched/resident, first CTA
+  completion, or repeated-state detection over scheduler/barrier/scoreboard
+  and queue fields.
+
+Cleanup:
+- Worker reported final ProcMan `Nothing Active`, temporary alias absent, no
+  candidate metrics, no S6 manifest/report, and no promotion.
+- Worker needed two internal reviewer rounds; Round 1 found the worker log had
+  been written under the parent tree, and Round 2 accepted after the log was
+  moved into the assigned repository path and the stray parent-tree copy was
+  removed.
+
+Follow-up:
+- Await supervisor reviewer verdict before checkpointing this diagnostic or
+  dispatching a deeper progress-gated diagnostic worker.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebb7d-837c-7bc2-a4e4-39b73d551dc5`
+  returned `ACCEPT`.
+- Reviewer confirmed that raw stdout and job `486` comparison evidence support
+  the limited claim: candidate `0001` reaches early post-bind samples at cycles
+  `1801` through `1806`, and `cta_launched_kernel`/`next_cta` advance
+  `30, 60, 90, 120, 150, 180` with `active_sms=30`, sampled PC `0x2400`, and
+  barrier waiting `0`.
+- Reviewer confirmed the worker's six-sample summary is accurate and the
+  conclusion is properly bounded: medium confidence for normal early post-bind
+  progress, low confidence for the full timeout root cause.
+- Reviewer confirmed the diagnostic used one short local ProcMan job, stopped
+  at `post-bind-progress-samples-6`, produced no metrics/promotion artifacts,
+  left final ProcMan as `Nothing Active`, and kept artifacts under ignored
+  `artifacts/s7/`.
+- Reviewer confirmed protected config/latest paths and temporary alias cleanup
+  are clean.
+- Reviewer agreed that the next action is one deeper progress-gated
+  `candidate_0001` diagnostic to all-CTAs-launched/resident, first CTA
+  completion, or repeated-state detection before running `candidate_0002`,
+  excluding the point, or extending timeout.
+
+Follow-up:
+- Checkpoint the accepted early progress diagnostic.
+- Dispatch a deeper progress-gated diagnostic worker.

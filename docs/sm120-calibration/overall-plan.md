@@ -40,6 +40,8 @@ Latest S7 update: after checkpoint `4534e04`, `candidate_0001` with `-latency_L0
 
 Latest timeout-analysis update: accepted root-cause analysis found no accidental config drift and judged the active issue to be a medium-confidence candidate-specific simulator/model pathological slowdown or livelock risk, most likely associated with the low `-latency_L0_to_L1=37` point. The original timeout run lacked progress diagnostics after kernel-1 shader binding, so the exact state is still unobserved. The next S7 step is a short progress-gated `candidate_0001` diagnostic with targeted kernel/CTA/PC/barrier/scheduler/scoreboard/prefetch evidence before running `candidate_0002` or extending the timeout. Promotion gate remains closed.
 
+Latest progress-diagnostic update: accepted early progress-gated diagnostic shows `candidate_0001` reaches kernel-1 post-bind samples comparable to passing job `486`; CTA launch state advances from `30` to `180` over cycles `1801`-`1806`, sampled PC remains at the early launch PC `0x2400`, and barrier waiting stays `0`. This rules out an immediate post-bind deadlock in the observed early window but does not explain the later 43-minute timeout. The next S7 step is one deeper progress-gated `candidate_0001` diagnostic to all-CTAs-launched/resident, first CTA completion, or repeated-state detection before running `candidate_0002`, excluding the low-latency point, or extending timeout. Promotion gate remains closed.
+
 ## Checkpoint Policy
 
 Commit at stable points:
