@@ -4797,3 +4797,111 @@ Follow-up:
 - Next S7 decision point is whether to explicitly approve a narrowed
   high-latency search-space conversion, or continue requiring complete
   four-candidate coverage before any runnable S6 ranking.
+
+### 2026-06-13 04:15:18 CST
+
+Action:
+- Created checkpoint `e0ab35d`
+  (`feat: draft SM120 supplied metrics manifest`) for the accepted
+  non-runnable supplied-metrics manifest draft builder.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 77 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Run a read-only search-space decision review before any conversion to a
+  runnable S6 manifest.
+- The decision is whether to approve a narrowed high-latency two-candidate
+  search slice for draft ranking, or to keep requiring complete four-candidate
+  coverage.
+
+### 2026-06-13 04:17:21 CST
+
+Action:
+- Read-only S7 search-space decision reviewer
+  `019ebd79-ea9d-72d0-969e-de2ea10d7bed` completed.
+- Reviewer recommended approving conversion of the high-latency slice into a
+  runnable S6 draft ranking over exactly two candidates:
+  `candidate_0003` (`39/8`) and `candidate_0004` (`39/10`).
+
+Decision:
+- Supervisor accepts this as approval for a narrowed S7 validation draft
+  ranking only.
+- This is not approval of the original four-candidate sweep, not promotion-gate
+  opening, and not RTX5070Ti compatibility signoff.
+- Low-latency `37/*` candidates remain excluded/deprioritized for this S7 pass.
+
+Guardrails for next worker:
+- Use only existing accepted/draft artifacts: aggregate hardware target and
+  high-latency simulator candidate metrics.
+- Produce runnable S6 manifest/report only under ignored `artifacts/s7/`.
+- Run `search_sm120_correlation.py` only in supplied-metrics/report mode.
+- Do not run simulator, ProcMan, hardware collection, config generation for
+  promotion, or any promotion/update path.
+- Manifest/report must state high-latency-only, narrowed S7 validation slice,
+  non-promotion, and not original four-candidate coverage.
+- Required approval facts before conversion:
+  `supervisor_approved_narrowed_search_space: true`,
+  `reviewer_approved_exact_metric_alignment: true`,
+  `reviewer_approved_s6_manifest_conversion: true`,
+  `promotion_gate_approval: false`, and
+  `rtx5070ti_compatibility_signoff: false`.
+
+Follow-up:
+- Spawn a worker for the narrowed runnable S6 draft conversion and ranking.
+
+### 2026-06-13 04:42:01 CST
+
+Action:
+- S7 narrowed S6 draft conversion worker
+  `019ebd7c-0566-76b0-8f81-8e61c3859b0c` completed:
+  - `docs/sm120-calibration/s7-narrowed-s6-draft-ranking.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-041903-s7-narrowed-s6-draft-ranking.md`
+  - ignored runnable S6 manifest
+    `artifacts/s7/s7-narrowed-s6-draft-ranking-20260613-041903/RTX5060-backprop-4096-high-latency-narrowed-s6-supplied-metrics.yaml`
+  - ignored draft ranking report
+    `artifacts/s7/s7-narrowed-s6-draft-ranking-20260613-041903/RTX5060-backprop-4096-high-latency-narrowed-s6-draft-ranking-report.yaml`
+- The worker ran `search_sm120_correlation.py` in supplied-metrics report mode
+  only.
+- It ran no simulator, ProcMan workload, hardware collection, config
+  generation for promotion, or promotion/update path.
+
+Ranking result:
+- The runnable S6 manifest is explicitly `draft_not_applied`,
+  `non_promotion`, `high_latency_only`, `narrowed_s7_validation_slice`, and
+  `not_original_four_candidate_sweep`.
+- The search expands to exactly two candidates: `39/8` and `39/10`.
+- The target metrics are exactly the four aggregate CUDA `_time_ms` targets.
+- The report is `supplied_metrics` mode with `planned_command_count: 0` and
+  `planned_simulator_commands: []`.
+- Best narrowed-slice candidate is S6 `candidate_0002`, corresponding to S7
+  `candidate_0004` / job `487` / `39/10`, with score `0.523602`.
+- Second is `39/8`, with score `0.525453`.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebd8f-a6fd-7312-9864-54112f2f67bd`
+  returned `ACCEPT`.
+- Reviewer confirmed manifest labels, approval facts, two-candidate search
+  space, four target metrics, job `486`/`487` simulator-only metrics, ranking
+  mapping, supplied-metrics mode, zero planned commands, ignored artifacts, and
+  protected-path cleanliness.
+- Reviewer accepted the read-only local `codex exec` internal reviewer fallback
+  after thread-limit failure.
+
+Validation:
+- Modern repo ProcMan status checked as `Nothing Active`.
+- Manifest/report YAML assertions passed for non-promotion labels,
+  candidate-count, metric-count, ranking, and zero planned commands.
+- `git diff --check` passed.
+- SM120 config generation `--check-only` passed.
+- Temporary S7 bounded-sweep alias absent.
+- Scoped protected-path status showed only expected new documentation.
+
+Follow-up:
+- Update `overall-plan.md`.
+- Commit this narrowed S6 draft ranking checkpoint.
+- Next S7 work should decide whether this draft ranking is sufficient for S7
+  validation documentation, or whether additional RTX5070Ti compatibility
+  review / promotion-gate design work is needed before S8 documentation.
