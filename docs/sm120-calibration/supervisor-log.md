@@ -4553,3 +4553,84 @@ Follow-up:
 - Next S7 work should prepare promotion-quality hardware-target provenance or
   an explicitly approved narrowed search-space plan before any runnable S6
   ranking or promotion attempt.
+
+### 2026-06-13 03:05:00 CST
+
+Action:
+- Created checkpoint `a565298`
+  (`docs: package SM120 high-latency validation evidence`) for the accepted
+  high-latency simulator-only validation package.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 74 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Prepare promotion-quality RTX5060 hardware-target provenance, or identify
+  the missing collection requirements that prevent it.
+- Any GPU-dependent collection must run on `dsp5060` only as a lightweight
+  hardware run. Do not run the full simulator or move the main workspace there.
+- Keep promotion closed until reviewed hardware target provenance and a
+  reviewed S6 supplied-metrics/search-space decision exist.
+
+### 2026-06-13 03:31:44 CST
+
+Action:
+- S7 hardware-target provenance worker
+  `019ebd39-b82f-7360-b2d9-1b3ef19e7ed2` completed:
+  - `docs/sm120-calibration/s7-hardware-target-provenance.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-030650-s7-hardware-target-provenance.md`
+  - update to `docs/sm120-calibration/overall-plan.md`
+  - ignored artifact root
+    `artifacts/s7/s7-hardware-target-provenance-20260613-030650/`
+- The worker ran lightweight native and Nsight Systems collection on `dsp5060`
+  only. It did not run the full simulator, local ProcMan, S6 search, config
+  generation, calibration promotion, or accepted/latest output updates.
+- The main workspace was not moved to `dsp5060`; only the native executable and
+  gold output file were copied to `/tmp`.
+
+Worker evidence:
+- Five native `backprop_4096` runs exited `0`, printed `PASSED`, and reported
+  checksum `0x42b0e8add8ca`.
+- Five Nsight Systems CUDA-kernel profiles were collected.
+- Repeated CUDA-kernel total time mean was `0.010912 ms` with `0.548630%` CV.
+- Per-kernel means/CVs were:
+  - `bpnn_layerforward_CUDA`: `0.002381 ms`, `1.532494%` CV;
+  - `bpnn_adjust_weights_cuda`: `0.008531 ms`, `0.731192%` CV.
+- Native wall time remains hardware characterization only and is not
+  S6-comparable.
+- Per-run hardware target YAMLs remain `draft_not_applied`; S6 templates remain
+  `template_not_runnable`.
+- Raw native/profiler/device/tool inputs were marker-clean within the scoped
+  raw-input boundary.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebd50-29e1-72d2-98e9-09ed6c5ccae6`
+  returned `ACCEPT`.
+- Reviewer confirmed scope stayed bounded to lightweight native/Nsight
+  collection on `dsp5060`.
+- Reviewer confirmed collection/native/Nsight/scp/device/tool/collector exit
+  codes are zero, while nonzero reviewer fallback timeouts are correctly scoped
+  as reviewer-process artifacts.
+- Reviewer confirmed repeatability metrics match
+  `repeatability-summary.draft.json`.
+- Reviewer confirmed per-run hardware target YAMLs and S6 templates are
+  correctly marked draft/non-runnable.
+- Reviewer confirmed no protected generated/accepted/latest config,
+  calibration, candidate-metrics, S6, hardware-target accepted, or promotion
+  artifacts were modified.
+
+Promotion status:
+- This is stronger draft RTX5060 hardware-target provenance than the prior
+  single-run artifact, but it is still not promotion-quality.
+- Remaining blockers are an approved aggregate hardware-target schema, repeat
+  protocol and acceptance thresholds, clock/warmup/thermal policy, reviewed
+  runnable S6 supplied-metrics manifest, promotion-gate review, and RTX5070Ti
+  compatibility signoff.
+
+Follow-up:
+- Run final checks and checkpoint this accepted draft/blocking hardware
+  provenance documentation.
+- Next S7 work should design or implement the aggregate hardware-target schema
+  and repeat protocol before any runnable S6 ranking or promotion attempt.
