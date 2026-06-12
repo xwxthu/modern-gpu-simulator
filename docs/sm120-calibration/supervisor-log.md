@@ -5001,3 +5001,68 @@ S7 status:
 - S8 must document residual limitations: no promotion-quality final config, no
   RTX5070Ti hardware/simulator validation, no claim about excluded `37/*`
   ranking, and promotion gate remains closed.
+
+### 2026-06-13 05:03:12 CST
+
+Action:
+- Created checkpoint `440c716`
+  (`docs: close SM120 S7 static compatibility`) for the accepted static
+  RTX5070Ti compatibility closeout and S7 completion update.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 79 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- S8 documentation and release checkpoint.
+- Document the workflow, reproduction commands, artifacts, residual
+  limitations, and future promotion-gate requirements for the non-promotion S7
+  validation package.
+
+### 2026-06-13 05:13:17 CST
+
+Action:
+- S8 documentation/release worker `019ebda5-e6ed-72f3-9b32-2ea529e95078`
+  completed:
+  - `docs/sm120-calibration/s8-release-checkpoint.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-050454-s8-release-checkpoint.md`
+  - update to `docs/sm120-calibration/overall-plan.md`
+- The worker ran no simulator, ProcMan workloads, hardware collection, or new
+  S6 ranking.
+- The worker did not modify accepted/latest/generated configs, calibration
+  results, metrics artifacts, or promotion artifacts.
+
+S8 result:
+- The release checkpoint documents the current package as non-promotion
+  validation evidence only.
+- It records the final S7 state: low `37/*` candidates excluded or
+  deprioritized for this pass; narrowed `39/8` vs `39/10` S6 draft ranking
+  best is `39/10`; RTX5070Ti closeout is static/no-hardware/no-simulator only.
+- It maps checked-in documentation/scripts/schema contracts and explicitly
+  warns that `artifacts/s7/` outputs are ignored local draft evidence.
+- It lists static reproduction commands, residual limitations, and future
+  promotion-gate requirements.
+
+Supervisor review:
+- Independent final S8 reviewer `019ebdad-c6d0-7141-8c25-e77aa92b3cb7`
+  returned `ACCEPT`.
+- Reviewer found no critical, high, medium, or low findings.
+- Reviewer confirmed the non-promotion boundary, final S7 result bounds,
+  ignored artifact handling, S8 completion update, protected-path cleanliness,
+  and static validation scope.
+
+Validation:
+- `python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only`
+  passed.
+- `python3 -m py_compile` passed for the S7/S8 helper scripts listed in the
+  release checkpoint.
+- `git diff --check` passed.
+- Modern repo ProcMan status checked as `Nothing Active`.
+- Temporary S7 bounded-sweep alias absent.
+- Scoped protected-path status clean except expected documentation updates.
+
+Final status:
+- S8 is ready to checkpoint.
+- Overall SM120 calibration-framework objective for this run is complete as a
+  non-promotion release checkpoint. Promotion remains future work.
