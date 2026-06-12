@@ -4380,3 +4380,103 @@ Follow-up:
 - Next S7 action should shift from pre-admission stop-policy triage to either
   post-admission behavior/cost analysis for low-latency points or an explicit
   policy decision to exclude low `-latency_L0_to_L1=37` from promotion.
+
+### 2026-06-13 02:29:55 CST
+
+Action:
+- Created checkpoint `b72cb1e`
+  (`docs: record SM120 progress-aware diagnostic rerun`) for accepted Job `15`
+  progress-aware diagnostic documentation.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 72 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Run a read-only S7 evidence synthesis / decision review before launching more
+  low-latency diagnostics.
+- The review should decide whether the next rational step is post-admission
+  behavior/cost analysis for low `-latency_L0_to_L1=37`, an explicit exclusion
+  policy for low-latency promotion candidates, or a return to higher-latency
+  candidate validation.
+
+### 2026-06-13 02:32:01 CST
+
+Action:
+- Read-only S7 evidence synthesis reviewer
+  `019ebd19-7a99-7402-ab73-a327a20757c4` completed.
+- The reviewer recommended an explicit exclusion/deprioritization policy for
+  low `-latency_L0_to_L1=37` promotion candidates in this S7 pass, then a
+  return to higher-latency candidate validation using existing `39`-cycle
+  evidence.
+
+Rationale:
+- Job `15` resolves the pre-admission question for `candidate_0002`: the run
+  reaches `select_kernel_current`, bind/admission, shader bind, CTA issue/init,
+  and CTA launch around cycle `1801`/`1806`.
+- Another pre-admission diagnostic is low value.
+- Immediate post-admission analysis of the low-latency point is scientifically
+  useful only if the project chooses to rescue `37`-cycle candidates, but it
+  does not materially advance promotion while those candidates still lack
+  completion and metrics.
+- The existing actionable validation evidence is the higher-latency slice:
+  `candidate_0003` (`39/8`, job `486`) and `candidate_0004` (`39/10`, job
+  `487`).
+
+Next stage:
+- Spawn a documentation/artifact-only worker.
+- The worker should mark `candidate_0001` and `candidate_0002` as excluded or
+  deprioritized from promotion for the current S7 calibration pass unless
+  supervisor signoff reopens them.
+- The worker should cite existing evidence, preserve the promotion gate, and
+  produce or propose a high-latency-only draft validation slice without running
+  ProcMan/simulator jobs.
+
+### 2026-06-13 02:45:13 CST
+
+Action:
+- S7 policy/high-latency validation worker
+  `019ebd1c-26cf-76b3-bf7a-9e638e90a3bf` completed:
+  - `docs/sm120-calibration/s7-low-latency-exclusion-and-high-latency-slice.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-023430-s7-low-latency-exclusion-policy.md`
+- Worker scope was documentation/artifact-only. It ran no simulator jobs,
+  ProcMan jobs, hardware collection, metric ingestion, S6 search/report
+  generation, or promotion commands.
+- Worker internal review used a read-only local `codex exec` fallback because
+  multi-agent spawn was blocked by thread limit; verdict `ACCEPT`.
+
+Policy result:
+- `candidate_0001` (`37/8`) and `candidate_0002` (`37/10`) are excluded or
+  deprioritized from promotion for the current S7 pass unless supervisor
+  signoff reopens them.
+- This is not a permanent rejection of `-latency_L0_to_L1=37`.
+- `candidate_0003` (`39/8`, job `486`) and `candidate_0004` (`39/10`, job
+  `487`) are the current actionable high-latency, draft simulator-only evidence
+  slice.
+- No high-latency-only S6/scorer artifact was generated because the existing
+  partial scaffold is explicitly non-runnable with missing candidate
+  signatures.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebd24-de35-7310-9418-a64c578b09db`
+  returned `ACCEPT`.
+- Reviewer confirmed the low-latency exclusion/deprioritization policy is
+  current-pass only and supervisor-gated for reopening.
+- Reviewer confirmed `candidate_0001`/`candidate_0002` evidence is bounded as
+  diagnostic/no-metrics evidence.
+- Reviewer confirmed job `486`/`39/8` and job `487`/`39/10` evidence is
+  draft simulator-only and non-promotion.
+- Reviewer confirmed the decision not to generate a high-latency-only S6 report
+  is justified by the partial scaffold's non-runnable state.
+- Reviewer confirmed no protected config, calibration, metrics, S6, hardware,
+  or promotion paths were modified.
+- Reviewer accepted the read-only internal reviewer fallback for this
+  documentation-only task.
+
+Follow-up:
+- Update `overall-plan.md`.
+- Run final checks and checkpoint the accepted policy documentation.
+- Next S7 work should build a non-promotion validation package around the
+  `39/8` and `39/10` simulator evidence, while keeping promotion closed pending
+  RTX5060/RTX5070Ti signoff.
