@@ -3220,6 +3220,66 @@ Follow-up:
 - Wait for worker implementation and internal reviewer verdict before
   supervisor review.
 
+### 2026-06-12 22:50:32 CST
+
+Action:
+- S7 cycle-cost diagnostics worker
+  `019ebc2b-04c9-7760-8ed8-a7d55aa59723` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-222108-s7-cycle-cost-diagnostics.md`.
+- Worker initially hit the agent thread limit while trying to spawn its
+  internal reviewer. After supervisor closed completed agents, worker completed
+  four internal review rounds and reached reviewer `ACCEPT`.
+- Spawned independent supervisor reviewer
+  `019ebc4e-724e-7012-8f25-71132481460a`.
+
+Worker result:
+- Added default-off `GPGPUSIM_CYCLE_COST_DEBUG=1` diagnostics with
+  `GPGPUSIM-CYCLE-COST` output.
+- Added controls `GPGPUSIM_CYCLE_COST_INTERVAL` and
+  `GPGPUSIM_CYCLE_COST_LIMIT`; default interval is `200`, default limit is
+  `32`, and limit `0` means unlimited.
+- Reports saved pre-increment simulated cycle, clock mask, running/TB-latency
+  kernel state, CTA/SM state, and host-time buckets:
+  `clock_domain`, `interconnect_memory`, `cluster_core`,
+  `stats_bookkeeping`, `issue_block2core`, `decrement_kernel_latency`,
+  `diagnostic_emission`, and `total`.
+- Internal reviewers required fixes for post-increment cycle reporting,
+  sampled heap allocation, non-CORE arming, clock-domain bucket start,
+  sampled-path `std::ostringstream` allocation, and format warnings.
+- Final implementation uses cached env gating, CORE-clock emission gating,
+  stack-local `std::optional`, `std::chrono::steady_clock`, and direct
+  `printf` emission.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebc4e-724e-7012-8f25-71132481460a`
+  returned `ACCEPT`.
+- Reviewer confirmed the disabled path is cached and cheap: after first env
+  read, it does not take timers, build strings, scan kernels/clusters, or
+  allocate heap memory when disabled.
+- Reviewer confirmed sampled path behavior: saved pre-increment cycle,
+  `steady_clock`, stack `std::optional`, direct `printf`, CORE-clock emission
+  gating, interval/limit controls, and useful output fields.
+- Reviewer noted low residual risk: the env gate treats values starting with
+  `0` as disabled, matching nearby progress/dispatch gates, while startup
+  debug uses exact `"0"` semantics.
+
+Validation:
+- Worker release rebuild passed after final fixes.
+- `git diff --check` passed.
+- Live ProcMan status was `Nothing Active`.
+- Temporary S7 bounded-sweep alias was absent.
+- Generated SM120 config `--check-only` passed.
+- Protected generated/tested/accepted/latest config and calibration paths were
+  clean.
+- No ProcMan diagnostic run, metrics, promotion output, config generation, or
+  calibration output was produced by this instrumentation task.
+
+Follow-up:
+- Checkpoint the accepted cycle-cost diagnostics implementation.
+- Next S7 action should be one bounded `candidate_0002` diagnostic with
+  startup, dispatch/progress, and cycle-cost diagnostics enabled until cycle
+  `1801`, first bind/CTA launch, or a strict wall cap.
+
 ### 2026-06-12 21:30:00 CST
 
 Action:
@@ -3565,3 +3625,35 @@ Follow-up:
 - Next S7 work should add a default-off, low-volume cycle-cost diagnostic for
   `gpgpu_sim::cycle()` sections before running any further bounded
   `candidate_0002` diagnostic.
+
+### 2026-06-12 22:10:11 CST
+
+Action:
+- Created checkpoint `3611fc2`
+  (`docs: analyze SM120 pre-admission latency path`) for the accepted
+  pre-admission TB-latency code-path analysis.
+- Ran preflight for default-off cycle-cost diagnostic implementation:
+  - worktree clean on `dev-5060` ahead of origin by 64 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 cycle-cost diagnostics implementation worker
+  `019ebc2b-04c9-7760-8ed8-a7d55aa59723`.
+
+Scope for worker:
+- Add default-off, low-volume host-time section diagnostics around
+  `gpgpu_sim::cycle()`, suggested env `GPGPUSIM_CYCLE_COST_DEBUG=1`.
+- Report simulated cycle, cheap kernel/TB-latency state, and host elapsed time
+  for named coarse sections such as clock-domain/interconnect/memory,
+  cluster/core loop, stats/bookkeeping, `issue_block2core`,
+  `decrement_kernel_latency`, and diagnostic emission.
+- Keep disabled overhead negligible and avoid simulator semantic changes.
+- Validate with rebuild, `git diff --check`, ProcMan clean, temporary alias
+  absent, and protected paths clean.
+- Avoid ProcMan diagnostics unless a very short smoke is necessary; do not
+  generate/promote metrics, configs, results, or calibration outputs.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for worker implementation and internal reviewer verdict before
+  supervisor review.

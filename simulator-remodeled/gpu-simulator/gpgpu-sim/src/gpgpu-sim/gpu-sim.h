@@ -964,6 +964,20 @@ class gpgpu_sim : public gpgpu_t {
   void clear_executed_kernel_info();  //< clear the kernel information after
                                       // stat printout
   virtual void createSIMTCluster() = 0;
+  bool cycle_cost_debug_enabled();
+  bool cycle_cost_debug_emit_due(unsigned long long cycle);
+  void maybe_print_cycle_cost_debug(
+      unsigned long long cycle, unsigned long long clock_domain_us,
+      unsigned long long interconnect_memory_us,
+      unsigned long long cluster_core_us, unsigned long long stats_bookkeeping_us,
+      unsigned long long issue_block2core_us,
+      unsigned long long decrement_kernel_latency_us,
+      unsigned long long diagnostic_emission_us, unsigned long long total_us);
+  bool m_cycle_cost_debug_checked;
+  bool m_cycle_cost_debug_enabled;
+  unsigned long long m_cycle_cost_debug_interval;
+  unsigned long long m_cycle_cost_debug_limit;
+  unsigned long long m_cycle_cost_debug_emitted;
 
  public:
   unsigned long long gpu_sim_insn;
