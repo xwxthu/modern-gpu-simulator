@@ -4090,3 +4090,114 @@ Follow-up:
 - Next S7 action should be one bounded `candidate_0002` diagnostic using the
   enhanced fields, with minimal startup/dispatch confirmation, stopping at
   cycle `1801`, first bind/CTA launch, or a strict wall cap.
+
+### 2026-06-13 01:16:20 CST
+
+Action:
+- Created checkpoint `d04d17a`
+  (`feat: refine cluster-core residual diagnostics`) for the accepted
+  residual-attribution instrumentation.
+- Ran post-commit preflight:
+  - worktree clean on `dev-5060` ahead of origin by 69 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+- Spawned S7 refined residual-attribution `candidate_0002` diagnostic worker
+  `019ebcd5-8ab5-7161-8fa0-dc419d5ee198`.
+
+Scope for worker:
+- Run exactly one actual local ProcMan diagnostic for bounded-sweep
+  `candidate_0002` (`-latency_L0_to_L1=37`,
+  `-prefetch_per_stream_buffer_size=10`).
+- Enable refined `GPGPUSIM_CYCLE_COST_DEBUG` fields and minimal
+  startup/dispatch/progress confirmation.
+- Stop at cycle `1801`, `select_kernel_current`, first bind/CTA launch,
+  no-output-growth CPU-heavy state, repeated state without useful progress,
+  ProcMan stale/failure, or a strict wall cap no more than 25 minutes.
+- Preserve setup, effective config, ProcMan/process polling, stdout/stderr
+  evidence, refined cycle-cost lines and summary arithmetic, stop reason,
+  final ProcMan state, and temporary-alias cleanup under ignored
+  `artifacts/s7/`.
+- Do not generate/promote metrics, S6 reports, generated configs,
+  accepted/latest configs, calibration results, hardware target metrics, or
+  promotion artifacts.
+- Remove the temporary alias and leave ProcMan `Nothing Active`.
+- Complete an internal blank-context reviewer round and address worthwhile
+  findings.
+
+Follow-up:
+- Wait for the refined diagnostic verdict before deciding whether a fast-path
+  experiment, OpenMP scheduler experiment, or low-latency sweep exclusion
+  policy is warranted.
+
+### 2026-06-13 01:37:50 CST
+
+Action:
+- S7 refined residual-attribution `candidate_0002` diagnostic worker
+  `019ebcd5-8ab5-7161-8fa0-dc419d5ee198` completed
+  `docs/sm120-calibration/worker-logs/worker-20260613-012616-s7-candidate0002-residual-attribution-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebce9-3d19-72a2-9f6f-d7984578fa32`.
+
+Worker result:
+- Exactly one actual local ProcMan job was submitted: job `14`.
+- Effective candidate values were `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=10`.
+- Refined `d04d17a` field strings were confirmed in the runtime binary and
+  refined `GPGPUSIM-CYCLE-COST` lines were captured.
+- Dispatch evidence reached cycle `201`; cycle-cost evidence reached sample
+  cycle `200`.
+- The run did not reach cycle `1801`, `select_kernel_current`, bind,
+  admission, CTA launch, result, or metrics.
+- Stop reason was
+  `no-output-growth-child-cpu-heavy-repeated-early-pre-admission-state`.
+- Aggregate sampled `cluster_core` was `625762 us`;
+  `non_core_cycle_residual_us=625736 us` (`99.995845%` of sampled
+  `cluster_core`).
+- Direct measured eligibility and inactive-core body time were tiny in the
+  sampled window: `eligibility_us=17`, `inactive_core_cycle_us=9`,
+  `loop_accounted_us=26`.
+- The worker explicitly classified this as an early-stop diagnostic, not a
+  replacement for the previous through-cycle-1200 evidence.
+- Internal blank-context reviewer reached `ACCEPT` in round 3 after fixes to
+  final-status wording and max-cycle terminology.
+
+Validation reported by worker:
+- `git diff --check` passed.
+- SM120 config generation `--check-only` passed.
+- Final ProcMan state was `Nothing Active`.
+- Temporary alias was absent.
+- Protected generated/tested/accepted/latest config and calibration-result
+  paths were clean.
+- No metrics, S6 report, generated config, calibration result, hardware target
+  metrics, or promotion artifact was created.
+
+Follow-up:
+- Wait for independent supervisor reviewer verdict before accepting or
+  checkpointing this diagnostic documentation.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebce9-3d19-72a2-9f6f-d7984578fa32`
+  returned `ACCEPT`.
+- Reviewer confirmed exactly one actual ProcMan run, job `14`.
+- Reviewer confirmed effective candidate overrides were
+  `-latency_L0_to_L1=37` and `-prefetch_per_stream_buffer_size=10`.
+- Reviewer confirmed refined `d04d17a` fields were present in binary/runtime
+  output.
+- Reviewer confirmed summary arithmetic: `625736 + 26 == 625762`, and
+  eligibility components match.
+- Reviewer confirmed the final log correctly distinguishes dispatch evidence
+  through cycle `201` from cycle-cost evidence through cycle `200`.
+- Reviewer confirmed cleanup: live ProcMan `Nothing Active`, temporary alias
+  absent, protected config/calibration paths clean, and no S6/metrics/promotion
+  artifacts.
+- Reviewer confirmed the internal review loop is complete: two
+  `CHANGES_NEEDED` rounds were addressed and round 3 accepted the final log.
+- Residual risk: this is early-stop evidence only; it did not reach cycle
+  `1200`, cycle `1801`, bind/admission, CTA launch, result generation, or
+  candidate metrics.
+
+Follow-up:
+- Checkpoint this accepted early-stop diagnostic documentation.
+- Keep promotion closed.
+- Next S7 action should investigate why the refined diagnostic run stalls or
+  outputs so slowly before the deeper pre-admission window.
