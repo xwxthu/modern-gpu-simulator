@@ -2767,3 +2767,99 @@ Supervisor review:
 Follow-up:
 - Checkpoint the accepted early progress diagnostic.
 - Dispatch a deeper progress-gated diagnostic worker.
+
+### 2026-06-12 19:12:00 CST
+
+Action:
+- Created checkpoint `47e9d5a` (`docs: record SM120 candidate early progress`)
+  for the accepted early progress-gated diagnostic.
+- Ran preflight for the deeper progress-gated diagnostic:
+  - worktree clean on `dev-5060` ahead of origin by 56 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent;
+  - protected generated/tested/latest config paths clean.
+- Spawned S7 deeper progress-gated diagnostic worker
+  `019ebb82-a961-7dc3-ab13-4ee8053df941`.
+
+Scope for worker:
+- Run at most one local diagnostic ProcMan job for `candidate_0001`
+  (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=8`).
+- Continue beyond the early CTA launch burst toward all CTAs
+  launched/resident, first CTA completion progress, or repeated unchanged
+  semantic state.
+- Use a strict progress gate and wall timeout no longer than 25 minutes without
+  explicit reason.
+- Preserve progress lines, stdout/stderr, ProcMan/process polls, file-growth
+  observations, stop reason, and effective config values under ignored
+  `artifacts/s7/`.
+- Do not generate/promote candidate metrics, complete S6 manifests, ranked
+  reports, or accepted/latest configs.
+
+Follow-up:
+- Wait for the deeper diagnostic verdict before choosing between timeout
+  extension, low-latency-point exclusion/fix, candidate `0002`, or additional
+  instrumentation/code fixes.
+
+### 2026-06-12 19:20:00 CST
+
+Action:
+- S7 deeper progress-gated diagnostic worker
+  `019ebb82-a961-7dc3-ab13-4ee8053df941` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-191627-s7-candidate0001-deeper-progress-diagnostic.md`.
+- Spawned independent supervisor reviewer
+  `019ebb90-f1e2-7aa2-961e-e363824e806f` to review the diagnostic evidence.
+
+Worker result:
+- Exactly one short local ProcMan diagnostic job was run for `candidate_0001`
+  with `-latency_L0_to_L1=37` and `-prefetch_per_stream_buffer_size=8`.
+- Unlike the prior early-progress diagnostic, this run did not reach shader
+  binding or post-bind CTA launch samples.
+- It reached kernel push and the initial progress sample, then stayed unchanged
+  at `cycle=1`, `next_cta=0`, `cta_launched_kernel=0`,
+  `cta_completed_kernel=0`, `active_cta=0`, and `active_sms=0` for about
+  5 minutes, with no stdout/stderr file growth, while the simulator child was
+  alive and CPU-saturated.
+- This is a repeated pre-shader-bind / pre-CTA-launch state, not observed slow
+  CTA progress.
+
+Worker recommendation:
+- Do not extend timeout as the next step.
+- Do not run `candidate_0002` blindly.
+- Add targeted instrumentation or investigate/fix the kernel-dispatch to
+  shader-bind path for the low `-latency_L0_to_L1=37` case, then rerun a short
+  progress-gated diagnostic.
+
+Cleanup:
+- Worker reported final ProcMan `Nothing Active`, temporary alias absent, no
+  candidate metrics, no S6 manifest/report, no promotion, and protected
+  generated/latest/calibration paths untouched.
+- Worker needed two internal reviewer rounds; Round 1 corrected cleanup wording
+  about an incorrectly invoked ProcMan clear command, and Round 2 accepted.
+
+Follow-up:
+- Await supervisor reviewer verdict before checkpointing this diagnostic or
+  dispatching instrumentation/code investigation.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebb90-f1e2-7aa2-961e-e363824e806f`
+  returned `ACCEPT`.
+- Reviewer confirmed that the artifact evidence supports the core claim: the
+  diagnostic reached kernel push and only one progress sample at `cycle=1` with
+  `next_cta=0`, `cta_launched_kernel=0`, `active_cta=0`, and `active_sms=0`;
+  ProcMan was still `RUNNING` at about `0:05:01`; and the simulator child was
+  CPU-heavy before kill.
+- Reviewer confirmed the distinction from the prior early diagnostic is
+  correctly stated: the prior run reached `Shader 29 bind` and cycles
+  `1801`-`1806`, while this run did not reach shader bind or post-bind fields.
+- Reviewer confirmed rules were followed: one actual local ProcMan job, bounded
+  stop before the 25-minute cap, no metrics/promotion, artifacts under ignored
+  `artifacts/s7/`, final ProcMan `Nothing Active`, and temporary alias absent.
+- Reviewer accepted the confidence qualification and recommendation: instrument
+  or fix the kernel-dispatch/shader-bind path for low
+  `-latency_L0_to_L1=37`, rerun a short diagnostic, and avoid timeout extension
+  or blind `candidate_0002`.
+
+Follow-up:
+- Checkpoint the accepted deeper diagnostic.
+- Dispatch targeted instrumentation/code-path investigation for the
+  kernel-dispatch to shader-bind path.

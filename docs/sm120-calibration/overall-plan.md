@@ -42,6 +42,8 @@ Latest timeout-analysis update: accepted root-cause analysis found no accidental
 
 Latest progress-diagnostic update: accepted early progress-gated diagnostic shows `candidate_0001` reaches kernel-1 post-bind samples comparable to passing job `486`; CTA launch state advances from `30` to `180` over cycles `1801`-`1806`, sampled PC remains at the early launch PC `0x2400`, and barrier waiting stays `0`. This rules out an immediate post-bind deadlock in the observed early window but does not explain the later 43-minute timeout. The next S7 step is one deeper progress-gated `candidate_0001` diagnostic to all-CTAs-launched/resident, first CTA completion, or repeated-state detection before running `candidate_0002`, excluding the low-latency point, or extending timeout. Promotion gate remains closed.
 
+Latest deeper-diagnostic update: accepted deeper progress-gated diagnostic for the same `candidate_0001` point did not reach shader binding. It reached kernel push and stayed at the initial `cycle=1` sample with `next_cta=0`, `cta_launched_kernel=0`, `active_cta=0`, and `active_sms=0` for about 5 minutes while the simulator child was CPU-heavy. This differs from the prior early diagnostic that did reach `Shader 29 bind`, so the exact failure path is still not proven, but the next S7 step is no longer additional parameter sweep execution. The next step is targeted instrumentation/code-path investigation around kernel dispatch to shader bind for the low `-latency_L0_to_L1=37` case, followed by a short diagnostic rerun. Promotion gate remains closed.
+
 ## Checkpoint Policy
 
 Commit at stable points:
