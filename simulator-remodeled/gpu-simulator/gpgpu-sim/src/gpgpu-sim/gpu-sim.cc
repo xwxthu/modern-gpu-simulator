@@ -2993,7 +2993,11 @@ void gpgpu_sim::maybe_print_cycle_cost_debug(
     unsigned long long cluster_core_us, unsigned long long stats_bookkeeping_us,
     unsigned long long issue_block2core_us,
     unsigned long long decrement_kernel_latency_us,
-    unsigned long long diagnostic_emission_us, unsigned long long total_us) {
+    unsigned long long diagnostic_emission_us, unsigned long long total_us,
+    unsigned long long cluster_core_calls,
+    unsigned long long cluster_core_core_cycle_us,
+    unsigned long long cluster_core_not_completed_clusters,
+    unsigned long long cluster_core_more_cta_clusters) {
   unsigned active_cta = 0;
   unsigned not_completed = 0;
   unsigned active_sms = 0;
@@ -3025,6 +3029,9 @@ void gpgpu_sim::maybe_print_cycle_cost_debug(
       "active_sms=%u cost_us={clock_domain=%llu,interconnect_memory=%llu,"
       "cluster_core=%llu,stats_bookkeeping=%llu,issue_block2core=%llu,"
       "decrement_kernel_latency=%llu,diagnostic_emission=%llu,total=%llu} "
+      "cluster_core_detail={calls=%llu,core_cycle_us=%llu,"
+      "non_core_cycle_residual_us=%llu,not_completed_clusters=%llu,"
+      "more_cta_clusters=%llu} "
       "kernels=[",
       cycle, gpu_sim_cycle, gpu_tot_sim_cycle,
       static_cast<unsigned>(m_current_cycle_clock_mask), running_kernel_count,
@@ -3032,7 +3039,11 @@ void gpgpu_sim::maybe_print_cycle_cost_debug(
       active_cta, not_completed, active_sms, clock_domain_us,
       interconnect_memory_us, cluster_core_us, stats_bookkeeping_us,
       issue_block2core_us, decrement_kernel_latency_us, diagnostic_emission_us,
-      total_us);
+      total_us, cluster_core_calls, cluster_core_core_cycle_us,
+      (cluster_core_us > cluster_core_core_cycle_us)
+          ? (cluster_core_us - cluster_core_core_cycle_us)
+          : 0,
+      cluster_core_not_completed_clusters, cluster_core_more_cta_clusters);
 
   bool first_kernel = true;
   for (unsigned i = 0; i < m_running_kernels.size(); i++) {
@@ -3423,13 +3434,41 @@ void gpgpu_sim::cycle() {
   if (cycle_cost_due) {
     cycle_cost->after_interconnect_memory = gpgpusim_cycle_cost_clock::now();
   }
+  unsigned long long cluster_core_calls = 0;
+  unsigned long long cluster_core_core_cycle_us = 0;
+  unsigned long long cluster_core_not_completed_clusters = 0;
+  unsigned long long cluster_core_more_cta_clusters = 0;
 
   if (m_current_cycle_clock_mask & CORE) {
     // L1 cache + shader core pipeline stages
-    #pragma omp parallel for schedule(runtime) reduction(+:m_active_sms_this_cycle)
+    #pragma omp parallel for schedule(runtime) reduction(+:m_active_sms_this_cycle,cluster_core_calls,cluster_core_core_cycle_us,cluster_core_not_completed_clusters,cluster_core_more_cta_clusters)
     for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {
-      if (m_cluster[i]->get_not_completed() || get_more_cta_left()) {
-       m_cluster[i]->core_cycle();
+      bool cluster_not_completed = m_cluster[i]->get_not_completed() != 0;
+      bool more_cta_left = false;
+      if (!cluster_not_completed || cycle_cost_due) {
+        more_cta_left = get_more_cta_left();
+      }
+      if (cycle_cost_due) {
+        if (cluster_not_completed) {
+          cluster_core_not_completed_clusters++;
+        }
+        if (more_cta_left) {
+          cluster_core_more_cta_clusters++;
+        }
+      }
+      if (cluster_not_completed || more_cta_left) {
+        if (cycle_cost_due) {
+          gpgpusim_cycle_cost_clock::time_point core_cycle_start =
+              gpgpusim_cycle_cost_clock::now();
+          m_cluster[i]->core_cycle();
+          cluster_core_core_cycle_us += gpgpusim_cycle_cost_elapsed_us(
+              core_cycle_start, gpgpusim_cycle_cost_clock::now());
+        } else {
+          m_cluster[i]->core_cycle();
+        }
+        if (cycle_cost_due) {
+          cluster_core_calls++;
+        }
       }
       // Update core icnt/cache stats for AccelWattch
       if(m_config.g_power_simulation_enabled && (((gpu_tot_sim_cycle + gpu_sim_cycle) + 1) % m_config.gpu_stat_sample_freq == 0)) {
@@ -3539,7 +3578,10 @@ void gpgpu_sim::cycle() {
                 cycle_cost->after_decrement_kernel_latency,
                 cycle_cost->after_diagnostic_emission),
             gpgpusim_cycle_cost_elapsed_us(
-                cycle_cost->start, cycle_cost->after_diagnostic_emission));
+                cycle_cost->start, cycle_cost->after_diagnostic_emission),
+            cluster_core_calls, cluster_core_core_cycle_us,
+            cluster_core_not_completed_clusters,
+            cluster_core_more_cta_clusters);
       }
 
       // Depending on configuration, invalidate the caches once all of threads are

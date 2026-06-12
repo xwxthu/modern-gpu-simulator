@@ -972,7 +972,11 @@ class gpgpu_sim : public gpgpu_t {
       unsigned long long cluster_core_us, unsigned long long stats_bookkeeping_us,
       unsigned long long issue_block2core_us,
       unsigned long long decrement_kernel_latency_us,
-      unsigned long long diagnostic_emission_us, unsigned long long total_us);
+      unsigned long long diagnostic_emission_us, unsigned long long total_us,
+      unsigned long long cluster_core_calls,
+      unsigned long long cluster_core_core_cycle_us,
+      unsigned long long cluster_core_not_completed_clusters,
+      unsigned long long cluster_core_more_cta_clusters);
   bool m_cycle_cost_debug_checked;
   bool m_cycle_cost_debug_enabled;
   unsigned long long m_cycle_cost_debug_interval;

@@ -3808,3 +3808,76 @@ Scope for worker:
 Follow-up:
 - Wait for worker implementation and internal reviewer verdict before
   supervisor review.
+
+### 2026-06-12 23:13:45 CST
+
+Resume note:
+- Work resumed after an interruption.
+- Preflight at resume:
+  - HEAD `142335b`;
+  - branch `dev-5060` ahead of origin by 66 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent;
+  - protected generated/tested/accepted/latest config and calibration-result
+    paths clean.
+- The worktree contained in-progress source edits in
+  `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/gpu-sim.cc` and
+  `simulator-remodeled/gpu-simulator/gpgpu-sim/src/gpgpu-sim/gpu-sim.h`
+  consistent with the dispatched `cluster_core` path instrumentation scope.
+- Supervisor did not modify those source edits while the worker was still
+  active.
+
+### 2026-06-12 23:26:56 CST
+
+Action:
+- S7 pre-admission `cluster_core` path analysis worker
+  `019ebc64-3bd5-7561-85f8-c4bb001cda95` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-232416-s7-cluster-core-cost-analysis.md`.
+- Spawned independent supervisor reviewer
+  `019ebc71-564d-7351-b3d3-f8d7bdb56091`.
+
+Worker result:
+- No ProcMan jobs, bounded-sweep metrics, S6 search/report, config
+  generation, or promotion commands were run.
+- The worker classified the sampled pre-admission `cluster_core` cost as
+  OpenMP cluster/core-loop overhead plus repeated inactive cluster/SM
+  fast-return work during TB-latency countdown.
+- Confidence is medium-high for the pre-admission window and low for
+  post-bind behavior because `candidate_0002` still has not been observed
+  through cycle `1801`.
+- The worker added narrow default-off detail to existing
+  `GPGPUSIM_CYCLE_COST_DEBUG` output:
+  `cluster_core_detail={calls,core_cycle_us,non_core_cycle_residual_us,not_completed_clusters,more_cta_clusters}`.
+- No semantic pre-admission fast path was added.
+- Internal blank-context reviewer `019ebc69-66a5-7272-9694-83cf6cc5aff5`
+  returned `ACCEPT` after the worker renamed the residual field from a more
+  easily over-interpreted OpenMP-specific name to
+  `non_core_cycle_residual_us`.
+
+Validation reported by worker:
+- `git diff --check` passed.
+- `source simulator-remodeled/gpu-simulator/gpgpu-sim/setup_environment &&
+  make -C simulator-remodeled/gpu-simulator/gpgpu-sim -j2` passed.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebc71-564d-7351-b3d3-f8d7bdb56091`
+  returned `ACCEPT`.
+- Reviewer confirmed the worker covered the assigned `cluster_core` cost,
+  OpenMP cluster loop, inactive-SM fast-return, and custom scheduler behavior.
+- Reviewer confirmed the conclusion is careful: `cluster_core` dominance is
+  supported, while the OpenMP-vs-fast-return split and post-bind behavior
+  remain explicitly unproven.
+- Reviewer confirmed the code change is default-off and diagnostic-only; with
+  cycle-cost debug disabled, the rewritten condition preserves the old
+  short-circuit behavior.
+- Reviewer found no obvious race in the scalar OpenMP reductions.
+- Residual risk: enabled diagnostics perturb the measured loop through
+  per-cluster timing and extra `get_more_cta_left()` scans, and summed OpenMP
+  worker `core_cycle_us` is only an attribution hint.
+
+Follow-up:
+- Checkpoint the accepted default-off `cluster_core_detail` instrumentation.
+- Next S7 action should be at most one bounded `candidate_0002` diagnostic
+  with enhanced cycle-cost detail enabled and minimal startup/dispatch
+  confirmation, stopping at cycle `1801`, first bind/CTA launch, or a strict
+  wall cap.
