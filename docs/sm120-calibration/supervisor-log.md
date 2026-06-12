@@ -4480,3 +4480,76 @@ Follow-up:
 - Next S7 work should build a non-promotion validation package around the
   `39/8` and `39/10` simulator evidence, while keeping promotion closed pending
   RTX5060/RTX5070Ti signoff.
+
+### 2026-06-13 02:46:50 CST
+
+Action:
+- Created checkpoint `4879cca`
+  (`docs: define SM120 low-latency exclusion policy`) for the accepted
+  current-pass low-latency exclusion policy.
+- Post-checkpoint state:
+  - branch `dev-5060` ahead of origin by 73 commits;
+  - worktree clean;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent.
+
+Next stage:
+- Build a documentation/artifact-only high-latency validation package for
+  `candidate_0003` (`39/8`, job `486`) and `candidate_0004` (`39/10`, job
+  `487`).
+- This should remain non-promotion evidence; do not generate runnable S6 output
+  or modify protected config/calibration/promotion paths.
+
+### 2026-06-13 03:02:38 CST
+
+Action:
+- S7 high-latency validation packaging worker
+  `019ebd28-ffc4-7f01-b994-0cefbfb9ee11` completed:
+  - `docs/sm120-calibration/s7-high-latency-validation-package.md`
+  - `docs/sm120-calibration/worker-logs/worker-20260613-024819-s7-high-latency-validation-package.md`
+  - ignored draft artifact
+    `artifacts/s7/s7-high-latency-validation-package-20260613-024819/high-latency-validation-summary.draft.yaml`
+- Worker ran no ProcMan, simulator, S6 search/correlation, hardware
+  collection, or promotion commands.
+- Worker internal review used read-only local `codex exec` fallback due to
+  thread limit; round 1 returned `NEEDS_WORK`, round 2 returned `ACCEPT` after
+  fixing pending placeholders and delta wording.
+
+Package result:
+- `candidate_0003` (`39/8`, job `486`) and `candidate_0004` (`39/10`, job
+  `487`) are documented as the actionable high-latency simulator-only S7 slice.
+- Delta is `candidate_0004 - candidate_0003`. For the comparable total CUDA
+  kernel simulator-derived time metric, the delta is `-0.000021971 ms`
+  (`-0.126595%`).
+- The package explicitly remains non-promotion: no runnable S6 report, no
+  ranking, no hardware target claim, and no config promotion.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebd35-4122-7122-8076-6672d3b6c098`
+  returned `ACCEPT`.
+- Reviewer confirmed job `486`/`39/8` and job `487`/`39/10` source values,
+  statuses, metrics, and artifact paths.
+- Reviewer confirmed delta math and simulator-candidate-only framing.
+- Reviewer confirmed the ignored draft YAML is marked `draft_not_applied`,
+  `non_promotion`, `simulator_candidate_metrics_only`,
+  `hardware_target_metrics: false`, and `protected_outputs_modified: false`.
+- Reviewer confirmed no S6 runnable output, ranking, hardware target claim, or
+  config promotion was introduced.
+- Reviewer confirmed next evidence requirements are coherent:
+  promotion-quality RTX5060 hardware target provenance, complete reviewed S6
+  supplied-metrics coverage or approved narrowed search space, ranked S6 draft
+  from reviewed metrics, promotion reviewer approval, and RTX5070Ti
+  compatibility signoff.
+
+Validation:
+- Draft YAML parsed and asserted expected non-promotion fields.
+- Draft YAML and reviewer artifacts are ignored by `.gitignore:4:artifacts/s7/`.
+- ProcMan live status checked as `Nothing Active`.
+- Scoped protected-path status showed no tracked modifications.
+
+Follow-up:
+- Update `overall-plan.md`.
+- Run final checks and checkpoint the accepted high-latency validation package.
+- Next S7 work should prepare promotion-quality hardware-target provenance or
+  an explicitly approved narrowed search-space plan before any runnable S6
+  ranking or promotion attempt.
