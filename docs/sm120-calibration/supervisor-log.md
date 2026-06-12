@@ -3103,3 +3103,89 @@ Follow-up:
 - Checkpoint the accepted final-code `candidate_0001` diagnostic.
 - Prepare a bounded diagnostic run for `candidate_0002`, not a promotion or
   blind full calibration run.
+
+### 2026-06-12 20:47:00 CST
+
+Action:
+- Created checkpoint `bc08ad8`
+  (`docs: record SM120 final dispatch diagnostic`) for the accepted final-code
+  `candidate_0001` diagnostic.
+- Ran preflight for `candidate_0002` bounded diagnostic:
+  - worktree clean on `dev-5060` ahead of origin by 59 commits;
+  - live ProcMan status `Nothing Active`;
+  - temporary S7 bounded-sweep alias absent;
+  - protected generated/tested/accepted/latest config paths clean.
+- Spawned S7 `candidate_0002` bounded monitored diagnostic worker
+  `019ebbda-d276-7922-93e5-f359bfc4523f`.
+
+Scope for worker:
+- Run at most one actual local ProcMan job for `candidate_0002`
+  (`-latency_L0_to_L1=37`, `-prefetch_per_stream_buffer_size=10`).
+- Enable both progress diagnostics and dispatch-bind diagnostics.
+- Run no longer than 25 minutes and stop at a diagnostic gate: normal
+  dispatch/bind and early CTA launch, progress beyond early launch, repeated
+  unchanged state, or wall timeout.
+- Preserve evidence under ignored `artifacts/s7/`.
+- Do not generate/promote metrics, S6 reports, or accepted/latest configs.
+
+Follow-up:
+- Wait for the `candidate_0002` diagnostic verdict before deciding whether to
+  run any candidate to completion for metrics or adjust the bounded sweep.
+
+### 2026-06-12 21:02:35 CST
+
+Action:
+- Resumed after interruption and reread the required supervisor context:
+  `supervisor-log.md`, `overall-plan.md`, and the latest `candidate_0002`
+  worker log.
+- Verified live ProcMan status was `Nothing Active`.
+- Verified the temporary S7 bounded-sweep alias was absent.
+- Verified protected generated/tested/accepted/latest config and calibration
+  paths were clean.
+- Spawned independent supervisor reviewer
+  `019ebbec-1a5a-7b81-be57-9f897bea497d` for the accepted worker's
+  `candidate_0002` diagnostic evidence.
+
+Worker result:
+- S7 `candidate_0002` diagnostic worker
+  `019ebbda-d276-7922-93e5-f359bfc4523f` completed
+  `docs/sm120-calibration/worker-logs/worker-20260612-204302-s7-candidate0002-bounded-diagnostic.md`.
+- Exactly one actual local ProcMan job was used: job `9`.
+- Effective candidate values were `-latency_L0_to_L1=37` and
+  `-prefetch_per_stream_buffer_size=10`.
+- Job `9` entered `RUNNING` and the simulator child was CPU-heavy for about
+  7.5 minutes.
+- The run produced no stdout growth, no dispatch-bind lines, no kernel-progress
+  lines, no shader bind / CTA evidence, no `result.txt`, and no candidate
+  metrics before the bounded diagnostic stop.
+- No metrics/report/promotion output was produced.
+
+Supervisor review:
+- Independent supervisor reviewer `019ebbec-1a5a-7b81-be57-9f897bea497d`
+  returned `ACCEPT`.
+- Reviewer confirmed `run-submit.log` contains only `Job 9 queued`.
+- Reviewer confirmed ProcMan and monitor logs show `activeJobs=1` and
+  `status=RUNNING`, and `process-before-manual-stop.log` shows the
+  `backprop-rodinia-2.0-ft` child at `%CPU 1681`.
+- Reviewer confirmed no-progress/no-output evidence is supported by repeated
+  `monitor.log` entries with `out=0 lines=0 result=none`, including elapsed
+  `416` and `426` seconds.
+- Reviewer confirmed the worker log no longer cites nonexistent stdout/stderr
+  snapshot files.
+- Reviewer confirmed final cleanup: current ProcMan `Nothing Active`,
+  temporary alias absent, protected paths clean, and artifacts under ignored
+  `artifacts/s7/`.
+- Reviewer accepted the recommendation not to run `candidate_0002` to
+  completion or promote metrics now.
+
+Validation:
+- `git diff --check` passed.
+- `PYTHONDONTWRITEBYTECODE=1 python3 simulator-remodeled/util/tuner/generate_sm120_configs.py --check-only`
+  passed.
+
+Follow-up:
+- Checkpoint the accepted `candidate_0002` diagnostic documentation.
+- Next S7 work should not blindly run more low-latency sweep points. It should
+  either add earlier startup/first-output instrumentation to localize the
+  silent CPU-heavy path, or apply a reviewed policy to pause/exclude low
+  `-latency_L0_to_L1=37` points from promotion until the path is understood.
